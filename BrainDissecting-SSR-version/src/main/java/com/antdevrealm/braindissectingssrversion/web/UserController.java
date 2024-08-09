@@ -21,6 +21,8 @@ public class UserController {
     @PostMapping("/register")
     public ModelAndView doRegister(ModelAndView modelAndView, UserRegistrationDTO userRegistrationDTO){
         modelAndView.setViewName("auth-register");
+
+        // TODO:
         return modelAndView;
     }
 
