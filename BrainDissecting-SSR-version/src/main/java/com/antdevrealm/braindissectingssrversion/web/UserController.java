@@ -1,6 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
-import com.antdevrealm.braindissectingssrversion.model.UserRegistrationDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.UserRegistrationDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
