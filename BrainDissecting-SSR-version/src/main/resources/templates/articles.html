@@ -17,14 +17,14 @@
 
 <div class="container">
     <h2 class="text-center text-white m-3">All Articles</h2>
-    <div class='row mb-4 d-flex justify-content-around'>
-        <div th:object="${testArticle}" class="brand-section col-md-5 mr-auto d-flex flex-column">
-            <h2 th:text="*{title}" >
+    <div th:each=" article : ${allArticles}" class='row mb-4 d-flex justify-content-around'>
+        <div   class="brand-section col-md-5 mr-auto d-flex flex-column">
+            <h2 th:text="${article.title}">
                 ARTICLE TITLE
             </h2>
             <div>
                 <article>
-                    <p th:text="*{content}" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad at cum deleniti deserunt dolore dolorum, eos eveniet fugit in itaque minus neque non odit officiis quas quia quos sapiente veritatis?</p>
+                    <p th:text="${article.content}" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad at cum deleniti deserunt dolore dolorum, eos eveniet fugit in itaque minus neque non odit officiis quas quia quos sapiente veritatis?</p>
                 </article>
             </div>
         </div>

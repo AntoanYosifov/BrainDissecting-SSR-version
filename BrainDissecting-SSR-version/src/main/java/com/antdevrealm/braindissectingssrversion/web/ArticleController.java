@@ -26,9 +26,8 @@ public class ArticleController {
 
         List<DisplayArticleDTO> allArticles = articleService.getAllArticles();
 
-        DisplayArticleDTO firstTestArticle = allArticles.getFirst();
 
-        mnv.addObject("testArticle", firstTestArticle);
+        mnv.addObject("allArticles", allArticles);
         mnv.setViewName("articles");
         return mnv;
     }
