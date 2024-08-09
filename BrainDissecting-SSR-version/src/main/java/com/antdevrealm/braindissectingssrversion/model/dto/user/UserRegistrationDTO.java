@@ -1,4 +1,4 @@
-package com.antdevrealm.braindissectingssrversion.model.dto;
+package com.antdevrealm.braindissectingssrversion.model.dto.user;
 
 public class UserRegistrationDTO {
     private String firstName;
