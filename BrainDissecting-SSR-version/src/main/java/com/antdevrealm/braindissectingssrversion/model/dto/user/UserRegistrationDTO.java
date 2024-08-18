@@ -1,29 +1,38 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class UserRegistrationDTO {
-    private String firstName;
-    private String lastName;
-    private String password;
+
+    @NotNull
+    @Size(min = 5, max = 20)
+    private String username;
+
+    @NotNull
+    @Email
     private String email;
+
+    // TODO: After testing faze change min size to 8;
+    @NotNull
+    @Size(min = 3, max = 30)
+    private String password;
+
+    @NotNull
+    @Size(min = 3, max = 30)
+    private String confirmPassword;
+
 
     public UserRegistrationDTO() {
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getUsername() {
+        return username;
     }
 
-    public UserRegistrationDTO setFirstName(String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UserRegistrationDTO setLastName(String lastName) {
-        this.lastName = lastName;
+    public UserRegistrationDTO setUsername(String username) {
+        this.username = username;
         return this;
     }
 
@@ -45,13 +54,12 @@ public class UserRegistrationDTO {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "UserRegistrationDTO{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public UserRegistrationDTO setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+        return this;
     }
 }
