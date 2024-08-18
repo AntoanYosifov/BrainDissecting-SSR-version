@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class UserRegistrationDTO {
+public class RegistrationDTO {
 
     @NotNull
     @Size(min = 5, max = 20)
@@ -24,14 +24,14 @@ public class UserRegistrationDTO {
     private String confirmPassword;
 
 
-    public UserRegistrationDTO() {
+    public RegistrationDTO() {
     }
 
     public String getUsername() {
         return username;
     }
 
-    public UserRegistrationDTO setUsername(String username) {
+    public RegistrationDTO setUsername(String username) {
         this.username = username;
         return this;
     }
@@ -40,7 +40,7 @@ public class UserRegistrationDTO {
         return password;
     }
 
-    public UserRegistrationDTO setPassword(String password) {
+    public RegistrationDTO setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -49,7 +49,7 @@ public class UserRegistrationDTO {
         return email;
     }
 
-    public UserRegistrationDTO setEmail(String email) {
+    public RegistrationDTO setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -58,7 +58,7 @@ public class UserRegistrationDTO {
         return confirmPassword;
     }
 
-    public UserRegistrationDTO setConfirmPassword(String confirmPassword) {
+    public RegistrationDTO setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
         return this;
     }

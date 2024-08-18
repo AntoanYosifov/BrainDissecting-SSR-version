@@ -1,6 +1,8 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.user.UserRegistrationDTO;
+import com.antdevrealm.braindissectingssrversion.config.UserSession;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.User;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
@@ -13,18 +15,21 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
+    private final UserSession userSession;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           UserSession userSession) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userSession = userSession;
     }
 
 
     @Override
-    public boolean register(UserRegistrationDTO data) {
-        // Return custom errors
+    public boolean register(RegistrationDTO data) {
+        // TODO: Return custom errors
         if(usernameOrEmailExists(data)) {
             return false;
         }
@@ -40,7 +45,28 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    private User mapToUser(UserRegistrationDTO data) {
+    @Override
+    public boolean login(LoginDTO loginDTO) {
+        Optional<User> byUsername = userRepository.findByUsername(loginDTO.getUsername());
+
+        if (byUsername.isEmpty()) {
+            return false;
+        }
+
+        User user = byUsername.get();
+
+        // TODO: trow custom user password miss match error
+        if(!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            return false;
+        }
+
+        userSession.login(user.getId(), user.getUsername());
+
+        return true;
+    }
+
+
+    private User mapToUser(RegistrationDTO data) {
         User user = new User();
 
         user.setUsername(data.getUsername())
@@ -49,12 +75,13 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private boolean usernameOrEmailExists (UserRegistrationDTO data) {
+    private boolean usernameOrEmailExists (RegistrationDTO data) {
         Optional<User> byUsernameOrEmail = userRepository.findByUsernameOrEmail(data.getUsername(), data.getEmail());
         return byUsernameOrEmail.isPresent();
     }
 
-    private boolean passwordConfirmPasswordMatch(UserRegistrationDTO data) {
+    private boolean passwordConfirmPasswordMatch(RegistrationDTO data) {
         return data.getPassword().equals(data.getConfirmPassword());
     }
+
 }

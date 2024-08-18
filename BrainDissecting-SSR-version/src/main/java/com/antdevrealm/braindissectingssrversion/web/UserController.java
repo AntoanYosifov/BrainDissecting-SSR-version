@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.user.UserRegistrationDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -23,9 +24,15 @@ public class UserController {
     }
 
     @ModelAttribute("registerData")
-    public UserRegistrationDTO userRegistrationDTO() {
-        return new UserRegistrationDTO();
+    public RegistrationDTO RegistrationDTO() {
+        return new RegistrationDTO();
     }
+
+    @ModelAttribute("loginData")
+    public LoginDTO loginDTO() {
+        return new LoginDTO();
+    }
+
 
     @GetMapping("/register")
     public String viewRegister() {
@@ -33,33 +40,36 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String doRegister(@Valid UserRegistrationDTO userRegistrationDTO,
+    public String doRegister(@Valid RegistrationDTO registrationDTO,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
 
 
         if(bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("registerData", userRegistrationDTO);
+            redirectAttributes.addFlashAttribute("registerData", registrationDTO);
             return "redirect:/users/register";
         }
 
-        boolean success = userService.register(userRegistrationDTO);
-        // TODO:
-        return "redirect:/";
+        boolean success = userService.register(registrationDTO);
+        // TODO: Handle errors based on the user registration success
+        return "redirect:/users/login";
     }
 
     @GetMapping("/login")
     public String viewLogin() {
-
-
         return "auth-login";
     }
 
     @PostMapping("/login")
-    public String doLogin() {
+    public String doLogin(@Valid LoginDTO loginDTO) {
         // TODO:
+        boolean success = userService.login(loginDTO);
 
-        return "auth-login";
+        if(!success) {
+            return "redirect:/users/login";
+        }
+
+        return "redirect:/articles/all";
     }
 
 
