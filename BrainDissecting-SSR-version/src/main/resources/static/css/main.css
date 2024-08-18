@@ -7,6 +7,10 @@ body {
     background-color: #282828;
 }
 
+.navbar {
+    box-shadow: 0.1em 0.2em blue;
+}
+
 .navbar .logo {
     max-height: 50px;
     border-radius: 50%;
@@ -29,8 +33,10 @@ body {
     text-align: center;
 }
 
-.brand-section {
+.article-section {
     background-image: linear-gradient(to bottom right, rgba(220, 220, 220, 0.9), rgba(255, 255, 255, 0.9));
+    margin: 1em;
+    border-radius: 4px;
 }
 
 td, th {
@@ -58,4 +64,8 @@ form.main-form {
 
 .logged-user {
     color: white;
+}
+
+.div-article {
+    margin: 2em;
 }

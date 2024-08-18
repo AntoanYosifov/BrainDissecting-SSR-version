@@ -13,17 +13,18 @@
 
 <body>
 
-<th:block th:include="/fragments/navbar.html"></th:block>
+<th:block th:replace="~{/fragments/commons::nav}"></th:block>
 
 <div class="container">
     <h2 class="text-center text-white m-3">All Articles</h2>
-    <div th:each=" article : ${allArticles}" class='row mb-4 d-flex justify-content-around'>
-        <div   class="brand-section col-md-5 mr-auto d-flex flex-column">
-            <h2 th:text="${article.title}">
-                ARTICLE TITLE
-            </h2>
-            <div>
-                <article>
+    <div th:each=" article : ${allArticles}" class='d-flex justify-content-around'>
+        <div   class="article-section  d-flex flex-column">
+
+            <div class="d-flex flex-row div-article">
+                <article class="article" >
+                    <h2 th:text="${article.title}">
+                        ARTICLE TITLE
+                    </h2>
                     <p th:text="${article.content}" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad at cum deleniti deserunt dolore dolorum, eos eveniet fugit in itaque minus neque non odit officiis quas quia quos sapiente veritatis?</p>
                 </article>
             </div>

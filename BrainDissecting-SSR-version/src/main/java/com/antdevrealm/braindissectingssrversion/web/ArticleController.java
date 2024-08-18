@@ -26,7 +26,6 @@ public class ArticleController {
 
         List<DisplayArticleDTO> allArticles = articleService.getAllArticles();
 
-
         mnv.addObject("allArticles", allArticles);
         mnv.setViewName("articles");
         return mnv;
