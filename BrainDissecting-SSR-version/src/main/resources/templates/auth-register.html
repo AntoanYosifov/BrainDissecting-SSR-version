@@ -20,6 +20,9 @@
     <form th:method="post"
           th:object="${registerData}"
           class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center">
+        <div  th:if="${usernameOrEmailTaken}">
+            <p class="errors alert alert-danger text-center" th:text="${usernameOrEmailTaken}">Username or email already taken!</p>
+        </div>
         <div class="row">
             <div class="form-group col-md-6 mb-3">
                 <label for="firstName" class="text-white font-weight-bold">Username</label>
@@ -29,9 +32,7 @@
                        type="text"
                        class="form-control"
                        placeholder="Username"/>
-<!--                <p class="errors alert alert-danger">-->
-<!--                    First name is required.-->
-<!--                </p>-->
+                <p class="errors alert alert-danger" th:errors="*{username}"></p>
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label for="email" class="text-white font-weight-bold">Email</label>
@@ -43,9 +44,7 @@
                        max="20"
                        class="form-control"
                        placeholder="Email"/>
-                <!--                <p class="errors alert alert-danger">-->
-                <!--                    Email is required.-->
-                <!--                </p>-->
+                <p class="errors alert alert-danger" th:errors="*{email}"></p>
             </div>
         </div>
         <div class="row">
@@ -57,9 +56,7 @@
                        type="password"
                        class="form-control"
                        placeholder="Password"/>
-<!--                <p class="errors alert alert-danger">-->
-<!--                    Password is required.-->
-<!--                </p>-->
+                <p class="errors alert alert-danger" th:errors="*{password}"></p>
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label for="confirmPassword" class="text-white font-weight-bold">Confirm Password</label>
@@ -69,9 +66,7 @@
                        type="password"
                        class="form-control"
                        placeholder="Confirm Password"/>
-                <!--                <p class="errors alert alert-danger">-->
-                <!--                    Password is required.-->
-                <!--                </p>-->
+                <p class="errors alert alert-danger" th:errors="*{confirmPassword}"></p>
             </div>
         </div>
 

@@ -1,9 +1,12 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.exception.RegistrationUsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -47,11 +51,24 @@ public class UserController {
 
         if(bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerData", registrationDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
             return "redirect:/users/register";
         }
 
-        boolean success = userService.register(registrationDTO);
-        // TODO: Handle errors based on the user registration success
+        try {
+            userService.register(registrationDTO);
+        } catch (RegistrationUsernameOrEmailException e) {
+
+            log.error(e.getMessage());
+
+            redirectAttributes.addFlashAttribute("usernameOrEmailTaken", e.getMessage());
+
+            redirectAttributes.addFlashAttribute("registerData", registrationDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
+
+            return "redirect:/users/register";
+        }
+
         return "redirect:/users/login";
     }
 

@@ -1,26 +1,29 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.user;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class RegistrationDTO {
 
-    @NotNull
-    @Size(min = 5, max = 20)
+    @NotNull(message = "{user.registration.notnull.username}")
+    @Size(min = 5, max = 20, message = "{user.registration.username.length}")
     private String username;
 
-    @NotNull
-    @Email
+    @NotNull(message = "{user.registration.notnull.email}")
+    @NotBlank(message = "{user.registration.notBlank.email}")
+    @Email(message = "{user.registration.email}")
     private String email;
 
     // TODO: After testing faze change min size to 8;
-    @NotNull
-    @Size(min = 3, max = 30)
+    @NotNull(message = "{user.registration.notnull.password}")
+    @Size(min = 3, max = 30, message = "{user.registration.password}")
     private String password;
 
-    @NotNull
-    @Size(min = 3, max = 30)
+    @NotNull(message = "{user.registration.notnull.password.confirm}")
+
+    @Size(min = 3, max = 30, message = "{user.registration.password}")
     private String confirmPassword;
 
 

@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.config.UserSession;
+import com.antdevrealm.braindissectingssrversion.exception.RegistrationUsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.User;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
     public boolean register(RegistrationDTO data) {
         // TODO: Return custom errors
         if(usernameOrEmailExists(data)) {
-            return false;
+            throw new RegistrationUsernameOrEmailException(data.getUsername(), data.getEmail());
         }
 
         if(!passwordConfirmPasswordMatch(data)) {
