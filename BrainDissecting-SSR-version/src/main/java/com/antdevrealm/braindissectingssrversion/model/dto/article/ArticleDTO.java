@@ -1,18 +1,23 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.article;
 
-public class DisplayArticleDTO {
+public class ArticleDTO {
 
     private String title;
 
     private String content;
 
-    public DisplayArticleDTO() {}
+    public ArticleDTO(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public ArticleDTO() {}
 
     public String getTitle() {
         return title;
     }
 
-    public DisplayArticleDTO setTitle(String title) {
+    public ArticleDTO setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -21,7 +26,7 @@ public class DisplayArticleDTO {
         return content;
     }
 
-    public DisplayArticleDTO setContent(String content) {
+    public ArticleDTO setContent(String content) {
         this.content = content;
         return this;
     }

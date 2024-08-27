@@ -1,12 +1,12 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 
-import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.article.ArticleDTO;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -22,13 +22,16 @@ public class ArticleController {
     }
 
     @GetMapping("/all")
-    public ModelAndView viewAllArticles(ModelAndView mnv) {
+    public String viewAllArticles(Model model) {
 
-        List<DisplayArticleDTO> allArticles = articleService.getAllArticles();
+        articleService.updateArticles();
 
-        mnv.addObject("allArticles", allArticles);
-        mnv.setViewName("articles");
-        return mnv;
+        List<ArticleDTO> allArticles = articleService.getAllArticles();
+
+        model.addAttribute("allArticles", allArticles);
+        return "articles";
     }
+
+
 
 }
