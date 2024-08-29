@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: BrainDissecting-SSR-version
+
+  thymeleaf:
+    check-template-location: true
+    cache: false
+    prefix: file:./src/main/resources/templates/
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/brain-dissecting-ssr?createDatabaseIfNotExist=true
+    username: root
+    password: ${db_password:}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: never
+server:
+  error:
+    whitelabel:
+      enabled: true
+
+

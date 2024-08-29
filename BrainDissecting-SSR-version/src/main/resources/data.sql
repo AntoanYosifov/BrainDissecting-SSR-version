@@ -1,0 +1,1 @@
+INSERT INTO `brain-dissecting-ssr`.roles VALUES (1, 'USER') , (2, 'ADMIN');

@@ -1,14 +1,14 @@
 package com.antdevrealm.braindissectingssrversion.repository;
 
-import com.antdevrealm.braindissectingssrversion.model.entity.User;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsernameOrEmail(String username, String email);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    Optional<UserEntity> findByUsernameOrEmail(String username, String email);
 
-    Optional<User> findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
 }

@@ -24,8 +24,6 @@ public class ArticleController {
     @GetMapping("/all")
     public String viewAllArticles(Model model) {
 
-        articleService.updateArticles();
-
         List<ArticleDTO> allArticles = articleService.getAllArticles();
 
         model.addAttribute("allArticles", allArticles);

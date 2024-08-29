@@ -22,9 +22,12 @@ public class RegistrationDTO {
     private String password;
 
     @NotNull(message = "{user.registration.notnull.password.confirm}")
-
     @Size(min = 3, max = 30, message = "{user.registration.password}")
     private String confirmPassword;
+
+    private String firstName;
+
+    private String lastName;
 
 
     public RegistrationDTO() {
@@ -63,6 +66,24 @@ public class RegistrationDTO {
 
     public RegistrationDTO setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+        return this;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public RegistrationDTO setFirstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public RegistrationDTO setLastName(String lastName) {
+        this.lastName = lastName;
         return this;
     }
 }

@@ -49,7 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleDTO> fetchArticles() {
         String body = restClient
                 .get()
-                .uri("https://doaj.org/api/search/articles/psychology?page=1&pageSize=2")
+                .uri("https://doaj.org/api/search/articles/computers?page=1&pageSize=2")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);

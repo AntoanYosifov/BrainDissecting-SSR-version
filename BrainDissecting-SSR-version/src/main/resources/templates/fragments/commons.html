@@ -1,9 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"
+      xmlns:th='http://www.thymeleaf.org'
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, userEntity-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Navbar</title>
 </head>
@@ -11,7 +13,7 @@
 
 <div>
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
-        <a class="navbar-brand" href="/"><img alt="car picture" src="/img/robot.jpg" class="logo"></a>
+        <a class="navbar-brand" href="/"><img alt="robot picture" src="/images/robot.jpg" class="logo"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -19,13 +21,18 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto col-12 justify-content-between">
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/users/register">Register</a>
+                </li>
                 <li class="nav-item"
                 >
-                    <a class="nav-link" href="/articles/all">All Articles</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/articles/all">All Articles</a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       sec:authorize="isAuthenticated()"
+                    >
                         Admin
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -36,18 +43,19 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="form-inline my-2 my-lg-0 border px-3">
-                        <div class="logged-user"
+                    <div  class="form-inline my-2 my-lg-0 ">
+                        <div class="logged-userEntity"
                              text="Welcome, Gosho"></div>
-                        <a class="nav-link" href="/users/logout">Logout</a>
+                        <form th:method="post"
+                                th:action="@{users/logout}">
+                        <input class="btn btn-link" sec:authorize="isAuthenticated()" value="Logout" type="submit">
+                        </form>
                     </div>
                 </li>
 
+
                 <li class="nav-item">
-                    <a class="nav-link" href="/users/register">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/users/login">Login</a>
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/users/login">Login</a>
                 </li>
 
             </ul>

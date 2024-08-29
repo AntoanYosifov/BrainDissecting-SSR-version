@@ -32,11 +32,6 @@ public class UserController {
         return new RegistrationDTO();
     }
 
-    @ModelAttribute("loginData")
-    public LoginDTO loginDTO() {
-        return new LoginDTO();
-    }
-
 
     @GetMapping("/register")
     public String viewRegister() {
@@ -69,7 +64,9 @@ public class UserController {
             return "redirect:/users/register";
         }
 
+
         return "redirect:/users/login";
+
     }
 
     @GetMapping("/login")
@@ -77,17 +74,9 @@ public class UserController {
         return "auth-login";
     }
 
-    @PostMapping("/login")
-    public String doLogin(@Valid LoginDTO loginDTO) {
-        // TODO:
-        boolean success = userService.login(loginDTO);
-
-        if(!success) {
-            return "redirect:/users/login";
-        }
-
-        return "redirect:/articles/all";
-    }
-
+//    @GetMapping("/logout")
+//    public String logout() {
+//        return "redirect:/";
+//    }
 
 }
