@@ -24,6 +24,14 @@ public class UserEntity extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
+    // change cascade type by adding functionality for the comments
+    // to be displayed only when a button is clicked
+
+    @OneToMany(targetEntity = CommentEntity.class, mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CommentEntity> comments;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
@@ -34,8 +42,8 @@ public class UserEntity extends BaseEntity {
     private List<UserRoleEntity> roles;
 
     public UserEntity() {
-        super();
         roles = new ArrayList<>();
+        comments = new ArrayList<>();
     }
 
     public String getUsername() {

@@ -58,7 +58,7 @@ public class BrDissectingUserDetails extends User {
         }
 
         if(fullName.isEmpty()) {
-            fullName.append("User hasn't entered his full name");
+            fullName.append("User");
         }
 
         return fullName.toString();

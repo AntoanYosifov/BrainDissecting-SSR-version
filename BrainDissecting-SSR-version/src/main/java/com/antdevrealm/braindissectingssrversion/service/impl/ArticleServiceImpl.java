@@ -1,9 +1,12 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.model.dto.article.ArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.comment.CommentDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
+import com.antdevrealm.braindissectingssrversion.service.CommentService;
 import com.jayway.jsonpath.JsonPath;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
@@ -20,13 +23,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
 
+    private final CommentService commentService;
+
     private final ModelMapper modelMapper;
 
     public ArticleServiceImpl(RestClient restClient,
-                              ArticleRepository articleRepository,
+                              ArticleRepository articleRepository, CommentService commentService,
                               ModelMapper modelMapper) {
         this.restClient = restClient;
         this.articleRepository = articleRepository;
+        this.commentService = commentService;
         this.modelMapper = modelMapper;
     }
 
@@ -71,13 +77,35 @@ public class ArticleServiceImpl implements ArticleService {
 
     }
 
-
-
     private ArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
-        return modelMapper.map(articleEntity, ArticleDTO.class);
+
+        ArticleDTO articleDTO = modelMapper.map(articleEntity, ArticleDTO.class);
+
+        List<CommentEntity> comments = articleEntity.getComments();
+
+        if(comments.isEmpty()) {
+            articleDTO.setComments(new ArrayList<>());
+
+            return articleDTO;
+        }
+
+        List<CommentDTO> commentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
+
+        articleDTO.setComments(commentDTOList);
+
+        return articleDTO;
     }
 
     private ArticleEntity mapToArticleEntity(ArticleDTO articleDTO) {
         return modelMapper.map(articleDTO, ArticleEntity.class);
+    }
+
+    private CommentDTO mapToCommentDTO(CommentEntity comment) {
+        CommentDTO commentDTO = new CommentDTO();
+
+        commentDTO.setContent(comment.getContent())
+                .setAuthor(comment.getUser().getUsername());
+
+        return commentDTO;
     }
 }

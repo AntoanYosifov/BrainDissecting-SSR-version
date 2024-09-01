@@ -2,9 +2,10 @@ package com.antdevrealm.braindissectingssrversion.model.entity;
 
 // TEST ARTICLE
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "articles")
@@ -15,6 +16,15 @@ public class ArticleEntity extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CommentEntity> comments;
+
+    public ArticleEntity() {
+        comments = new ArrayList<>();
+    }
 
     public String getTitle() {
         return title;
@@ -31,6 +41,15 @@ public class ArticleEntity extends BaseEntity {
 
     public ArticleEntity setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public List<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public ArticleEntity setComments(List<CommentEntity> comments) {
+        this.comments = comments;
         return this;
     }
 }
