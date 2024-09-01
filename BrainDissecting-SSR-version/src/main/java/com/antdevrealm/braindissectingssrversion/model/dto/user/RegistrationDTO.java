@@ -7,22 +7,22 @@ import jakarta.validation.constraints.Size;
 
 public class RegistrationDTO {
 
-    @NotNull(message = "{user.registration.notnull.username}")
-    @Size(min = 5, max = 20, message = "{user.registration.username.length}")
+    @NotNull(message = "{userEntity.notnull.username}")
+    @Size(min = 5, max = 20, message = "{userEntity.username.length}")
     private String username;
 
-    @NotNull(message = "{user.registration.notnull.email}")
+    @NotNull(message = "{userEntity.registration.notBlank.email}")
     @NotBlank(message = "{user.registration.notBlank.email}")
-    @Email(message = "{user.registration.email}")
+    @Email(message = "{userEntity.registration.email}")
     private String email;
 
     // TODO: After testing faze change min size to 8;
-    @NotNull(message = "{user.registration.notnull.password}")
-    @Size(min = 3, max = 30, message = "{user.registration.password}")
+    @NotNull(message = "{userEntity.notnull.password}")
+    @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
     private String password;
 
-    @NotNull(message = "{user.registration.notnull.password.confirm}")
-    @Size(min = 3, max = 30, message = "{user.registration.password}")
+    @NotNull(message = "{userEntity.registration.notnull.password.confirm}")
+    @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
     private String confirmPassword;
 
     private String firstName;

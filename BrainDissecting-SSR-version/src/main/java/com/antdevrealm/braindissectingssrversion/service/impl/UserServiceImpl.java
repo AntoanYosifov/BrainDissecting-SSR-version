@@ -38,12 +38,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = mapToUser(data);
 
-        int x = 1;
-
         userRepository.save(userEntity);
-
-        int x1 = 1;
-
         return true;
     }
 
@@ -56,7 +51,6 @@ public class UserServiceImpl implements UserService {
                 .setPassword(passwordEncoder.encode(data.getPassword()))
                 .setFirstName(data.getFirstName())
                 .setLastName(data.getLastName());
-
 
         return userEntity;
     }

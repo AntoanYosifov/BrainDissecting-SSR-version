@@ -6,12 +6,12 @@ import jakarta.validation.constraints.Size;
 // TODO: Change username login to email login
 public class LoginDTO {
 
-    @NotNull
-    @Size(min = 5, max = 20)
+    @NotNull(message = "{userEntity.username.length}")
+    @Size(min = 5, max = 20, message = "{userEntity.username.length}")
     private String username;
 
-    @NotNull
-    @Size(min = 3, max = 30)
+    @NotNull(message = "{userEntity.notnull.password}")
+    @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
     private String password;
 
     public LoginDTO() {}

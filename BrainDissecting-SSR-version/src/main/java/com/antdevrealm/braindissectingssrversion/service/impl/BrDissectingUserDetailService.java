@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -9,8 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.util.List;
 
 
 public class BrDissectingUserDetailService implements UserDetailsService {
@@ -31,7 +30,7 @@ public class BrDissectingUserDetailService implements UserDetailsService {
             return new BrDissectingUserDetails(
                     user.getUsername(),
                     user.getPassword(),
-                    user.getRoles().stream().map(r -> r.getRole()).map(BrDissectingUserDetailService::map).toList(),
+                    user.getRoles().stream().map(UserRoleEntity::getRole).map(BrDissectingUserDetailService::map).toList(),
                     user.getFirstName(),
                     user.getLastName()
             );

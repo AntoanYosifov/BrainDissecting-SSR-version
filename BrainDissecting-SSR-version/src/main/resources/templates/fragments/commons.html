@@ -47,7 +47,7 @@
                         <div class="logged-userEntity"
                              text="Welcome, Gosho"></div>
                         <form th:method="post"
-                                th:action="@{users/logout}">
+                                th:action="@{/users/logout}">
                         <input class="btn btn-link" sec:authorize="isAuthenticated()" value="Logout" type="submit">
                         </form>
                     </div>
