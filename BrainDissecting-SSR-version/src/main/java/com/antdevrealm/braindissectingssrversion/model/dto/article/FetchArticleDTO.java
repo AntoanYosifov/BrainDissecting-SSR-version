@@ -5,7 +5,7 @@ import com.antdevrealm.braindissectingssrversion.model.dto.comment.CommentDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleDTO {
+public class FetchArticleDTO {
 
     private String title;
 
@@ -13,20 +13,21 @@ public class ArticleDTO {
 
     private List<CommentDTO> comments;
 
-    public ArticleDTO(String title, String content) {
+    public FetchArticleDTO(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    public ArticleDTO() {
+    public FetchArticleDTO() {
         comments = new ArrayList<>();
     }
+
 
     public String getTitle() {
         return title;
     }
 
-    public ArticleDTO setTitle(String title) {
+    public FetchArticleDTO setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -35,7 +36,7 @@ public class ArticleDTO {
         return content;
     }
 
-    public ArticleDTO setContent(String content) {
+    public FetchArticleDTO setContent(String content) {
         this.content = content;
         return this;
     }
@@ -44,7 +45,7 @@ public class ArticleDTO {
         return comments;
     }
 
-    public ArticleDTO setComments(List<CommentDTO> comments) {
+    public FetchArticleDTO setComments(List<CommentDTO> comments) {
         this.comments = comments;
         return this;
     }

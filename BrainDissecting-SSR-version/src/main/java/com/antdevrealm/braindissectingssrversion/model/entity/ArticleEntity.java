@@ -3,6 +3,7 @@ package com.antdevrealm.braindissectingssrversion.model.entity;
 // TEST ARTICLE
 
 import jakarta.persistence.*;
+import org.springframework.data.repository.cdi.Eager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,9 @@ public class ArticleEntity extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    // Change fetch type to lazy after adding functionality for seeing the comments onClick!
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
-            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
     private List<CommentEntity> comments;
 

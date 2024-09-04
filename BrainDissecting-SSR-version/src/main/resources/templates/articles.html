@@ -18,8 +18,7 @@
 <div class="container">
     <h2 class="text-center text-white m-3">All Articles</h2>
     <div th:each=" article : ${allArticles}" class='d-flex justify-content-around'>
-        <div   class="article-section  d-flex flex-column">
-
+        <div   class="article-section d-flex flex-column">
             <div class="d-flex flex-row div-article">
                 <article class="article" >
                     <h2 th:text="${article.title}">
@@ -28,15 +27,28 @@
                     <p th:text="${article.content}" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad at cum deleniti deserunt dolore dolorum, eos eveniet fugit in itaque minus neque non odit officiis quas quia quos sapiente veritatis?</p>
                 </article>
             </div>
-            <div class="d-flex flex-column align-items-center mt-3">
-                <div>
-                     <h3>Comments</h3>
-                     <ul>
-                         <li th:each="comment : ${article.comments}" >
-                             <strong th:text="${comment.author}"></strong>
-                             <p th:text="${comment.content}"></p>
-                         </li>
-                     </ul>
+            <div class="comments-container">
+                <button
+                        class="btn btn-info mt-sm-2 bg-secondary border-secondary"
+                        type="button"
+                        data-toggle="collapse"
+                        th:data-target="'#collapse-comments-' + ${article.id}"
+                        aria-expanded="false"
+                        th:aria-controls="'#collapse-comments-' + ${article.id}"
+
+                >
+                    Comments
+                </button>
+
+                <div th:id="'#collapse-comments-' + ${article.id}" class="collapse align-items-lg-start p-sm-3 mt-3">
+                    <div id="comment-container"  th:each="comment : ${article.comments}">
+                        <ul class="list-unstyled">
+                            <li>
+                                <strong th:text="${comment.author}"></strong>
+                                <p class="flex-lg-wrap"  th:text="${comment.content}"></p>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

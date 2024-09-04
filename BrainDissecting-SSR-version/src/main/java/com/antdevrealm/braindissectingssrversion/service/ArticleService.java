@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.article.ArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ public interface ArticleService {
 
     void updateArticles();
 
-    List<ArticleDTO> getAllArticles();
+    List<DisplayArticleDTO> getAllArticles();
 
-    List<ArticleDTO> fetchArticles();
+    List<FetchArticleDTO> fetchArticles();
 }

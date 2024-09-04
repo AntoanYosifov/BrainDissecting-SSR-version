@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.article.ArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.CommentDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
@@ -39,20 +40,20 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void updateArticles() {
-        List<ArticleDTO> articleDTOS = fetchArticles();
+        List<FetchArticleDTO> fetchArticleDTOS = fetchArticles();
 
-        articleDTOS.forEach(dto -> articleRepository.save(mapToArticleEntity(dto)));
+        fetchArticleDTOS.forEach(dto -> articleRepository.save(mapToArticleEntity(dto)));
     }
 
     @Override
-    public List<ArticleDTO> getAllArticles() {
+    public List<DisplayArticleDTO> getAllArticles() {
         return articleRepository.findAll().stream().map(this::mapToArticleDTO).toList();
     }
 
 
     // TODO: Error handling
     @Override
-    public List<ArticleDTO> fetchArticles() {
+    public List<FetchArticleDTO> fetchArticles() {
         String body = restClient
                 .get()
                 .uri("https://doaj.org/api/search/articles/computers?page=1&pageSize=2")
@@ -63,41 +64,40 @@ public class ArticleServiceImpl implements ArticleService {
         List<String> titles = JsonPath.parse(body).read("$.results[*].bibjson.title", List.class);
         List<String> abstractTexts = JsonPath.parse(body).read("$.results[*].bibjson.abstract", List.class);
 
-        List<ArticleDTO> articleDTOS = new ArrayList<>();
+        List<FetchArticleDTO> fetchArticleDTOS = new ArrayList<>();
 
 
         if(titles.size() == abstractTexts.size()) {
 
             for (int i = 0; i < titles.size(); i++) {
-                articleDTOS.add(new ArticleDTO(titles.get(i), abstractTexts.get(i)));
+                fetchArticleDTOS.add(new FetchArticleDTO(titles.get(i), abstractTexts.get(i)));
             }
         }
 
-        return articleDTOS;
+        return fetchArticleDTOS;
 
     }
 
-    private ArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
-
-        ArticleDTO articleDTO = modelMapper.map(articleEntity, ArticleDTO.class);
+    private DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
+        DisplayArticleDTO displayArticleDTO = modelMapper.map(articleEntity, DisplayArticleDTO.class);
 
         List<CommentEntity> comments = articleEntity.getComments();
 
         if(comments.isEmpty()) {
-            articleDTO.setComments(new ArrayList<>());
+            displayArticleDTO.setComments(new ArrayList<>());
 
-            return articleDTO;
+            return displayArticleDTO;
         }
 
         List<CommentDTO> commentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
 
-        articleDTO.setComments(commentDTOList);
+        displayArticleDTO.setComments(commentDTOList);
 
-        return articleDTO;
+        return displayArticleDTO;
     }
 
-    private ArticleEntity mapToArticleEntity(ArticleDTO articleDTO) {
-        return modelMapper.map(articleDTO, ArticleEntity.class);
+    private ArticleEntity mapToArticleEntity(FetchArticleDTO fetchArticleDTO) {
+        return modelMapper.map(fetchArticleDTO, ArticleEntity.class);
     }
 
     private CommentDTO mapToCommentDTO(CommentEntity comment) {
