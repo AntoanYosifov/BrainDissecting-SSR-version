@@ -2,7 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
-import com.antdevrealm.braindissectingssrversion.model.dto.comment.CommentDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.comment.DisplayCommentDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
@@ -89,9 +89,9 @@ public class ArticleServiceImpl implements ArticleService {
             return displayArticleDTO;
         }
 
-        List<CommentDTO> commentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
+        List<DisplayCommentDTO> displayCommentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
 
-        displayArticleDTO.setComments(commentDTOList);
+        displayArticleDTO.setComments(displayCommentDTOList);
 
         return displayArticleDTO;
     }
@@ -100,12 +100,12 @@ public class ArticleServiceImpl implements ArticleService {
         return modelMapper.map(fetchArticleDTO, ArticleEntity.class);
     }
 
-    private CommentDTO mapToCommentDTO(CommentEntity comment) {
-        CommentDTO commentDTO = new CommentDTO();
+    private DisplayCommentDTO mapToCommentDTO(CommentEntity comment) {
+        DisplayCommentDTO displayCommentDTO = new DisplayCommentDTO();
 
-        commentDTO.setContent(comment.getContent())
+        displayCommentDTO.setContent(comment.getContent())
                 .setAuthor(comment.getUser().getUsername());
 
-        return commentDTO;
+        return displayCommentDTO;
     }
 }

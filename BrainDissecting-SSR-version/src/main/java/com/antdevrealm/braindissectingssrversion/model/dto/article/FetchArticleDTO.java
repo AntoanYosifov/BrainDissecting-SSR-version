@@ -1,6 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.article;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.comment.CommentDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.comment.DisplayCommentDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ public class FetchArticleDTO {
 
     private String content;
 
-    private List<CommentDTO> comments;
+    private List<DisplayCommentDTO> comments;
 
     public FetchArticleDTO(String title, String content) {
         this.title = title;
@@ -41,11 +41,11 @@ public class FetchArticleDTO {
         return this;
     }
 
-    public List<CommentDTO> getComments() {
+    public List<DisplayCommentDTO> getComments() {
         return comments;
     }
 
-    public FetchArticleDTO setComments(List<CommentDTO> comments) {
+    public FetchArticleDTO setComments(List<DisplayCommentDTO> comments) {
         this.comments = comments;
         return this;
     }

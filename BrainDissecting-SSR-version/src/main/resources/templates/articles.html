@@ -48,7 +48,17 @@
                                 <p class="flex-lg-wrap"  th:text="${comment.content}"></p>
                             </li>
                         </ul>
+
                     </div>
+                    <form th:action="@{/articles/{articleId}/comments(articleId=${article.id})}"
+                          th:method="POST"
+                    >
+                        <div class="form-group">
+                            <label for="content">Comment</label>
+                            <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>

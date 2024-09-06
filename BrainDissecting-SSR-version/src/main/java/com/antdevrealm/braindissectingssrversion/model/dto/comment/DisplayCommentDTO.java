@@ -1,18 +1,18 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.comment;
 
-public class CommentDTO {
+public class DisplayCommentDTO {
 
     private String content;
 
     private String author;
 
-    public CommentDTO() {}
+    public DisplayCommentDTO() {}
 
     public String getContent() {
         return content;
     }
 
-    public CommentDTO setContent(String content) {
+    public DisplayCommentDTO setContent(String content) {
         this.content = content;
         return this;
     }
@@ -21,7 +21,7 @@ public class CommentDTO {
         return author;
     }
 
-    public CommentDTO setAuthor(String author) {
+    public DisplayCommentDTO setAuthor(String author) {
         this.author = author;
         return this;
     }
