@@ -40,10 +40,13 @@
                     Comments
                 </button>
 
-                <div th:id="'collapse-comments-' + ${article.id}" class="collapse align-items-lg-start p-sm-3 mt-3">
+                <div th:id="'collapse-comments-' + ${article.id}"
+                     class="collapse align-items-lg-start p-sm-3 mt-3"
+                     th:classappend="${param['open'] == article.id.toString()} ? 'show' : ''"
+                >
                     <div id="comment-container"  th:each="comment : ${article.comments}">
                         <ul class="list-unstyled">
-                            <li>
+                            <li th:id="'comment-' + ${comment.id}">
                                 <strong th:text="${comment.author}"></strong>
                                 <p class="flex-lg-wrap"  th:text="${comment.content}"></p>
                             </li>
@@ -53,9 +56,9 @@
                     <form th:action="@{/articles/{articleId}/comments(articleId=${article.id})}"
                           th:method="POST"
                     >
-                        <div class="form-group">
-                            <label for="content">Comment</label>
-                            <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
+                        <div class="form-group w-75">
+                            <label for="content" class="font-weight-bold text-info">Comment:</label>
+                            <textarea class="form-control" name="content" id="content" cols="2" rows="3"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -68,5 +71,7 @@
              <footer> </footer>
     </div>
 </div>
+
+<script src="/js/comments.js"></script>
 </body>
 </html>

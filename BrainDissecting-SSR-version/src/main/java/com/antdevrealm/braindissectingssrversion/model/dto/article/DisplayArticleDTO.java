@@ -61,4 +61,14 @@ public class DisplayArticleDTO {
         this.comments = comments;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "DisplayArticleDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", comments=" + comments +
+                '}';
+    }
 }

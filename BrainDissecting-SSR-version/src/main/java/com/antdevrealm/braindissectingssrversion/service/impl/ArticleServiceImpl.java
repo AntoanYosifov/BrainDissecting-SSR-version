@@ -7,7 +7,6 @@ import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
-import com.antdevrealm.braindissectingssrversion.service.CommentService;
 import com.jayway.jsonpath.JsonPath;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
@@ -24,16 +23,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
 
-    private final CommentService commentService;
-
     private final ModelMapper modelMapper;
 
     public ArticleServiceImpl(RestClient restClient,
-                              ArticleRepository articleRepository, CommentService commentService,
+                              ArticleRepository articleRepository,
                               ModelMapper modelMapper) {
         this.restClient = restClient;
         this.articleRepository = articleRepository;
-        this.commentService = commentService;
         this.modelMapper = modelMapper;
     }
 
@@ -103,7 +99,8 @@ public class ArticleServiceImpl implements ArticleService {
     private DisplayCommentDTO mapToCommentDTO(CommentEntity comment) {
         DisplayCommentDTO displayCommentDTO = new DisplayCommentDTO();
 
-        displayCommentDTO.setContent(comment.getContent())
+        displayCommentDTO.setId(comment.getId())
+                .setContent(comment.getContent())
                 .setAuthor(comment.getUser().getUsername());
 
         return displayCommentDTO;

@@ -28,17 +28,17 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public boolean addComment(AddCommentDTO addCommentDTO ,long authorId, long articleId) {
+    public long addComment(AddCommentDTO addCommentDTO ,long authorId, long articleId) {
         Optional<ArticleEntity> optionalArt = articleRepository.findById(articleId);
 
         if(optionalArt.isEmpty()) {
-            return false;
+            return -1;
         }
 
         Optional<UserEntity> optUser = userRepository.findById(authorId);
 
         if(optUser.isEmpty()) {
-            return false;
+            return -1;
         }
 
         UserEntity userEntity = optUser.get();
@@ -46,9 +46,8 @@ public class CommentServiceImpl implements CommentService {
 
         CommentEntity commentEntity = mapToComment(addCommentDTO, userEntity, articleEntity);
 
-        commentRepository.save(commentEntity);
+        return commentRepository.save(commentEntity).getId();
 
-        return true;
     }
 
     private static CommentEntity mapToComment(AddCommentDTO addCommentDTO,

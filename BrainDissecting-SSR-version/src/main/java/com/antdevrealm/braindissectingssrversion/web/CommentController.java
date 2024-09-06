@@ -25,9 +25,9 @@ public class CommentController {
                                       @PathVariable Long articleId
     ) {
 
-        commentService.addComment(addCommentDTO, brDissectingUserDetails.getId(), articleId);
+        long commentId = commentService.addComment(addCommentDTO, brDissectingUserDetails.getId(), articleId);
 
         // Add validation for the Authentication principal. Redirect to login if the current user is anonymous!
-        return "redirect:/articles/all";
+        return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
     }
 }
