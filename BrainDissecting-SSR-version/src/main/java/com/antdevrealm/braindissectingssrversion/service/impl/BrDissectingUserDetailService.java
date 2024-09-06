@@ -28,6 +28,7 @@ public class BrDissectingUserDetailService implements UserDetailsService {
 
     private static UserDetails map(UserEntity user) {
             return new BrDissectingUserDetails(
+                    user.getId(),
                     user.getUsername(),
                     user.getPassword(),
                     user.getRoles().stream().map(UserRoleEntity::getRole).map(BrDissectingUserDetailService::map).toList(),
