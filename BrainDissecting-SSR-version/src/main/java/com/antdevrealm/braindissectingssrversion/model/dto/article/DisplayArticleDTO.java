@@ -15,14 +15,15 @@ public class DisplayArticleDTO {
 
     private List<CommentDTO> comments;
 
+    public DisplayArticleDTO() {
+        comments = new ArrayList<>();
+    }
+
     public DisplayArticleDTO (String title, String content, long id) {
+        this();
         this.id= id;
         this.title = title;
         this.content = content;
-    }
-
-    public DisplayArticleDTO() {
-        comments = new ArrayList<>();
     }
 
     public long getId() {

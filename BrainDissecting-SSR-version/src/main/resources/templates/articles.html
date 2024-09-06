@@ -40,7 +40,7 @@
                     Comments
                 </button>
 
-                <div th:id="'#collapse-comments-' + ${article.id}" class="collapse align-items-lg-start p-sm-3 mt-3">
+                <div th:id="'collapse-comments-' + ${article.id}" class="collapse align-items-lg-start p-sm-3 mt-3">
                     <div id="comment-container"  th:each="comment : ${article.comments}">
                         <ul class="list-unstyled">
                             <li>
