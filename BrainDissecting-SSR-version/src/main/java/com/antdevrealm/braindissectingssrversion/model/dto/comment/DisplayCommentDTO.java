@@ -8,6 +8,8 @@ public class DisplayCommentDTO {
 
     private String author;
 
+    private long authorId;
+
     public DisplayCommentDTO() {}
 
     public long getId() {
@@ -34,6 +36,15 @@ public class DisplayCommentDTO {
 
     public DisplayCommentDTO setAuthor(String author) {
         this.author = author;
+        return this;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public DisplayCommentDTO setAuthorId(long authorId) {
+        this.authorId = authorId;
         return this;
     }
 }

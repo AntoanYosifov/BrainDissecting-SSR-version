@@ -101,7 +101,8 @@ public class ArticleServiceImpl implements ArticleService {
 
         displayCommentDTO.setId(comment.getId())
                 .setContent(comment.getContent())
-                .setAuthor(comment.getUser().getUsername());
+                .setAuthor(comment.getUser().getUsername())
+                .setAuthorId(comment.getUser().getId());
 
         return displayCommentDTO;
     }

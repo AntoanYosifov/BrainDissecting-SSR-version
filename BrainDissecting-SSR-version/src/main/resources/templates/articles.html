@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" xmlns:th='http://www.thymeleaf.org'
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 
 <head>
        <meta charset="UTF-8">
@@ -50,11 +52,15 @@
                                 <p class="flex-lg-wrap"  th:text="${comment.content}"></p>
                             </li>
                         </ul>
-                        <div class="align-items-lg-start mb-5 mt-0 ml-lg-1">
+                        <div
+                                class="align-items-lg-start mb-5 mt-0 ml-lg-1"
+                                sec:authorize="isAuthenticated()"
+                                th:if="${comment.authorId} == ${currentUserId}"
+                        >
                             <form th:action="@{/articles/{articleId}/comments/delete/{commentId}(articleId=${article.id}, commentId=${comment.id})}"
                                   th:method="delete"
                             >
-                                <input class="btn btn-link" type="submit" value="Delete comment">
+                                <input class="btn btn-link " type="submit" value="Delete your comment">
                             </form>
                         </div>
                     </div>
