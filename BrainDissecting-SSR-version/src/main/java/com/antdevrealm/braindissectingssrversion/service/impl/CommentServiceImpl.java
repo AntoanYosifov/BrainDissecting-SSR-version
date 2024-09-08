@@ -8,9 +8,11 @@ import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.CommentRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.CommentService;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public long addComment(AddCommentDTO addCommentDTO ,long authorId, long articleId) {
+    public long add(AddCommentDTO addCommentDTO , long authorId, long articleId) {
         Optional<ArticleEntity> optionalArt = articleRepository.findById(articleId);
 
         if(optionalArt.isEmpty()) {
@@ -50,10 +52,45 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
+    @Override
+    @Modifying
+    @Transactional
+    public boolean delete(long articleId, long commentId, long userId) {
+        Optional<ArticleEntity> optionalArt = articleRepository.findById(articleId);
+
+        if(optionalArt.isEmpty()) {
+            return false;
+        }
+
+        ArticleEntity articleEntity = optionalArt.get();
+
+        Optional<UserEntity> optUser = userRepository.findById(userId);
+
+        if(optUser.isEmpty()) {
+            return false;
+        }
+
+        UserEntity userEntity = optUser.get();
+
+        Optional<CommentEntity> commentById = commentRepository.findById(commentId);
+
+        if(commentById.isEmpty()) {
+            return false;
+        }
+
+        CommentEntity commentEntity = commentById.get();
+
+        commentRepository.delete(commentEntity);
+
+        userEntity.getComments().remove(commentEntity);
+        articleEntity.getComments().remove(commentEntity);
+
+        return true;
+    }
+
     private static CommentEntity mapToComment(AddCommentDTO addCommentDTO,
                                               UserEntity author,
-                                              ArticleEntity article
-                                              ) {
+                                              ArticleEntity article) {
 
         CommentEntity commentEntity = new CommentEntity();
 
@@ -63,4 +100,5 @@ public class CommentServiceImpl implements CommentService {
 
         return commentEntity;
     }
+
 }

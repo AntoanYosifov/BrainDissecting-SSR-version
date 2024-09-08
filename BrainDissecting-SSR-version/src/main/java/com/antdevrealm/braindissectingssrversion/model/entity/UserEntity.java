@@ -29,6 +29,7 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "user",
             cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
     private List<CommentEntity> comments;
 
@@ -92,6 +93,15 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
+    public List<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public UserEntity setComments(List<CommentEntity> comments) {
+        this.comments = comments;
+        return this;
+    }
+
     public List<UserRoleEntity> getRoles() {
         return roles;
     }
@@ -109,6 +119,5 @@ public class UserEntity extends BaseEntity {
                 ", password='" + (password.isBlank()  ?  "N/A" : "USER/PASS") + '\'' +
                 '}';
     }
-
 
 }

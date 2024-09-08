@@ -24,7 +24,7 @@
                     <h2 th:text="${article.title}">
                         ARTICLE TITLE
                     </h2>
-                    <p th:text="${article.content}" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad at cum deleniti deserunt dolore dolorum, eos eveniet fugit in itaque minus neque non odit officiis quas quia quos sapiente veritatis?</p>
+                    <p th:text="${article.content}" ></p>
                 </article>
             </div>
             <div class="comments-container">
@@ -41,8 +41,7 @@
                 </button>
 
                 <div th:id="'collapse-comments-' + ${article.id}"
-                     class="collapse align-items-lg-start p-sm-3 mt-3"
-                     th:classappend="${param['open'] == article.id.toString()} ? 'show' : ''"
+                     class="collapse align-items-lg-start p-sm-3"
                 >
                     <div id="comment-container"  th:each="comment : ${article.comments}">
                         <ul class="list-unstyled">
@@ -51,7 +50,13 @@
                                 <p class="flex-lg-wrap"  th:text="${comment.content}"></p>
                             </li>
                         </ul>
-
+                        <div class="align-items-lg-start mb-5 mt-0 ml-lg-1">
+                            <form th:action="@{/articles/{articleId}/comments/delete/{commentId}(articleId=${article.id}, commentId=${comment.id})}"
+                                  th:method="delete"
+                            >
+                                <input class="btn btn-link" type="submit" value="Delete comment">
+                            </form>
+                        </div>
                     </div>
                     <form th:action="@{/articles/{articleId}/comments(articleId=${article.id})}"
                           th:method="POST"
