@@ -3,10 +3,12 @@ package com.antdevrealm.braindissectingssrversion.web;
 import com.antdevrealm.braindissectingssrversion.exception.RegistrationUsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
+import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -94,9 +96,12 @@ public class UserController {
         return "forward:/users/perform-login";
     }
 
-//    @GetMapping("/logout")
-//    public String logout() {
-//        return "redirect:/";
-//    }
+    @GetMapping("/profile")
+    public String details(@AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
+                          Model model) {
+
+        model.addAttribute("user", brDissectingUserDetails);
+        return "user-profile";
+    }
 
 }

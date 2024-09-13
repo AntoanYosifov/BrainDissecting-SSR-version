@@ -9,12 +9,15 @@ public class BrDissectingUserDetails extends User {
 
     private long id;
 
+    private String email;
+
     private String firstName;
 
     private String lastName;
 
     public BrDissectingUserDetails(
             long id,
+            String email,
             String username,
             String password,
             Collection<? extends GrantedAuthority> authorities,
@@ -22,7 +25,9 @@ public class BrDissectingUserDetails extends User {
             String lastName) {
 
         super(username, password, authorities);
+
         this.id=id;
+        this.email=email;
         this.firstName=firstName;
         this.lastName=lastName;
     }
@@ -33,6 +38,15 @@ public class BrDissectingUserDetails extends User {
 
     public BrDissectingUserDetails setId(long id) {
         this.id = id;
+        return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public BrDissectingUserDetails setEmail(String email) {
+        this.email = email;
         return this;
     }
 
