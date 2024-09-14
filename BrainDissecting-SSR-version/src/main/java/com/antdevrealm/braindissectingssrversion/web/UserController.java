@@ -101,7 +101,7 @@ public class UserController {
                           Model model) {
 
         model.addAttribute("user", brDissectingUserDetails);
-        return "user-profile";
+        return "profile-test";
     }
 
 }
