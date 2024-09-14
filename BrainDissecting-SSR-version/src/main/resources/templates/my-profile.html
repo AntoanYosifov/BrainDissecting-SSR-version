@@ -35,21 +35,44 @@
         </div>
         <div class="card-body">
             <!-- Username Change Form -->
-            <form th:action="@{/profile/change-username}" th:method="post">
+            <form th:action="@{/users/profile/update}"
+                  th:method="patch"
+                  th:object="${updateData}"
+            >
                 <div class="form-group">
                     <label for="newUsername">New Username</label>
-                    <input type="text" id="newUsername" name="newUsername" class="form-control" required>
+                    <input
+                            type="text"
+                            id="newUsername"
+                            name="newUsername"
+                            class="form-control"
+                            th:field="*{newUsername}"
+                            >
+                    <p class="errors alert alert-danger" th:errors="*{newUsername}"></p>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmUsername">Confirm New Username</label>
-                    <input type="text" id="confirmUsername" name="confirmUsername" class="form-control" required>
+                    <input
+                            type="text"
+                            id="confirmUsername"
+                            name="confirmUsername"
+                            class="form-control"
+                            th:field="*{confirmUsername}"
+                            >
+                    <p class="errors alert alert-danger" th:errors="*{confirmUsername}"></p>
                 </div>
 
                 <!-- Email Change Form -->
                 <div class="form-group">
                     <label for="newEmail">New Email</label>
-                    <input type="email" id="newEmail" name="newEmail" class="form-control" required>
+                    <input
+                           id="newEmail"
+                           name="newEmail"
+                           class="form-control"
+                           th:field="*{newEmail}"
+                           >
+                    <p class="errors alert alert-danger" th:errors="*{newEmail}"></p>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Save Changes</button>

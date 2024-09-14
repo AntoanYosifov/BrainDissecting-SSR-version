@@ -3,6 +3,7 @@ package com.antdevrealm.braindissectingssrversion.web;
 import com.antdevrealm.braindissectingssrversion.exception.RegistrationUsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import jakarta.validation.Valid;
@@ -12,10 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -36,10 +34,14 @@ public class UserController {
     }
 
     @ModelAttribute("registerData")
-    public RegistrationDTO RegistrationDTO() {
+    public RegistrationDTO registrationDTO() {
         return new RegistrationDTO();
     }
 
+    @ModelAttribute("updateData")
+    public UpdateDTO updateDTO() {
+        return new UpdateDTO();
+    }
 
     @GetMapping("/register")
     public String viewRegister() {
@@ -101,7 +103,28 @@ public class UserController {
                           Model model) {
 
         model.addAttribute("user", brDissectingUserDetails);
-        return "profile-test";
+        return "my-profile";
     }
+
+    @PatchMapping("/profile/update")
+    public String update(@AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
+                         @Valid UpdateDTO updateDTO,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("updateData", updateDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.updateData", bindingResult);
+
+            return "redirect:/users/profile";
+        }
+
+        boolean success = userService.update(brDissectingUserDetails.getId(), updateDTO);
+
+
+        // TODO: change the redirect;
+        return "redirect:/users/profile";
+    }
+
 
 }

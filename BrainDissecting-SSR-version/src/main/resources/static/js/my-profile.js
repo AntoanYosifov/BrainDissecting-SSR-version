@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function showAndHideEditSection() 
 
     profileButton.addEventListener('click', function () {
 
-        if(editProfileSection.classList.contains('d-none')) {
+        if (editProfileSection.classList.contains('d-none')) {
             editProfileSection.classList.remove('d-none');
             editProfileSection.classList.add('d-block');
         } else {
