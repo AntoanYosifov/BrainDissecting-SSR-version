@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
-import com.antdevrealm.braindissectingssrversion.exception.RegistrationUsernameOrEmailException;
+import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
+import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     public boolean register(RegistrationDTO data) {
 
         if (usernameOrEmailExists(data.getUsername(), data.getEmail())) {
-            throw new RegistrationUsernameOrEmailException(data.getUsername(), data.getEmail());
+            throw new UsernameOrEmailException(data.getUsername(), data.getEmail());
         }
 
         if (!passwordConfirmPasswordMatch(data)) {
@@ -59,7 +60,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if(usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
-            return false;
+            throw new UsernameOrEmailException(updateDTO.getNewUsername(), updateDTO.getNewEmail());
+        }
+
+        if(!updateDTO.getNewUsername().equals(updateDTO.getConfirmUsername())) {
+            throw new NewUsernameConfirmUsernameException(updateDTO.getNewUsername(), updateDTO.getConfirmUsername());
         }
 
         UserEntity userEntity = byId.get();

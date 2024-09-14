@@ -29,7 +29,9 @@
         <button id="editProfileButton" class="btn btn-warning ml-md-5 mx-auto">Edit Profile</button>
     </div>
 
-    <div id="editProfileSection" class="card col-sm-2 col-md-3 row mx-auto col-lg-4 m-1 p-0 d-none">
+    <div id="editProfileSection" class="card col-sm-2 col-md-3 row mx-auto col-lg-4 m-1 p-0"
+             th:classappend="${editProfile} ? 'd-block' : 'd-none'"
+    >
         <div class="card-header">
             Edit Profile
         </div>
@@ -79,13 +81,16 @@
             </form>
 
             <!-- Display Success/Error Messages -->
-            <div th:if="${successMessage}" class="alert alert-success mt-2">
-                <span th:text="${successMessage}"></span>
+            <div th:if="${usernameOrEmailTaken}" class="alert alert-danger mt-2">
+                <span th:text="${usernameOrEmailTaken}"></span>
             </div>
-            <div th:if="${errorMessage}" class="alert alert-danger mt-2">
-                <span th:text="${errorMessage}"></span>
+            <div th:if="${usernameConfUsernameMissMatch}" class="alert alert-danger mt-2">
+                <span th:text="${usernameConfUsernameMissMatch}"></span>
             </div>
         </div>
+    </div>
+    <div th:if="${successMessage}" class="alert alert-success mt-2 card col-sm-2 col-md-3 row mx-auto col-lg-4 m-1 p-0">
+        <span th:text="${successMessage}"></span>
     </div>
 
     <!-- Username Change Form -->

@@ -20,11 +20,10 @@ public class ArticleController {
 
 
     private final ArticleService articleService;
-    private final CommentService commentService;
 
-    public ArticleController(ArticleService articleService, CommentService commentService) {
+
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.commentService = commentService;
     }
 
     @GetMapping("/all")

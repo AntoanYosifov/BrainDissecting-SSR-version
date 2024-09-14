@@ -17,6 +17,6 @@ document.addEventListener("DOMContentLoaded", function showAndHideEditSection() 
 
     });
 
-    editProfileSection.classList.remove('d-block');
-    editProfileSection.classList.add('d-none');
+    // editProfileSection.classList.remove('d-block');
+    // editProfileSection.classList.add('d-none');
 });

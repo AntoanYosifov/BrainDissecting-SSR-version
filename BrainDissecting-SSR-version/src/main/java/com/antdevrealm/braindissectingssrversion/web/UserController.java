@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
-import com.antdevrealm.braindissectingssrversion.exception.RegistrationUsernameOrEmailException;
+import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
+import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
@@ -62,7 +63,7 @@ public class UserController {
 
         try {
             userService.register(registrationDTO);
-        } catch (RegistrationUsernameOrEmailException e) {
+        } catch (UsernameOrEmailException e) {
 
             log.error(e.getMessage());
 
@@ -116,13 +117,33 @@ public class UserController {
             redirectAttributes.addFlashAttribute("updateData", updateDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.updateData", bindingResult);
 
+            redirectAttributes.addFlashAttribute("editProfile", true);
             return "redirect:/users/profile";
         }
 
-        boolean success = userService.update(brDissectingUserDetails.getId(), updateDTO);
+        try {
+            userService.update(brDissectingUserDetails.getId(), updateDTO);
+        } catch (UsernameOrEmailException | NewUsernameConfirmUsernameException e) {
+            log.error(e.getMessage());
 
+            if(e instanceof UsernameOrEmailException) {
+                redirectAttributes.addFlashAttribute("usernameOrEmailTaken", e.getMessage());
+            }
 
-        // TODO: change the redirect;
+            if(e instanceof NewUsernameConfirmUsernameException) {
+                redirectAttributes.addFlashAttribute("usernameConfUsernameMissMatch", e.getMessage());
+            }
+
+            redirectAttributes.addFlashAttribute("updateData", updateDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.updateData", bindingResult);
+            redirectAttributes.addFlashAttribute("editProfile", true);
+
+            return "redirect:/users/profile";
+
+        }
+
+        redirectAttributes.addFlashAttribute("successMessage", "You successfully updated your profile info!");
+
         return "redirect:/users/profile";
     }
 
