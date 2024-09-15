@@ -11,5 +11,5 @@ public interface ArticleService {
 
     List<DisplayArticleDTO> getAllArticles();
 
-    List<FetchArticleDTO> fetchArticles();
+    List<FetchArticleDTO> fetchArticles(String theme);
 }

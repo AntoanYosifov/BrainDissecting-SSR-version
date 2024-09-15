@@ -24,8 +24,10 @@
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="!isAuthenticated()" href="/users/register">Register</a>
                 </li>
-                <li class="nav-item"
-                >
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/users/profile">My Profile</a>
+                </li>
+                <li class="nav-item">
 <!--                    -->
                     <a class="nav-link" sec:authorize="isAuthenticated()" href="/articles/all">All Articles</a>
                 </li>

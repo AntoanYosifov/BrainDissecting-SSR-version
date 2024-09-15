@@ -10,11 +10,13 @@ import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.jayway.jsonpath.JsonPath;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -25,6 +27,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ModelMapper modelMapper;
 
+    private List<String> themes = List.of("brain", "psychology" , "technology", "medicine");
+
+    private final Random random = new Random();
+
+    private int currentThemeIndex;
+
     public ArticleServiceImpl(RestClient restClient,
                               ArticleRepository articleRepository,
                               ModelMapper modelMapper) {
@@ -33,10 +41,15 @@ public class ArticleServiceImpl implements ArticleService {
         this.modelMapper = modelMapper;
     }
 
+//    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 
+    @Scheduled(cron = "0 * * * * ?")
     @Override
     public void updateArticles() {
-        List<FetchArticleDTO> fetchArticleDTOS = fetchArticles();
+        String currentTheme = themes.get(currentThemeIndex);
+        currentThemeIndex = (currentThemeIndex + 1) % themes.size() - 1;
+
+        List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(currentTheme);
 
         fetchArticleDTOS.forEach(dto -> articleRepository.save(mapToArticleEntity(dto)));
     }
@@ -49,10 +62,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     // TODO: Error handling
     @Override
-    public List<FetchArticleDTO> fetchArticles() {
+    public List<FetchArticleDTO> fetchArticles(String theme) {
+
+        int pageNumber = random.nextInt(10) + 1;
+
         String body = restClient
                 .get()
-                .uri("https://doaj.org/api/search/articles/computers?page=1&pageSize=2")
+                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page="+ pageNumber +"1&pageSize=2")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
