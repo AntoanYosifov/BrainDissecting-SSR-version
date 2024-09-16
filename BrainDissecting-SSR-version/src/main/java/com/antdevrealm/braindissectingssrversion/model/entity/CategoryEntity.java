@@ -22,6 +22,11 @@ public class CategoryEntity extends BaseEntity {
         articles = new ArrayList<>();
     }
 
+    public CategoryEntity(String name) {
+       this();
+       this.name=name;
+    }
+
     public String getName() {
         return name;
     }

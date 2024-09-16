@@ -1,0 +1,21 @@
+package com.antdevrealm.braindissectingssrversion.service;
+
+import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
+
+import java.util.Optional;
+
+public interface CategoryService {
+
+    CategoryEntity addCategory(String name);
+
+    void removeCategory(Long id);
+
+    void assignCategory(Long articleId, Long categoryId);
+
+    void unAssignCategory(Long articleId, Long categoryId);
+
+    Optional<CategoryEntity> getById(Long id);
+
+    Optional<CategoryEntity> getByName(String name);
+
+}
