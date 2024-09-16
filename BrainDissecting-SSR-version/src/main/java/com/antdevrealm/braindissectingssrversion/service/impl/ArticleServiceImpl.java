@@ -12,11 +12,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+
+// TODO: Different themes into a different categories - Different pages.
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -27,7 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ModelMapper modelMapper;
 
-    private List<String> themes = List.of("brain", "psychology" , "technology", "medicine");
+    private List<String> themes = List.of("neuroscience", "brain", "psychology", "human body", "medicine");
 
     private final Random random = new Random();
 
@@ -51,6 +55,18 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(currentTheme);
 
+        List<ArticleEntity> all = articleRepository.findAll();
+
+        List<ArticleEntity> withoutComments = new ArrayList<>();
+
+        for (ArticleEntity articleEntity : all) {
+            if (articleEntity.getComments().isEmpty()) {
+                withoutComments.add(articleEntity);
+            }
+        }
+
+        articleRepository.deleteAll(withoutComments);
+
         fetchArticleDTOS.forEach(dto -> articleRepository.save(mapToArticleEntity(dto)));
     }
 
@@ -68,7 +84,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         String body = restClient
                 .get()
-                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page="+ pageNumber +"1&pageSize=2")
+                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "1&pageSize=2")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
@@ -79,7 +95,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<FetchArticleDTO> fetchArticleDTOS = new ArrayList<>();
 
 
-        if(titles.size() == abstractTexts.size()) {
+        if (titles.size() == abstractTexts.size()) {
 
             for (int i = 0; i < titles.size(); i++) {
                 fetchArticleDTOS.add(new FetchArticleDTO(titles.get(i), abstractTexts.get(i)));
@@ -90,12 +106,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     }
 
+
     private DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
         DisplayArticleDTO displayArticleDTO = modelMapper.map(articleEntity, DisplayArticleDTO.class);
 
         List<CommentEntity> comments = articleEntity.getComments();
 
-        if(comments.isEmpty()) {
+        if (comments.isEmpty()) {
             displayArticleDTO.setComments(new ArrayList<>());
 
             return displayArticleDTO;
@@ -109,7 +126,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     private ArticleEntity mapToArticleEntity(FetchArticleDTO fetchArticleDTO) {
-        return modelMapper.map(fetchArticleDTO, ArticleEntity.class);
+
+        Optional<ArticleEntity> optArticle = articleRepository.findByTitle(fetchArticleDTO.getTitle());
+
+        return optArticle.orElseGet(() -> modelMapper.map(fetchArticleDTO, ArticleEntity.class));
+
     }
 
     private DisplayCommentDTO mapToCommentDTO(CommentEntity comment) {

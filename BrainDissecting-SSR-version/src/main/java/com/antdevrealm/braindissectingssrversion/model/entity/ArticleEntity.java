@@ -3,7 +3,6 @@ package com.antdevrealm.braindissectingssrversion.model.entity;
 // TEST ARTICLE
 
 import jakarta.persistence.*;
-import org.springframework.data.repository.cdi.Eager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +23,15 @@ public class ArticleEntity extends BaseEntity {
             orphanRemoval = true)
     private List<CommentEntity> comments;
 
+    @ManyToMany
+    @JoinTable(name = "articles_categories",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<CategoryEntity> categories;
+
     public ArticleEntity() {
         comments = new ArrayList<>();
+        categories = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -52,6 +58,15 @@ public class ArticleEntity extends BaseEntity {
 
     public ArticleEntity setComments(List<CommentEntity> comments) {
         this.comments = comments;
+        return this;
+    }
+
+    public List<CategoryEntity> getCategories() {
+        return categories;
+    }
+
+    public ArticleEntity setCategories(List<CategoryEntity> categories) {
+        this.categories = categories;
         return this;
     }
 }
