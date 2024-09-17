@@ -7,6 +7,7 @@ import com.antdevrealm.braindissectingssrversion.repository.CategoryRepository;
 import com.antdevrealm.braindissectingssrversion.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,5 +63,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<CategoryEntity> getByName(String name) {
         return categoryRepository.findByName(name);
+    }
+
+    @Override
+    public List<CategoryEntity> getAll() {
+        return categoryRepository.findAll();
     }
 }
