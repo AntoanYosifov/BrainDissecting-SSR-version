@@ -14,4 +14,6 @@ public interface ArticleService {
     List<FetchArticleDTO> fetchArticles(String theme);
 
     void updateCategories();
+
+    List<DisplayArticleDTO> getAllByCategory(String categoryName);
 }

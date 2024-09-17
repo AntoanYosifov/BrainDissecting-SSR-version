@@ -2,10 +2,8 @@ package com.antdevrealm.braindissectingssrversion.web;
 
 
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
-import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
-import com.antdevrealm.braindissectingssrversion.service.CommentService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,12 +32,22 @@ public class ArticleController {
 
         model.addAttribute("allArticles", allArticles);
         model.addAttribute("currentUserId", brDissectingUserDetails.getId());
-        return "articles";
+        return "articles-all";
     }
 
-    @GetMapping("/upload")
-    public String testViewUpload() {
-        return "offer-add";
+//    @GetMapping("/upload")
+//    public String testViewUpload() {
+//        return "offer-add";
+//    }
+
+    @GetMapping("/category")
+    public String viewCategory(Model model) {
+
+        List<DisplayArticleDTO> byCategory = articleService.getAllByCategory("human body");
+
+        model.addAttribute("byCategory", byCategory);
+
+        return "articles-by-category";
     }
 
 }

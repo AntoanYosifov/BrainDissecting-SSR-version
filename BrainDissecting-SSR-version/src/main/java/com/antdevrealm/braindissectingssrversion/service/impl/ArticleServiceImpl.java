@@ -31,7 +31,7 @@ import java.util.Random;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-   private final static Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
     private final ArticleRepository articleRepository;
 
@@ -58,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 
-    @Scheduled(cron = "*/30 * * * * ?")
+    //    @Scheduled(cron = "*/30 * * * * ?")
     @Override
     @Modifying
     @Transactional
@@ -89,7 +89,7 @@ public class ArticleServiceImpl implements ArticleService {
 
             Optional<CategoryEntity> optCategory = categoryService.getByName(currentTheme);
 
-            if(optCategory.isPresent()) {
+            if (optCategory.isPresent()) {
                 articleCategories.add(optCategory.get());
                 articleRepository.saveAndFlush(articleEntity);
 
@@ -143,6 +143,53 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
+    public void addTheme(String theme) {
+        this.themes.add(theme);
+
+        categoryService.addCategory(theme);
+    }
+
+
+    // TODO: Consider changing the hard-coded themes List
+    public void updateCategories() {
+        themes.forEach(categoryService::addCategory);
+    }
+
+    public boolean removeTheme(Long categoryId) {
+        Optional<CategoryEntity> byId = categoryService.getById(categoryId);
+
+        if (byId.isEmpty()) {
+            return false;
+        }
+
+        CategoryEntity categoryEntity = byId.get();
+        themes.remove(categoryEntity.getName());
+
+        categoryService.removeCategory(categoryId);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public List<DisplayArticleDTO> getAllByCategory(String categoryName) {
+        Optional<CategoryEntity> categoryByName = categoryService.getByName(categoryName);
+
+        if(categoryByName.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        CategoryEntity categoryEntity = categoryByName.get();
+
+        List<ArticleEntity> articlesByCategory = categoryEntity.getArticles();
+
+        if(articlesByCategory.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return articlesByCategory.stream().map(this::mapToArticleDTO).toList();
+    }
+
     private DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
         DisplayArticleDTO displayArticleDTO = modelMapper.map(articleEntity, DisplayArticleDTO.class);
 
@@ -180,31 +227,5 @@ public class ArticleServiceImpl implements ArticleService {
         return displayCommentDTO;
     }
 
-    public void addTheme(String theme) {
-        this.themes.add(theme);
-
-        categoryService.addCategory(theme);
-    }
-
-
-    // TODO: Consider changing the hard-coded themes List
-    public void updateCategories() {
-        themes.forEach(categoryService::addCategory);
-    }
-
-    public boolean removeTheme(Long categoryId) {
-        Optional<CategoryEntity> byId = categoryService.getById(categoryId);
-
-        if(byId.isEmpty()) {
-            return false;
-        }
-
-        CategoryEntity categoryEntity = byId.get();
-        themes.remove(categoryEntity.getName());
-
-        categoryService.removeCategory(categoryId);
-
-        return true;
-    }
 
 }
