@@ -10,6 +10,18 @@
     <title>Navbar</title>
 </head>
 <body>
+<th:block th:fragment="head">
+<head>
+    <meta charset="UTF-8">
+    <title>Brain Dissecting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/reset-css.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
+    <script src="/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+</th:block>
 
 <div>
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
@@ -20,14 +32,14 @@
         </button>
 
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div  class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto col-12 justify-content-between">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <span class="caret"></span></a>
-                    <ul class="dropdown-menu bg-dark">
+                <li sec:authorize="isAuthenticated()" class="dropdown ">
+                    <a href="#" class="dropdown-toggle nav-link " data-toggle="dropdown">Categories <span class="caret"></span></a>
+                    <ul class="dropdown-menu bg-transparent border-0">
                         <li class="text-center" th:each="category : ${categories}">
-                            <a th:href="@{/articles/category/{category}(category=${category.name})}"
-                                th:text="${#strings.capitalize(category.name)}"></a>
+                          <strong><a class="nav-link text-dark" th:href="@{/articles/category/{category}(category=${category.name})}"
+                                th:text="${#strings.capitalize(category.name)}"></a></strong>
                         </li>
                     </ul>
                 </li>
@@ -60,8 +72,8 @@
                         <div class="logged-userEntity"
                              text="Welcome, Gosho"></div>
                         <form th:method="post"
-                                th:action="@{/users/logout}">
-                        <input class="btn btn-link" sec:authorize="isAuthenticated()" value="Logout" type="submit">
+                              th:action="@{/users/logout}">
+                        <input class="nav-link bg-transparent border-0" sec:authorize="isAuthenticated()" value="Logout" type="submit">
                         </form>
                     </div>
                 </li>
@@ -75,6 +87,14 @@
         </div>
     </nav>
 </div>
+
+<th:block th:fragment="favourite-button(articleId)">
+    <form th:action="@{/users/{articleId}/favourites(articleId=${articleId})}" method="post">
+        <button type="submit" class="btn btn-primary ml-md-4 mt-md-0">
+            <i class="fa fa-heart"></i>
+        </button>
+    </form>
+</th:block>
 
 </body>
 </html>

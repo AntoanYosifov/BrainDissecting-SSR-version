@@ -19,7 +19,6 @@ public class ArticleEntity extends BaseEntity {
 
     // Change fetch type to lazy after adding functionality for seeing the comments onClick!
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
-            fetch = FetchType.EAGER,
             orphanRemoval = true)
     private List<CommentEntity> comments;
 

@@ -29,7 +29,6 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "user",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
             orphanRemoval = true)
     private List<CommentEntity> comments;
 

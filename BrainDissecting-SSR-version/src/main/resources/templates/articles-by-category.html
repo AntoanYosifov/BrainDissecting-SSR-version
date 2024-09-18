@@ -3,15 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 
-<head>
-       <meta charset="UTF-8">
-    <title>Brain Dissecting</title>
-    <link rel="stylesheet" href="/css/reset-css.css"/>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
-    <script src="/js/jquery-3.5.1.slim.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-</head>
+<head th:replace="~{/fragments/commons::head}"></head>
 
 <body>
 
@@ -29,6 +21,7 @@
                     <p th:text="${article.content}" ></p>
                 </article>
             </div>
+            <th:block th:replace="~{/fragments/commons::favourite-button(articleId=${article.id})}" ></th:block>
             <div class="comments-container">
                 <button
                         class="btn btn-info mt-sm-2 bg-secondary border-secondary"

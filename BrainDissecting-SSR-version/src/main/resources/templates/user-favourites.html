@@ -18,8 +18,8 @@
 <th:block th:replace="~{/fragments/commons::nav}"></th:block>
 
 <div class="container">
-    <h2 class="text-center text-white m-3">All Articles</h2>
-    <div th:each=" article : ${allArticles}" class='d-flex justify-content-around'>
+    <h2 class="text-center text-white m-3" th:text="${#strings.capitalize(categoryName)}">Articles</h2>
+    <div th:each=" article : ${byCategory}" class='d-flex justify-content-around'>
         <div   class="article-section d-flex flex-column">
             <div class="d-flex flex-row div-article">
                 <article class="article" >

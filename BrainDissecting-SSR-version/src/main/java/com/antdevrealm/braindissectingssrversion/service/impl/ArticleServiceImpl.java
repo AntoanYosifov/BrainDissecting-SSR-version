@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -107,6 +106,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public List<DisplayArticleDTO> getAllArticles() {
         return articleRepository.findAll().stream().map(this::mapToArticleDTO).toList();
     }
@@ -190,7 +190,8 @@ public class ArticleServiceImpl implements ArticleService {
         return articlesByCategory.stream().map(this::mapToArticleDTO).toList();
     }
 
-    private DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
+    @Transactional
+    public DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
         DisplayArticleDTO displayArticleDTO = modelMapper.map(articleEntity, DisplayArticleDTO.class);
 
         List<CommentEntity> comments = articleEntity.getComments();
