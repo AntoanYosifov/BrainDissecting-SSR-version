@@ -24,6 +24,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
+    @ManyToMany()
+    private List<ArticleEntity> favourites;
+
     // change cascade type by adding functionality for the comments
     // to be displayed only when a button is clicked
 
@@ -44,6 +47,7 @@ public class UserEntity extends BaseEntity {
     public UserEntity() {
         roles = new ArrayList<>();
         comments = new ArrayList<>();
+        favourites = new ArrayList<>();
     }
 
     public String getUsername() {
@@ -98,6 +102,15 @@ public class UserEntity extends BaseEntity {
 
     public UserEntity setComments(List<CommentEntity> comments) {
         this.comments = comments;
+        return this;
+    }
+
+    public List<ArticleEntity> getFavourites() {
+        return favourites;
+    }
+
+    public UserEntity setFavourites(List<ArticleEntity> favourites) {
+        this.favourites = favourites;
         return this;
     }
 

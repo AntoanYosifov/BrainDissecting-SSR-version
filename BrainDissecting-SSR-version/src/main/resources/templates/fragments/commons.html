@@ -2,13 +2,7 @@
 <html lang="en"
       xmlns:th='http://www.thymeleaf.org'
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, userEntity-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Navbar</title>
-</head>
+
 <body>
 <th:block th:fragment="head">
 <head>
@@ -89,7 +83,7 @@
 </div>
 
 <th:block th:fragment="favourite-button(articleId)">
-    <form th:action="@{/users/{articleId}/favourites(articleId=${articleId})}" method="post">
+    <form th:action="@{/users/add-to-favourites/{articleId}(articleId=${articleId})}" th:method="post">
         <button type="submit" class="btn btn-primary ml-md-4 mt-md-0">
             <i class="fa fa-heart"></i>
         </button>

@@ -8,4 +8,6 @@ public interface UserService {
 
     boolean update(long loggedUserId, UpdateDTO updateDTO);
 
+    boolean addArticleToFavourites(Long articleId, Long loggedUserId);
+
 }

@@ -29,75 +29,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ModelAttribute("loginData")
-    public LoginDTO loginDTO() {
-        return new LoginDTO();
-    }
-
-    @ModelAttribute("registerData")
-    public RegistrationDTO registrationDTO() {
-        return new RegistrationDTO();
-    }
 
     @ModelAttribute("updateData")
     public UpdateDTO updateDTO() {
         return new UpdateDTO();
     }
 
-    @GetMapping("/register")
-    public String viewRegister() {
-        return "auth-register";
-    }
-
-    @PostMapping("/register")
-    public String doRegister(@Valid RegistrationDTO registrationDTO,
-                             BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes) {
-
-
-        if(bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("registerData", registrationDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
-            return "redirect:/users/register";
-        }
-
-        try {
-            userService.register(registrationDTO);
-        } catch (UsernameOrEmailException e) {
-
-            log.error(e.getMessage());
-
-            redirectAttributes.addFlashAttribute("usernameOrEmailTaken", e.getMessage());
-
-            redirectAttributes.addFlashAttribute("registerData", registrationDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
-
-            return "redirect:/users/register";
-        }
-
-
-        return "redirect:/users/login";
-
-    }
-
-    @GetMapping("/login")
-    public String viewLogin() {
-        return "auth-login";
-    }
-
-    @PostMapping("/login")
-    public String doLogin(@Valid LoginDTO loginDTO,
-                          BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("loginData", loginDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginData", bindingResult);
-
-            return "redirect:/users/login";
-        }
-
-        return "forward:/users/perform-login";
-    }
 
     @GetMapping("/profile")
     public String details(@AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
@@ -145,6 +82,16 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage", "You successfully updated your profile info!");
 
         return "redirect:/users/profile";
+    }
+
+    @PostMapping("/add-to-favourites/{articleId}")
+    public String addToFavourites(@PathVariable Long articleId,
+                                  @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
+
+
+        userService.addArticleToFavourites(articleId, brDissectingUserDetails.getId());
+
+        return "redirect:/articles/all";
     }
 
 

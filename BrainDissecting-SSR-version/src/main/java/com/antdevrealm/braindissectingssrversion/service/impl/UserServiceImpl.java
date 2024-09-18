@@ -4,7 +4,9 @@ import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUse
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
+import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -21,15 +24,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BrDissectingUserDetailService brDissectingUserDetailService;
+    private final ArticleRepository articleRepository;
 
 
 
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService
+                           PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService, ArticleRepository articleRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.brDissectingUserDetailService = brDissectingUserDetailService;
+        this.articleRepository = articleRepository;
     }
 
 
@@ -81,6 +86,32 @@ public class UserServiceImpl implements UserService {
                 updatedUserDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean addArticleToFavourites(Long articleId, Long loggedUserId) {
+
+        Optional<UserEntity> optUser = userRepository.findById(loggedUserId);
+
+        if(optUser.isEmpty()) {
+            return false;
+        }
+
+        Optional<ArticleEntity> optArt = articleRepository.findById(articleId);
+
+        if(optArt.isEmpty()) {
+            return false;
+        }
+
+        UserEntity userEntity = optUser.get();
+        ArticleEntity toFavouritesArt = optArt.get();
+
+        userEntity.getFavourites().add(toFavouritesArt);
+
+        userRepository.save(userEntity);
 
         return true;
     }
