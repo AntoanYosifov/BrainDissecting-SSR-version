@@ -21,7 +21,12 @@
                     <p th:text="${article.content}" ></p>
                 </article>
             </div>
-            <th:block th:replace="~{/fragments/commons::favourite-button(articleId=${article.id})}" ></th:block>
+            <div th:if="${!favouriteArtIds.contains(article.id)}">
+                <th:block th:replace="~{/fragments/commons::favourite-button(articleId=${article.id})}"></th:block>
+            </div>
+            <div th:if="${favouriteArtIds.contains(article.id)}">
+                <th:block th:replace="~{/fragments/commons::remove-favourite-button(articleId=${article.id})}"></th:block>
+            </div>
             <div class="comments-container">
                 <button
                         class="btn btn-info mt-sm-2 bg-secondary border-secondary"

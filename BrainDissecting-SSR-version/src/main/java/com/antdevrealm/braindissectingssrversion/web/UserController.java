@@ -92,6 +92,8 @@ public class UserController {
                                  @AuthenticationPrincipal
                                  BrDissectingUserDetails brDissectingUserDetails) {
 
+
+
         model.addAttribute("favourites" , articleService.getUserFavourites(brDissectingUserDetails.getId()));
 
         return "user-favourites";
@@ -105,7 +107,7 @@ public class UserController {
 
         userService.addArticleToFavourites(articleId, brDissectingUserDetails.getId());
 
-        return "redirect:/users/favourites";
+        return "redirect:/articles/all";
     }
 
     @DeleteMapping("/remove-from-favourites/{articleId}")
@@ -115,7 +117,7 @@ public class UserController {
 
         userService.removeFromFavourites(articleId, brDissectingUserDetails.getId());
 
-        return "redirect:/users/favourites";
+        return "redirect:/articles/all";
 
     }
 

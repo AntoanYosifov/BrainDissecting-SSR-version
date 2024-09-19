@@ -6,6 +6,7 @@ import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.CategoryService;
+import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +23,12 @@ public class ArticleController {
 
 
     private final ArticleService articleService;
+    private final UserService userService;
 
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, UserService userService) {
         this.articleService = articleService;
-
+        this.userService = userService;
     }
 
     @GetMapping("/all")
@@ -34,9 +36,12 @@ public class ArticleController {
                                   @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
         List<DisplayArticleDTO> allArticles = articleService.getAllArticles();
+        List<Long> favouriteArticlesIds = userService.getFavouriteArticlesIds(brDissectingUserDetails.getId());
 
         model.addAttribute("allArticles", allArticles);
+        model.addAttribute("favouriteArtIds", favouriteArticlesIds);
         model.addAttribute("currentUserId", brDissectingUserDetails.getId());
+
         return "articles-all";
     }
 

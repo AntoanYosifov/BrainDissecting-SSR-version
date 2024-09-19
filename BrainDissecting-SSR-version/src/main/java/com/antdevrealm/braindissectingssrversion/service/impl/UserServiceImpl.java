@@ -6,6 +6,7 @@ import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticl
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.BaseEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,6 +145,20 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
 
         return true;
+    }
+
+    @Override
+    public List<Long> getFavouriteArticlesIds(Long userId) {
+        Optional<UserEntity> optUser = userRepository.findById(userId);
+
+        if(optUser.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        UserEntity userEntity = optUser.get();
+
+        return userEntity.getFavourites().stream().map(BaseEntity::getId).toList();
+
     }
 
 

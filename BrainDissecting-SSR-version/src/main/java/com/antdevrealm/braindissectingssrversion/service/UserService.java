@@ -15,5 +15,7 @@ public interface UserService {
 
     boolean removeFromFavourites(Long articleId, Long userId);
 
+    List<Long> getFavouriteArticlesIds(Long userId);
+
 
 }
