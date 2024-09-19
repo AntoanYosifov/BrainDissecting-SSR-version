@@ -38,14 +38,17 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/users/register">Register</a>
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" th:href="@{/users/register}">Register</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/users/profile">My Profile</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/users/favourites}">My Favourites</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/users/profile}">My Profile</a>
                 </li>
                 <li class="nav-item">
 <!--                    -->
-                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/articles/all">All Articles</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/articles/all}">All Articles</a>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"

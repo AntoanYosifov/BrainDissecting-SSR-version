@@ -6,6 +6,7 @@ import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
+import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -24,9 +25,11 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
+    private final ArticleService articleService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ArticleService articleService) {
         this.userService = userService;
+        this.articleService = articleService;
     }
 
 
@@ -82,6 +85,17 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage", "You successfully updated your profile info!");
 
         return "redirect:/users/profile";
+    }
+
+    @GetMapping("/favourites")
+    public String viewFavourites(Model model,
+                                 @AuthenticationPrincipal
+                                 BrDissectingUserDetails brDissectingUserDetails) {
+
+        model.addAttribute("favourites" , articleService.getUserFavourites(brDissectingUserDetails.getId()));
+
+        return "user-favourites";
+
     }
 
     @PostMapping("/add-to-favourites/{articleId}")

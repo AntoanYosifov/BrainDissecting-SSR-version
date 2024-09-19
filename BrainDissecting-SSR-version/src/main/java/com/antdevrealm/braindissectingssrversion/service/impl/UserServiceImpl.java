@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
+import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -115,6 +117,7 @@ public class UserServiceImpl implements UserService {
 
         return true;
     }
+
 
     private UserEntity mapToUser(RegistrationDTO data) {
         UserEntity userEntity = new UserEntity();

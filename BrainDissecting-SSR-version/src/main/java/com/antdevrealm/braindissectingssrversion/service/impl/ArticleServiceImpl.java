@@ -6,7 +6,9 @@ import com.antdevrealm.braindissectingssrversion.model.dto.comment.DisplayCommen
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.CategoryService;
 import com.jayway.jsonpath.JsonPath;
@@ -39,6 +41,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final RestClient restClient;
 
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
     private List<String> themes = List.of("neuroscience", "brain", "psychology", "human body", "medicine");
 
@@ -48,11 +51,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     public ArticleServiceImpl(RestClient restClient,
                               ArticleRepository articleRepository, CategoryService categoryService,
-                              ModelMapper modelMapper) {
+                              ModelMapper modelMapper, UserRepository userRepository) {
         this.restClient = restClient;
         this.articleRepository = articleRepository;
         this.categoryService = categoryService;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
 
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
@@ -190,8 +194,22 @@ public class ArticleServiceImpl implements ArticleService {
         return articlesByCategory.stream().map(this::mapToArticleDTO).toList();
     }
 
+    @Override
     @Transactional
-    public DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
+    public List<DisplayArticleDTO> getUserFavourites(Long userId) {
+        Optional<UserEntity> optUser = userRepository.findById(userId);
+
+        if(optUser.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        UserEntity userEntity = optUser.get();
+
+        return userEntity.getFavourites().stream().map(this::mapToArticleDTO).toList();
+    }
+
+
+    private DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
         DisplayArticleDTO displayArticleDTO = modelMapper.map(articleEntity, DisplayArticleDTO.class);
 
         List<CommentEntity> comments = articleEntity.getComments();

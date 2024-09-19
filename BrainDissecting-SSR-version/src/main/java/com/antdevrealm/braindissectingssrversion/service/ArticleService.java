@@ -16,4 +16,6 @@ public interface ArticleService {
     void updateCategories();
 
     List<DisplayArticleDTO> getAllByCategory(String categoryName);
+
+    List<DisplayArticleDTO> getUserFavourites(Long userId);
 }
