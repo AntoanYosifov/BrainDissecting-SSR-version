@@ -105,7 +105,18 @@ public class UserController {
 
         userService.addArticleToFavourites(articleId, brDissectingUserDetails.getId());
 
-        return "redirect:/articles/all";
+        return "redirect:/users/favourites";
+    }
+
+    @DeleteMapping("/remove-from-favourites/{articleId}")
+    public String removeFromFavourites(@PathVariable Long articleId,
+                                       @AuthenticationPrincipal
+                                       BrDissectingUserDetails brDissectingUserDetails) {
+
+        userService.removeFromFavourites(articleId, brDissectingUserDetails.getId());
+
+        return "redirect:/users/favourites";
+
     }
 
 

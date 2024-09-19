@@ -11,7 +11,9 @@ public interface UserService {
 
     boolean update(long loggedUserId, UpdateDTO updateDTO);
 
-    boolean addArticleToFavourites(Long articleId, Long loggedUserId);
+    boolean addArticleToFavourites(Long articleId, Long userId);
+
+    boolean removeFromFavourites(Long articleId, Long userId);
 
 
 }

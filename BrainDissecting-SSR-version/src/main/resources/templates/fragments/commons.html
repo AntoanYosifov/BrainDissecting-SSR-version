@@ -93,5 +93,13 @@
     </form>
 </th:block>
 
+<th:block th:fragment="remove-favourite-button(articleId)">
+    <form th:action="@{/users/remove-from-favourites/{articleId}(articleId=${articleId})}" th:method="delete">
+        <button type="submit" class="btn btn-primary ml-md-4 mt-md-0">
+            <i class="fa fa-heart-broken"></i>
+        </button>
+    </form>
+</th:block>
+
 </body>
 </html>

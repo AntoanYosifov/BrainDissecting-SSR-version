@@ -12,6 +12,7 @@ import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -94,9 +95,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean addArticleToFavourites(Long articleId, Long loggedUserId) {
+    public boolean addArticleToFavourites(Long articleId, Long userId) {
 
-        Optional<UserEntity> optUser = userRepository.findById(loggedUserId);
+        Optional<UserEntity> optUser = userRepository.findById(userId);
 
         if(optUser.isEmpty()) {
             return false;
@@ -112,6 +113,32 @@ public class UserServiceImpl implements UserService {
         ArticleEntity toFavouritesArt = optArt.get();
 
         userEntity.getFavourites().add(toFavouritesArt);
+
+        userRepository.save(userEntity);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeFromFavourites(Long articleId, Long userId) {
+
+        Optional<UserEntity> optUser = userRepository.findById(userId);
+
+        if(optUser.isEmpty()) {
+            return false;
+        }
+
+        Optional<ArticleEntity> optArt = articleRepository.findById(articleId);
+
+        if(optArt.isEmpty()) {
+            return false;
+        }
+
+        UserEntity userEntity = optUser.get();
+        ArticleEntity articleEntity = optArt.get();
+
+        userEntity.getFavourites().remove(articleEntity);
 
         userRepository.save(userEntity);
 
