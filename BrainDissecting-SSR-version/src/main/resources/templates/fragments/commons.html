@@ -27,18 +27,18 @@
 
 
         <div  class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto col-12 justify-content-between">
+            <ul class="navbar-nav mr-auto col-12 justify-content-around">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeLink == 'Register'} ? 'active'" sec:authorize="!isAuthenticated()" th:href="@{/users/register}">Register</a>
+                </li>
                 <li sec:authorize="isAuthenticated()" class="dropdown ">
                     <a href="#" class="dropdown-toggle nav-link " th:classappend="${activeLink == 'Categories'} ? 'active'"  data-toggle="dropdown">Categories <span class="caret"></span></a>
                     <ul class="dropdown-menu bg-transparent border-0">
                         <li class="text-center" th:each="category : ${categories}">
-                          <strong><a class="nav-link text-dark" th:href="@{/articles/category/{category}(category=${category.name})}"
-                                th:text="${#strings.capitalize(category.name)}"></a></strong>
+                            <strong><a class="nav-link text-dark" th:href="@{/articles/category/{category}(category=${category.name})}"
+                                       th:text="${#strings.capitalize(category.name)}"></a></strong>
                         </li>
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeLink == 'Register'} ? 'active'" sec:authorize="!isAuthenticated()" th:href="@{/users/register}">Register</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAuthenticated()" th:classappend="${activeLink == 'My Favourites'} ? 'active'" th:href="@{/users/favourites}">My Favourites</a>

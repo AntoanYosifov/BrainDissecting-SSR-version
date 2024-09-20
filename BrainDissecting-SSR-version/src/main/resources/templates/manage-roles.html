@@ -1,0 +1,44 @@
+<!-- manage-roles.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<div th:replace="fragments/commons::navbar('Manage Roles')"></div>
+
+<div class="container mt-4">
+    <h2>Manage User Roles</h2>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.roles}"></td>
+            <td>
+                <form th:action="@{/admin/assign-role}" method="post" style="display:inline;">
+                    <input type="hidden" name="userId" th:value="${user.id}">
+                    <input type="hidden" name="role" value="MODERATOR">
+                    <button class="btn btn-success" th:if="${!user.roles.contains('MODERATOR')}">Make Moderator</button>
+                </form>
+                <form th:action="@{/admin/remove-role}" method="post" style="display:inline;">
+                    <input type="hidden" name="userId" th:value="${user.id}">
+                    <input type="hidden" name="role" value="MODERATOR">
+                    <button class="btn btn-danger" th:if="${user.roles.contains('MODERATOR')}">Remove Moderator</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

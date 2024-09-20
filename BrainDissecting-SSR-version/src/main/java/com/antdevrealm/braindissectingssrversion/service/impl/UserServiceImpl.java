@@ -2,7 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
-import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
@@ -11,9 +11,9 @@ import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,16 +30,18 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final BrDissectingUserDetailService brDissectingUserDetailService;
     private final ArticleRepository articleRepository;
+    private final ModelMapper modelMapper;
 
 
 
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService, ArticleRepository articleRepository
+                           PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService, ArticleRepository articleRepository, ModelMapper modelMapper
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.brDissectingUserDetailService = brDissectingUserDetailService;
         this.articleRepository = articleRepository;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -161,6 +163,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<DisplayUserInfoDTO> getAllUsers() {
+        List<UserEntity> allUsers = userRepository.findAll();
+
+        if(allUsers.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return allUsers.stream().map(this::mapToDisplayUserDto).toList();
+    }
+
 
     private UserEntity mapToUser(RegistrationDTO data) {
         UserEntity userEntity = new UserEntity();
@@ -172,6 +185,14 @@ public class UserServiceImpl implements UserService {
                 .setLastName(data.getLastName());
 
         return userEntity;
+    }
+
+    private DisplayUserInfoDTO mapToDisplayUserDto(UserEntity userEntity) {
+        DisplayUserInfoDTO displayDTO = modelMapper.map(userEntity, DisplayUserInfoDTO.class);
+
+        displayDTO.setRoles(userEntity.getRoles().stream().map(r -> r.getRole().toString()).toList());
+
+        return displayDTO;
     }
 
     private boolean usernameOrEmailExists(String username, String email) {

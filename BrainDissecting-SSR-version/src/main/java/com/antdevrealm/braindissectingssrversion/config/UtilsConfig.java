@@ -2,7 +2,9 @@ package com.antdevrealm.braindissectingssrversion.config;
 
 
 import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.MessageSource;
@@ -17,8 +19,11 @@ public class UtilsConfig {
     public ModelMapper getModelMapper() {
 
         ModelMapper modelMapper = new ModelMapper();
-        TypeMap<ArticleEntity, FetchArticleDTO> typeMap = modelMapper.createTypeMap(ArticleEntity.class, FetchArticleDTO.class);
-        typeMap.addMappings(mapper -> mapper.skip(FetchArticleDTO::setComments));
+        TypeMap<ArticleEntity, FetchArticleDTO> articleTypeMap = modelMapper.createTypeMap(ArticleEntity.class, FetchArticleDTO.class);
+        articleTypeMap.addMappings(mapper -> mapper.skip(FetchArticleDTO::setComments));
+
+        TypeMap<UserEntity, DisplayUserInfoDTO> userTypeMap = modelMapper.createTypeMap(UserEntity.class, DisplayUserInfoDTO.class);
+        userTypeMap.addMappings(mapper -> mapper.skip(DisplayUserInfoDTO::setRoles));
 
         return modelMapper;
 
