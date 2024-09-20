@@ -2,8 +2,6 @@ package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
-import com.antdevrealm.braindissectingssrversion.model.dto.user.LoginDTO;
-import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
@@ -117,7 +115,7 @@ public class UserController {
 
         userService.removeFromFavourites(articleId, brDissectingUserDetails.getId());
 
-        return "redirect:/articles/all";
+        return "redirect:/users/favourites";
 
     }
 

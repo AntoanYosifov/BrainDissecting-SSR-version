@@ -7,7 +7,7 @@
 
 <body>
 
-<th:block th:replace="~{/fragments/commons::nav}"></th:block>
+<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Categories'})}"></th:block>
 
 <div class="container">
     <h2 class="text-center text-white m-3" th:text="${#strings.capitalize(categoryName)}">Articles</h2>
