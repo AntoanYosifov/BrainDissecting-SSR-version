@@ -86,13 +86,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userEntity);
 
-        UserDetails updatedUserDetails = brDissectingUserDetailService.loadUserByUsername(updateDTO.getNewUsername());
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(updatedUserDetails,
-                updatedUserDetails.getPassword(),
-                updatedUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        reloadUserDetails(updateDTO.getNewUsername());
 
         return true;
     }
@@ -202,6 +196,17 @@ public class UserServiceImpl implements UserService {
 
     private boolean passwordConfirmPasswordMatch(RegistrationDTO data) {
         return data.getPassword().equals(data.getConfirmPassword());
+    }
+
+    private void reloadUserDetails(String username) {
+        UserDetails updatedUserDetails = brDissectingUserDetailService.loadUserByUsername(username);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                updatedUserDetails,
+                updatedUserDetails.getPassword(),
+                updatedUserDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
 }

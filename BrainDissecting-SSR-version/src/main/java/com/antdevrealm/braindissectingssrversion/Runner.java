@@ -1,16 +1,12 @@
 package com.antdevrealm.braindissectingssrversion;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
-import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
-import com.antdevrealm.braindissectingssrversion.repository.UserRoleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class Runner implements CommandLineRunner {
@@ -23,14 +19,14 @@ public class Runner implements CommandLineRunner {
 
     private final UserRepository userRepository;
 
-    private final UserRoleRepository userRoleRepository;
+    private final RoleRepository roleRepository;
 
-    public Runner(ArticleService articleService, ArticleRepository articleRepository, UserService userService, UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public Runner(ArticleService articleService, ArticleRepository articleRepository, UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
         this.articleService = articleService;
         this.articleRepository = articleRepository;
         this.userService = userService;
         this.userRepository = userRepository;
-        this.userRoleRepository = userRoleRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
