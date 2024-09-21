@@ -41,14 +41,16 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:classappend="${activeLink == 'My Favourites'} ? 'active'" th:href="@{/users/favourites}">My Favourites</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()"
+                       th:classappend="${activeLink == 'My Favourites'} ? 'active'" th:href="@{/users/favourites}">My Favourites</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/users/profile}" th:classappend="${activeLink == 'My Profile'} ? 'active'">My Profile</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/articles/all}"
+                       th:classappend="${activeLink == 'All Articles'} ? 'active'">All Articles</a>
                 </li>
                 <li class="nav-item">
-<!--                    -->
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/articles/all}" th:classappend="${activeLink == 'All Articles'} ? 'active'">All Articles</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/users/profile}"
+                       th:classappend="${activeLink == 'My Profile'} ? 'active'">My Profile</a>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"

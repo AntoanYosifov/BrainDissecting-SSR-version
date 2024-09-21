@@ -11,15 +11,13 @@ public class FetchArticleDTO {
 
     private String content;
 
-    private List<DisplayCommentDTO> comments;
+
+
+    public FetchArticleDTO() {}
 
     public FetchArticleDTO(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public FetchArticleDTO() {
-        comments = new ArrayList<>();
     }
 
 
@@ -41,12 +39,4 @@ public class FetchArticleDTO {
         return this;
     }
 
-    public List<DisplayCommentDTO> getComments() {
-        return comments;
-    }
-
-    public FetchArticleDTO setComments(List<DisplayCommentDTO> comments) {
-        this.comments = comments;
-        return this;
-    }
 }

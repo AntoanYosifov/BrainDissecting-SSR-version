@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.config;
 
 
+import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
@@ -19,8 +20,11 @@ public class UtilsConfig {
     public ModelMapper getModelMapper() {
 
         ModelMapper modelMapper = new ModelMapper();
-        TypeMap<ArticleEntity, FetchArticleDTO> articleTypeMap = modelMapper.createTypeMap(ArticleEntity.class, FetchArticleDTO.class);
-        articleTypeMap.addMappings(mapper -> mapper.skip(FetchArticleDTO::setComments));
+        TypeMap<FetchArticleDTO, ArticleEntity> fetchArticleTypeMap = modelMapper.createTypeMap(FetchArticleDTO.class, ArticleEntity.class);
+        fetchArticleTypeMap.addMappings(mapper -> mapper.skip(ArticleEntity::setComments));
+
+        TypeMap<ArticleEntity , DisplayArticleDTO> displayArticleTypeMap = modelMapper.createTypeMap(ArticleEntity.class, DisplayArticleDTO.class);
+        displayArticleTypeMap.addMappings(mapper -> mapper.skip(DisplayArticleDTO::setCategories));
 
         TypeMap<UserEntity, DisplayUserInfoDTO> userTypeMap = modelMapper.createTypeMap(UserEntity.class, DisplayUserInfoDTO.class);
         userTypeMap.addMappings(mapper -> mapper.skip(DisplayUserInfoDTO::setRoles));

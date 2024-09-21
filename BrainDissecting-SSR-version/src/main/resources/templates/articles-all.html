@@ -21,11 +21,18 @@
                     <p th:text="${article.content}" ></p>
                 </article>
             </div>
-            <div th:if="${!favouriteArtIds.contains(article.id)}">
-                <th:block th:replace="~{/fragments/commons::favourite-button(articleId=${article.id})}"></th:block>
-            </div>
-            <div th:if="${favouriteArtIds.contains(article.id)}">
-                <th:block th:replace="~{/fragments/commons::remove-favourite-button(articleId=${article.id})}"></th:block>
+            <div class="d-flex justify-content-between" >
+                <div th:if="${!favouriteArtIds.contains(article.id)}">
+                    <th:block th:replace="~{/fragments/commons::favourite-button(articleId=${article.id})}"></th:block>
+                </div>
+                <div th:if="${favouriteArtIds.contains(article.id)}">
+                    <th:block th:replace="~{/fragments/commons::remove-favourite-button(articleId=${article.id})}"></th:block>
+                </div>
+                <div th:each="category : ${article.categories}" class="p-3">
+                    <a class="bg-primary btn text-white font-italic p-1"
+                       th:href="@{/articles/category/{category}(category=${category})}"
+                       th:text="${#strings.capitalize(category)}"></a>
+                </div>
             </div>
             <div class="comments-container">
                 <button

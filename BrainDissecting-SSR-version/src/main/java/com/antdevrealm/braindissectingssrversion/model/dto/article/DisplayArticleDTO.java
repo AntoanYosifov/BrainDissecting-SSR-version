@@ -13,9 +13,12 @@ public class DisplayArticleDTO {
 
     private String content;
 
+    private List<String> categories;
+
     private List<DisplayCommentDTO> comments;
 
     public DisplayArticleDTO() {
+        categories = new ArrayList<>();
         comments = new ArrayList<>();
     }
 
@@ -50,6 +53,15 @@ public class DisplayArticleDTO {
 
     public DisplayArticleDTO setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public DisplayArticleDTO setCategories(List<String> categories) {
+        this.categories = categories;
         return this;
     }
 

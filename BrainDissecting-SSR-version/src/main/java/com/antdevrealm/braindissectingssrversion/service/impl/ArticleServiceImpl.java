@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-// TODO: Different themes into a different categories - Different pages.
+
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -61,7 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 
-    //    @Scheduled(cron = "*/30 * * * * ?")
+//    @Scheduled(cron = "*/30 * * * * ?")
     @Override
     @Modifying
     @Transactional
@@ -73,17 +74,17 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(currentTheme);
 
-        List<ArticleEntity> all = articleRepository.findAll();
-
-        List<ArticleEntity> withoutComments = new ArrayList<>();
-
-        for (ArticleEntity articleEntity : all) {
-            if (articleEntity.getComments().isEmpty()) {
-                withoutComments.add(articleEntity);
-            }
-        }
-
-        articleRepository.deleteAll(withoutComments);
+//        List<ArticleEntity> all = articleRepository.findAll();
+//
+//        List<ArticleEntity> withoutComments = new ArrayList<>();
+//
+//        for (ArticleEntity articleEntity : all) {
+//            if (articleEntity.getComments().isEmpty()) {
+//                withoutComments.add(articleEntity);
+//            }
+//        }
+//
+//        articleRepository.deleteAll(withoutComments);
 
         for (FetchArticleDTO dto : fetchArticleDTOS) {
             ArticleEntity articleEntity = mapToArticleEntity(dto);
@@ -223,6 +224,10 @@ public class ArticleServiceImpl implements ArticleService {
         List<DisplayCommentDTO> displayCommentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
 
         displayArticleDTO.setComments(displayCommentDTOList);
+
+        List<CategoryEntity> categories = articleEntity.getCategories();
+
+        displayArticleDTO.setCategories(categories.stream().map(CategoryEntity::getName).toList());
 
         return displayArticleDTO;
     }
