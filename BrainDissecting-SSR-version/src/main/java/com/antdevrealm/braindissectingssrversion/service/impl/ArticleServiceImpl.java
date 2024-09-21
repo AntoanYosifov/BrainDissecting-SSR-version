@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.Random;
 
 
-
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
@@ -62,7 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 
-//    @Scheduled(cron = "*/30 * * * * ?")
+    //    @Scheduled(cron = "*/30 * * * * ?")
     @Override
     @Modifying
     @Transactional
@@ -180,7 +179,7 @@ public class ArticleServiceImpl implements ArticleService {
     public List<DisplayArticleDTO> getAllByCategory(String categoryName) {
         Optional<CategoryEntity> categoryByName = categoryService.getByName(categoryName);
 
-        if(categoryByName.isEmpty()) {
+        if (categoryByName.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -188,7 +187,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<ArticleEntity> articlesByCategory = categoryEntity.getArticles();
 
-        if(articlesByCategory.isEmpty()) {
+        if (articlesByCategory.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -200,7 +199,7 @@ public class ArticleServiceImpl implements ArticleService {
     public List<DisplayArticleDTO> getUserFavourites(Long userId) {
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
-        if(optUser.isEmpty()) {
+        if (optUser.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -215,15 +214,13 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<CommentEntity> comments = articleEntity.getComments();
 
-        if (comments.isEmpty()) {
+        if(comments.isEmpty()) {
             displayArticleDTO.setComments(new ArrayList<>());
+        } else {
+            List<DisplayCommentDTO> displayCommentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
 
-            return displayArticleDTO;
+            displayArticleDTO.setComments(displayCommentDTOList);
         }
-
-        List<DisplayCommentDTO> displayCommentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
-
-        displayArticleDTO.setComments(displayCommentDTOList);
 
         List<CategoryEntity> categories = articleEntity.getCategories();
 
