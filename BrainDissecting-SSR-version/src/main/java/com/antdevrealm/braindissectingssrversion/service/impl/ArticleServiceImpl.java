@@ -146,13 +146,21 @@ public class ArticleServiceImpl implements ArticleService {
         List<String> titles = JsonPath.parse(body).read("$.results[*].bibjson.title", List.class);
         List<String> abstractTexts = JsonPath.parse(body).read("$.results[*].bibjson.abstract", List.class);
 
+        List<String> links = JsonPath.parse(body).read("$.results[*].bibjson.link[?(@.type=='fulltext')].url", List.class);
+
         List<FetchArticleDTO> fetchArticleDTOS = new ArrayList<>();
 
 
         if (titles.size() == abstractTexts.size()) {
 
             for (int i = 0; i < titles.size(); i++) {
-                fetchArticleDTOS.add(new FetchArticleDTO(titles.get(i), abstractTexts.get(i)));
+                FetchArticleDTO fetchArticleDTO = new FetchArticleDTO();
+
+                fetchArticleDTO.setTitle(titles.get(i))
+                                .setContent(abstractTexts.get(i))
+                                        .setLink(links.size() > i ? links.get(i) : "");
+
+                fetchArticleDTOS.add(fetchArticleDTO);
             }
         }
 

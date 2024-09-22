@@ -33,9 +33,9 @@
                 </li>
                 <li sec:authorize="isAuthenticated()" class="dropdown ">
                     <a href="#" class="dropdown-toggle nav-link " th:classappend="${activeLink == 'Categories'} ? 'active'"  data-toggle="dropdown">Categories <span class="caret"></span></a>
-                    <ul class="dropdown-menu bg-transparent border-0">
+                    <ul class="dropdown-menu bg-dark border-0">
                         <li class="text-center" th:each="category : ${categories}">
-                            <strong><a class="nav-link text-dark" th:href="@{/articles/category/{category}(category=${category.name})}"
+                            <strong><a class="nav-link text-white" th:href="@{/articles/category/{category}(category=${category.name})}"
                                        th:text="${#strings.capitalize(category.name)}"></a></strong>
                         </li>
                     </ul>

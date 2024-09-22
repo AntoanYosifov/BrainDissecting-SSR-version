@@ -1,8 +1,8 @@
 package com.antdevrealm.braindissectingssrversion;
 
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
-import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -31,37 +31,13 @@ public class Runner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        List<ArticleEntity> allEntity = articleRepository.findAll();
-//
-//        List<DisplayArticleDTO> allDTO = articleService.getAllArticles();
-//
+
+//        articleService.updateArticles();
+
+        System.out.println();
+
+//        List<FetchArticleDTO> dtos = articleService.fetchArticles("brain");
+
 //        System.out.println();
-
-
-//        articleService.updateCategories();
-//
-//        Optional<UserEntity> user = userRepository.findById(1L);
-//
-//        UserEntity userEntity = user.get();
-//
-//
-//        List<UserRoleEntity> roles = userEntity.getRoles();
-//
-//
-//        Optional<UserRoleEntity> optRole = userRoleRepository.findByRole(UserRole.ADMIN);
-//
-//        UserRoleEntity admin = optRole.get();
-//
-//
-//        userEntity.getRoles().add(admin);
-//
-//        userRepository.save(userEntity);
-////
-////
-//        System.out.println();
-////        List<DisplayUserInfoDTO> allUsers = userService.getAllUsers();
-////
-////        System.out.println();
-
     }
 }

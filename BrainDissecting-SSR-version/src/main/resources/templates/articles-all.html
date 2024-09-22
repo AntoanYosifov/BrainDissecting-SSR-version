@@ -19,6 +19,7 @@
                         ARTICLE TITLE
                     </h2>
                     <p th:text="${article.content}" ></p>
+                    <a class="bg-primary btn text-white" th:href="${article.link}">Read the Full Study</a>
                 </article>
             </div>
             <div class="d-flex justify-content-between" >
@@ -45,11 +46,11 @@
 
                 >
                     Comments
+                    <small th:text="${article.comments.size()}"></small>
                 </button>
 
                 <div th:id="'collapse-comments-' + ${article.id}"
-                     class="collapse align-items-lg-start p-sm-3"
-                >
+                     class="collapse align-items-lg-start p-sm-3">
                     <div id="comment-container"  th:each="comment : ${article.comments}">
                         <ul class="list-unstyled">
                             <li th:id="'comment-' + ${comment.id}">

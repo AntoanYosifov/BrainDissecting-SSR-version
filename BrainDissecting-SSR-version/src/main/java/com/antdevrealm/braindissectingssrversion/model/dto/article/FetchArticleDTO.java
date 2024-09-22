@@ -11,7 +11,7 @@ public class FetchArticleDTO {
 
     private String content;
 
-
+    private String link;
 
     public FetchArticleDTO() {}
 
@@ -39,4 +39,12 @@ public class FetchArticleDTO {
         return this;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public FetchArticleDTO setLink(String link) {
+        this.link = link;
+        return this;
+    }
 }

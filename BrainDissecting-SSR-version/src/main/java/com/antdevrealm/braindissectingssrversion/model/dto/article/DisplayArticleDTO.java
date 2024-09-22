@@ -13,6 +13,8 @@ public class DisplayArticleDTO {
 
     private String content;
 
+    private String link;
+
     private List<String> categories;
 
     private List<DisplayCommentDTO> comments;
@@ -53,6 +55,15 @@ public class DisplayArticleDTO {
 
     public DisplayArticleDTO setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public DisplayArticleDTO setLink(String link) {
+        this.link = link;
         return this;
     }
 
