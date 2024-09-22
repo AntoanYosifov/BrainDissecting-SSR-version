@@ -19,8 +19,10 @@
                         ARTICLE TITLE
                     </h2>
                     <p th:text="${article.content}" ></p>
-                    <a class="bg-primary btn text-white" th:href="${article.link}">Read the Full Study</a>
                 </article>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <a class="bg-primary btn ml-md-4 mt-md-0 text-white" target="_blank" th:href="${article.link}">Read the Full Study</a>
             </div>
             <div class="d-flex justify-content-between" >
                 <div th:if="${!favouriteArtIds.contains(article.id)}">
