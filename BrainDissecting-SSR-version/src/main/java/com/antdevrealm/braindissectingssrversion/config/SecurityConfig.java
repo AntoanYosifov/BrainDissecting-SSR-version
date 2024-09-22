@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableMethodSecurity
+
 public class SecurityConfig {
 
     @Bean
@@ -25,7 +25,7 @@ public class SecurityConfig {
                                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                         .requestMatchers("/", "/users/login", "/users/register")
                                         .permitAll()
-//                                        .requestMatchers("/admin/manage-roles").hasRole("ADMIN")
+                                        .requestMatchers("/admin/manage-roles").hasRole("ADMIN")
                                         .anyRequest().authenticated()
                 )
                 .formLogin(

@@ -25,14 +25,10 @@
             <td th:text="${user.email}"></td>
             <td th:text="${user.roles}"></td>
             <td>
-                <form th:action="@{/admin/promote-moderator}" method="post" style="display:inline;">
-                    <input type="hidden" name="userId" th:value="${user.id}">
-                    <input type="hidden" name="role" value="MODERATOR">
+                <form th:action="@{/admin/promote-moderator/{userId}(userId=${user.id})}" th:method="post" style="display:inline;">
                     <button class="btn btn-success" th:if="${!user.roles.contains('MODERATOR')}">Make Moderator</button>
                 </form>
-                <form th:action="@{/admin/demote-moderator}" method="post" style="display:inline;">
-                    <input type="hidden" name="userId" th:value="${user.id}">
-                    <input type="hidden" name="role" value="MODERATOR">
+                <form th:action="@{/admin/demote-moderator/{userId}(userId=${user.id})}" method="post" style="display:inline;">
                     <button class="btn btn-danger" th:if="${user.roles.contains('MODERATOR')}">Remove Moderator</button>
                 </form>
             </td>

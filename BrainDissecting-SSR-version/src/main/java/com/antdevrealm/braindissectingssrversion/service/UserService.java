@@ -1,6 +1,5 @@
 package com.antdevrealm.braindissectingssrversion.service;
 
-import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
@@ -20,6 +19,8 @@ public interface UserService {
     List<Long> getFavouriteArticlesIds(Long userId);
 
     List<DisplayUserInfoDTO> getAllUsers();
+
+    void reloadUserDetails(String username);
 
 
 }

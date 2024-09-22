@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{/fragments/commons::head}"></head>
+<body>
+<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Delete Article'})}"></th:block>
+
+<div class="container mt-5">
+    <h2 class="text-center">Delete Articles</h2>
+    <div class="list-group">
+        <div th:each="article : ${articles}">
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span th:text="${article.title}"></span>
+                <form th:action="@{/admin/delete-article/{articleId}(articleId=${article.id})}" th:method="post" onsubmit="return confirm('Are you sure you want to delete this article?');">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

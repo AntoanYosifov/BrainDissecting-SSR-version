@@ -197,8 +197,8 @@ public class UserServiceImpl implements UserService {
     private boolean passwordConfirmPasswordMatch(RegistrationDTO data) {
         return data.getPassword().equals(data.getConfirmPassword());
     }
-
-    private void reloadUserDetails(String username) {
+    @Override
+    public void reloadUserDetails(String username) {
         UserDetails updatedUserDetails = brDissectingUserDetailService.loadUserByUsername(username);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
