@@ -7,15 +7,17 @@ import java.util.List;
 
 public interface ArticleService {
 
-    void updateArticles();
-
     List<DisplayArticleDTO> getAllArticles();
-
-    List<FetchArticleDTO> fetchArticles(String theme);
-
-    void updateCategories();
 
     List<DisplayArticleDTO> getAllByCategory(String categoryName);
 
     List<DisplayArticleDTO> getUserFavourites(Long userId);
+
+    List<FetchArticleDTO> fetchArticles(String theme);
+
+    boolean deleteArticle(Long articleId);
+
+    void updateArticles();
+
+    void updateCategories();
 }

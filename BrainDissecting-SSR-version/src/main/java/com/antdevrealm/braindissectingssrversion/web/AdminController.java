@@ -75,5 +75,13 @@ public class AdminController {
         return "delete-article";
     }
 
+    @DeleteMapping("/delete-article/{articleId}")
+    public String deleteArticle(@PathVariable Long articleId) {
+
+        articleService.deleteArticle(articleId);
+
+        return "redirect:/admin/delete-article";
+    }
+
 
 }

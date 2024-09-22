@@ -61,10 +61,30 @@ public class ArticleServiceImpl implements ArticleService {
 
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 
-    //    @Scheduled(cron = "*/30 * * * * ?")
+
+    @Override
+    @Transactional
+    public List<DisplayArticleDTO> getAllArticles() {
+        return articleRepository.findAll().stream().map(this::mapToArticleDTO).toList();
+    }
+
+    @Override
+    @Transactional
+    @Modifying
+    public boolean deleteArticle(Long articleId) {
+
+        if(articleRepository.existsById(articleId)) {
+            articleRepository.removeAllFromUsersFavourites(articleId);
+
+            articleRepository.deleteById(articleId);
+        }
+        return false;
+    }
+
     @Override
     @Modifying
     @Transactional
+//    @Scheduled(cron = "*/30 * * * * ?")
     public void updateArticles() {
         logger.info("Scheduled task started at: {}", LocalTime.now());
 
@@ -107,12 +127,6 @@ public class ArticleServiceImpl implements ArticleService {
 
             logger.info("Scheduled task ended at: {}", LocalTime.now());
         }
-    }
-
-    @Override
-    @Transactional
-    public List<DisplayArticleDTO> getAllArticles() {
-        return articleRepository.findAll().stream().map(this::mapToArticleDTO).toList();
     }
 
 

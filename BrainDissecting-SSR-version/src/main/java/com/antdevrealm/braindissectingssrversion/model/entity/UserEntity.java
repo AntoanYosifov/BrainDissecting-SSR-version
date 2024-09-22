@@ -24,7 +24,10 @@ public class UserEntity extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @ManyToMany()
+    @ManyToMany
+    @JoinTable(name = "user_favourite",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "favourite_id"))
     private List<ArticleEntity> favourites;
 
     // change cascade type by adding functionality for the comments
