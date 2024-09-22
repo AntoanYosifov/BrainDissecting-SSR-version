@@ -1,12 +1,16 @@
 package com.antdevrealm.braindissectingssrversion;
 
+import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
+import org.jsoup.Jsoup;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class Runner implements CommandLineRunner {
@@ -34,10 +38,10 @@ public class Runner implements CommandLineRunner {
 
 //        articleService.updateArticles();
 
-        System.out.println();
+//        System.out.println();
 
 //        List<FetchArticleDTO> dtos = articleService.fetchArticles("brain");
 
-//        System.out.println();
+        System.out.println();
     }
 }

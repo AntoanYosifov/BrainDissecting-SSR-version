@@ -13,6 +13,8 @@ public class DisplayArticleDTO {
 
     private String content;
 
+    private String journalTitle;
+
     private String link;
 
     private List<String> categories;
@@ -55,6 +57,15 @@ public class DisplayArticleDTO {
 
     public DisplayArticleDTO setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public String getJournalTitle() {
+        return journalTitle;
+    }
+
+    public DisplayArticleDTO setJournalTitle(String journalTitle) {
+        this.journalTitle = journalTitle;
         return this;
     }
 

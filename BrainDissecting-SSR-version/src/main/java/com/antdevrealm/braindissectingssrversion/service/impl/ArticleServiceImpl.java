@@ -12,6 +12,7 @@ import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.CategoryService;
 import com.jayway.jsonpath.JsonPath;
+import org.jsoup.Jsoup;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,8 +146,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<String> titles = JsonPath.parse(body).read("$.results[*].bibjson.title", List.class);
         List<String> abstractTexts = JsonPath.parse(body).read("$.results[*].bibjson.abstract", List.class);
-
         List<String> links = JsonPath.parse(body).read("$.results[*].bibjson.link[?(@.type=='fulltext')].url", List.class);
+        List<String> journalTitles = JsonPath.parse(body).read("$.results[*].bibjson.journal.title", List.class);
+
 
         List<FetchArticleDTO> fetchArticleDTOS = new ArrayList<>();
 
@@ -156,9 +158,11 @@ public class ArticleServiceImpl implements ArticleService {
             for (int i = 0; i < titles.size(); i++) {
                 FetchArticleDTO fetchArticleDTO = new FetchArticleDTO();
 
+
                 fetchArticleDTO.setTitle(titles.get(i))
-                                .setContent(abstractTexts.get(i))
-                                        .setLink(links.size() > i ? links.get(i) : "");
+                                .setContent(Jsoup.parse(abstractTexts.get(i)).text())
+                                        .setLink(links.size() > i ?  Jsoup.parse(links.get(i)).text() : "")
+                                                .setJournalTitle(journalTitles.size() > i ? Jsoup.parse(journalTitles.get(i)).text() : "");
 
                 fetchArticleDTOS.add(fetchArticleDTO);
             }

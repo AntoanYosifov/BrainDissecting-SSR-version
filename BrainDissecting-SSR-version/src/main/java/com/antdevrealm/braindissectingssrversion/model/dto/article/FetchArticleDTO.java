@@ -11,6 +11,8 @@ public class FetchArticleDTO {
 
     private String content;
 
+    private String journalTitle;
+
     private String link;
 
     public FetchArticleDTO() {}
@@ -36,6 +38,15 @@ public class FetchArticleDTO {
 
     public FetchArticleDTO setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public String getJournalTitle() {
+        return journalTitle;
+    }
+
+    public FetchArticleDTO setJournalTitle(String journalTitle) {
+        this.journalTitle = journalTitle;
         return this;
     }
 

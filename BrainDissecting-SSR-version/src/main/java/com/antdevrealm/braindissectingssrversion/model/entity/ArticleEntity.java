@@ -17,6 +17,9 @@ public class ArticleEntity extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "journal_title")
+    private String journalTitle;
+
     private String link;
 
     // Change fetch type to lazy after adding functionality for seeing the comments onClick!
@@ -50,6 +53,15 @@ public class ArticleEntity extends BaseEntity {
 
     public ArticleEntity setContent(String content) {
         this.content = content;
+        return this;
+    }
+
+    public String getJournalTitle() {
+        return journalTitle;
+    }
+
+    public ArticleEntity setJournalTitle(String journalTitle) {
+        this.journalTitle = journalTitle;
         return this;
     }
 
