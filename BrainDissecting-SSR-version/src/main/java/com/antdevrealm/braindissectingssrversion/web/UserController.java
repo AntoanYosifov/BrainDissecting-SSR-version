@@ -90,11 +90,10 @@ public class UserController {
                                  @AuthenticationPrincipal
                                  BrDissectingUserDetails brDissectingUserDetails) {
 
-
-
         model.addAttribute("favourites" , articleService.getUserFavourites(brDissectingUserDetails.getId()));
+        model.addAttribute("currentUserId", brDissectingUserDetails.getId());
 
-        return "user-favourites";
+        return "user-favorites";
 
     }
 

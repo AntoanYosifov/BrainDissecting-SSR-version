@@ -51,13 +51,16 @@ public class ArticleController {
 //    }
 
     @GetMapping("/category/{categoryName}")
-    public String viewCategory(@PathVariable String categoryName, Model model) {
+    public String viewCategory(@PathVariable String categoryName, Model model,
+                               @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
         List<DisplayArticleDTO> byCategory = articleService.getAllByCategory(categoryName);
+        List<Long> favouriteArticlesIds = userService.getFavouriteArticlesIds(brDissectingUserDetails.getId());
 
         model.addAttribute("byCategory", byCategory);
         model.addAttribute("categoryName", categoryName);
-
+        model.addAttribute("favouriteArtIds", favouriteArticlesIds);
+        model.addAttribute("currentUserId", brDissectingUserDetails.getId());
         return "articles-by-category";
     }
 
