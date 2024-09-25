@@ -1,5 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.model.entity;
 
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,6 +24,10 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "user_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     @ManyToMany
     @JoinTable(name = "user_favourite",
@@ -96,6 +101,15 @@ public class UserEntity extends BaseEntity {
 
     public UserEntity setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public UserEntity setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
         return this;
     }
 

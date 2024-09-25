@@ -3,12 +3,14 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -89,6 +91,14 @@ public class AdminServiceImpl implements AdminService {
         reloadUserDetails(userEntity.getUsername());
         return true;
 
+    }
+
+    @Override
+    public void banUser(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        userEntity.setUserStatus(UserStatus.BANNED);
+        userRepository.save(userEntity);
     }
 
     private void reloadUserDetails(String username) {

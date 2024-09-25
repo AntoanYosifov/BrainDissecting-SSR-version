@@ -8,6 +8,7 @@ import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.BaseEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
@@ -176,7 +177,8 @@ public class UserServiceImpl implements UserService {
                 .setEmail(data.getEmail())
                 .setPassword(passwordEncoder.encode(data.getPassword()))
                 .setFirstName(data.getFirstName())
-                .setLastName(data.getLastName());
+                .setLastName(data.getLastName())
+                .setUserStatus(UserStatus.ACTIVE);
 
         return userEntity;
     }
