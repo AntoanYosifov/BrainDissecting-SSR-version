@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity userEntity = mapToUser(data);
-        userRepository.save(userEntity);
 
+        userRepository.save(userEntity);
 
         return true;
     }

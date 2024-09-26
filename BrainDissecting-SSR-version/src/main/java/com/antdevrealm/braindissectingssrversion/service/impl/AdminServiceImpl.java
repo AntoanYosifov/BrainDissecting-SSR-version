@@ -7,6 +7,7 @@ import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
+import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,11 +21,13 @@ import java.util.Optional;
 public class AdminServiceImpl implements AdminService {
 
     private final BrDissectingUserDetailService brDissectingUserDetailService;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public AdminServiceImpl(BrDissectingUserDetailService brDissectingUserDetailService, UserRepository userRepository, RoleRepository roleRepository) {
+    public AdminServiceImpl(BrDissectingUserDetailService brDissectingUserDetailService, UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
         this.brDissectingUserDetailService = brDissectingUserDetailService;
+        this.userService = userService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -33,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
     public boolean promoteToModerator(Long userId) {
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
-        if(optUser.isEmpty()) {
+        if (optUser.isEmpty()) {
             return false;
         }
 
@@ -41,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
 
         Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
 
-        if(optModeratorRole.isEmpty()) {
+        if (optModeratorRole.isEmpty()) {
             return false;
         }
 
@@ -49,14 +52,14 @@ public class AdminServiceImpl implements AdminService {
 
         List<UserRoleEntity> userRoles = userEntity.getRoles();
 
-        if(userRoles.contains(moderatorRole)) {
+        if (userRoles.contains(moderatorRole)) {
             return false;
         }
 
         userRoles.add(moderatorRole);
         userRepository.save(userEntity);
 
-        reloadUserDetails(userEntity.getUsername());
+        userService.reloadUserDetails(userEntity.getUsername());
         return true;
     }
 
@@ -65,7 +68,7 @@ public class AdminServiceImpl implements AdminService {
 
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
-        if(optUser.isEmpty()) {
+        if (optUser.isEmpty()) {
             return false;
         }
 
@@ -73,7 +76,7 @@ public class AdminServiceImpl implements AdminService {
 
         Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
 
-        if(optModeratorRole.isEmpty()) {
+        if (optModeratorRole.isEmpty()) {
             return false;
         }
 
@@ -81,14 +84,14 @@ public class AdminServiceImpl implements AdminService {
 
         List<UserRoleEntity> userRoles = userEntity.getRoles();
 
-        if(!userRoles.contains(moderatorRole)) {
+        if (!userRoles.contains(moderatorRole)) {
             return false;
         }
 
         userRoles.remove(moderatorRole);
         userRepository.save(userEntity);
 
-        reloadUserDetails(userEntity.getUsername());
+        userService.reloadUserDetails(userEntity.getUsername());
         return true;
 
     }
@@ -101,14 +104,4 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(userEntity);
     }
 
-    private void reloadUserDetails(String username) {
-        UserDetails updatedUserDetails = brDissectingUserDetailService.loadUserByUsername(username);
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                updatedUserDetails,
-                updatedUserDetails.getPassword(),
-                updatedUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    }
 }

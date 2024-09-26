@@ -1,0 +1,21 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/commons::head}"></head>
+<body>
+
+<div class="container mt-5">
+    <div class="card text-center border-danger" >
+        <div class="card-header bg-danger text-white" >
+            <h1>Your account has been banned</h1>
+        </div>
+        <div class="card-body">
+            <p class="card-text" >Reason: <span th:text="${reason}"></span></p>
+            <p class="card-text" >Please contact support if you believe this is a mistake.</p>
+            <form th:method="post"
+                  th:action="@{/users/logout}">
+                <button type="submit" class="btn btn-danger btn-lg">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

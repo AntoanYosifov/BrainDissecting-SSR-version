@@ -140,6 +140,10 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
+    public boolean isBanned() {
+        return this.userStatus.equals(UserStatus.BANNED);
+    }
+
     @Override
     public String toString() {
         return "User{" +

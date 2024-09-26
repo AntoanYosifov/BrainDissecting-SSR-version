@@ -15,6 +15,8 @@ public class BrDissectingUserDetails extends User {
 
     private String lastName;
 
+    private boolean isBanned;
+
     public BrDissectingUserDetails(
             long id,
             String email,
@@ -22,7 +24,8 @@ public class BrDissectingUserDetails extends User {
             String password,
             Collection<? extends GrantedAuthority> authorities,
             String firstName,
-            String lastName) {
+            String lastName,
+            boolean isBanned) {
 
         super(username, password, authorities);
 
@@ -30,6 +33,7 @@ public class BrDissectingUserDetails extends User {
         this.email=email;
         this.firstName=firstName;
         this.lastName=lastName;
+        this.isBanned = isBanned;
     }
 
     public long getId() {
@@ -65,6 +69,16 @@ public class BrDissectingUserDetails extends User {
 
     public BrDissectingUserDetails setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
+    }
+
+    public boolean isBanned() {
+        return isBanned;
+    }
+
+
+    public BrDissectingUserDetails setBanned(boolean banned) {
+        isBanned = banned;
         return this;
     }
 

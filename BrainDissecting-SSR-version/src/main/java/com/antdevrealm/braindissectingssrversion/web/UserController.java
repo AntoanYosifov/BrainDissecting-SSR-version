@@ -118,5 +118,10 @@ public class UserController {
 
     }
 
+    @GetMapping("/banned")
+    public String viewBanned() {
+        return "account-banned";
+    }
+
 
 }

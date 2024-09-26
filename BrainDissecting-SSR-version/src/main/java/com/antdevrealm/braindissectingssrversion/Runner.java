@@ -42,6 +42,5 @@ public class Runner implements CommandLineRunner {
 
 //        List<FetchArticleDTO> dtos = articleService.fetchArticles("brain");
 
-        System.out.println();
     }
 }

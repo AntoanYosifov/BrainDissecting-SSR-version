@@ -33,21 +33,29 @@ public class BrDissectingUserDetailService implements UserDetailsService {
         String roles = userEntity.getRoles().stream().map(r -> r.getRole().toString()).collect(Collectors.joining(", "));
 
         log.info("User '{}' has roles: {}", username, roles );
+        log.info("Banned: '{}'" , userEntity.isBanned());
 
-        return map(userEntity);
+        UserDetails userDetails = map(userEntity);
+
+        return userDetails;
 
     }
 
-    private static UserDetails map(UserEntity user) {
-        return new BrDissectingUserDetails(
+    private  UserDetails map(UserEntity user) {
+        BrDissectingUserDetails brDissectingUserDetails = new BrDissectingUserDetails(
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
                 user.getPassword(),
                 user.getRoles().stream().map(UserRoleEntity::getRole).map(BrDissectingUserDetailService::map).toList(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.isBanned()
         );
+
+        log.info("BrDissectingUserDetails: {}" , brDissectingUserDetails.isBanned());
+
+        return brDissectingUserDetails;
     }
 
     private static GrantedAuthority map(UserRole userRole) {
