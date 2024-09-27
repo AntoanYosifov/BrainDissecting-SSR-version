@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
                 .setPassword(passwordEncoder.encode(data.getPassword()))
                 .setFirstName(data.getFirstName())
                 .setLastName(data.getLastName())
-                .setUserStatus(UserStatus.ACTIVE);
+                .setStatus(UserStatus.ACTIVE);
 
         return userEntity;
     }
@@ -187,6 +187,7 @@ public class UserServiceImpl implements UserService {
         DisplayUserInfoDTO displayDTO = modelMapper.map(userEntity, DisplayUserInfoDTO.class);
 
         displayDTO.setRoles(userEntity.getRoles().stream().map(r -> r.getRole().toString()).toList());
+        displayDTO.setStatus(userEntity.getStatus().name());
 
         return displayDTO;
     }

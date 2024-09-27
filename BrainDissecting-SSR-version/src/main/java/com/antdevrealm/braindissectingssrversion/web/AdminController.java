@@ -5,7 +5,6 @@ import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUser
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
-import com.antdevrealm.braindissectingssrversion.service.impl.BrDissectingUserDetailService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +30,7 @@ public class AdminController {
     @GetMapping("/manage-roles")
     public String viewAdminManage(Model model) {
         model.addAttribute("users", userService.getAllUsers());
-        return "manage-roles";
+        return "manage-users";
     }
 
     @PostMapping("/promote-moderator/{userId}")
@@ -87,5 +86,9 @@ public class AdminController {
         return "redirect:/admin/manage-roles";
     }
 
-
+    @PostMapping("/remove-ban/{userId}")
+    public String removeBan(@PathVariable Long userId) {
+        adminService.removeBan(userId);
+        return "redirect:/admin/manage-roles";
+    }
 }

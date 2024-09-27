@@ -27,7 +27,7 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "user_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private UserStatus status;
 
     @ManyToMany
     @JoinTable(name = "user_favourite",
@@ -104,12 +104,12 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public UserStatus getStatus() {
+        return status;
     }
 
-    public UserEntity setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public UserEntity setStatus(UserStatus userStatus) {
+        this.status = userStatus;
         return this;
     }
 
@@ -141,7 +141,7 @@ public class UserEntity extends BaseEntity {
     }
 
     public boolean isBanned() {
-        return this.userStatus.equals(UserStatus.BANNED);
+        return this.status.equals(UserStatus.BANNED);
     }
 
     @Override

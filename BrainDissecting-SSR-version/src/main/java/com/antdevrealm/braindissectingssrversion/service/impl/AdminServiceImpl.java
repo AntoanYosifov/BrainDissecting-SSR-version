@@ -97,7 +97,7 @@ public class AdminServiceImpl implements AdminService {
     public void banUser(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        userEntity.setUserStatus(UserStatus.BANNED);
+        userEntity.setStatus(UserStatus.BANNED);
         userRepository.save(userEntity);
     }
 
@@ -105,7 +105,7 @@ public class AdminServiceImpl implements AdminService {
     public void removeBan(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        userEntity.setUserStatus(UserStatus.ACTIVE);
+        userEntity.setStatus(UserStatus.ACTIVE);
         userRepository.save(userEntity);
     }
 

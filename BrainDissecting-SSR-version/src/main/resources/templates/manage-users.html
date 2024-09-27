@@ -1,4 +1,4 @@
-<!-- manage-roles.html -->
+<!-- manage-users.html -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/commons::head"></head>
@@ -16,6 +16,7 @@
             <th>Username</th>
             <th>Email</th>
             <th>Roles</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -24,15 +25,20 @@
             <td th:text="${user.username}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.roles}"></td>
+            <td th:text="${user.status}"
+                th:classappend="${user.status == 'BANNED'} ? 'text-danger' : 'text-success'"></td>
             <td>
                 <form th:action="@{/admin/promote-moderator/{userId}(userId=${user.id})}" th:method="post" style="display:inline;">
-                    <button class="btn btn-success" th:if="${!user.roles.contains('MODERATOR')}">Make Moderator</button>
+                    <button class="btn btn-outline-success" th:if="${!user.roles.contains('MODERATOR') && user.status.equals('ACTIVE')}">Make Moderator</button>
                 </form>
                 <form th:action="@{/admin/demote-moderator/{userId}(userId=${user.id})}" method="post" style="display:inline;">
-                    <button class="btn btn-danger" th:if="${user.roles.contains('MODERATOR')}">Remove Moderator</button>
+                    <button class="btn btn-outline-danger" th:if="${user.roles.contains('MODERATOR')}">Remove Moderator</button>
                 </form>
                 <form th:action="@{/admin/ban-user/{userId}(userId=${user.id})}" method="post" style="display:inline;">
-                    <button class="btn btn-danger" >BAN</button>
+                    <button class="btn btn-outline-danger" th:if="${user.status.equals('ACTIVE')}">BAN</button>
+                </form>
+                <form th:action="@{/admin/remove-ban/{userId}(userId=${user.id})}" method="post" style="display:inline;">
+                    <button class="btn btn-outline-primary " th:if="${user.status.equals('BANNED')}">REMOVE BAN</button>
                 </form>
             </td>
         </tr>

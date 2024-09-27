@@ -1,5 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.user;
 
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class DisplayUserInfoDTO {
     private String firstName;
 
     private String lastName;
+
+    private String status;
 
     private List<String> roles;
 
@@ -62,6 +66,15 @@ public class DisplayUserInfoDTO {
 
     public DisplayUserInfoDTO setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public DisplayUserInfoDTO setStatus(String status) {
+        this.status = status;
         return this;
     }
 
