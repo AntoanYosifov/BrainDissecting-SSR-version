@@ -94,19 +94,33 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void banUser(Long userId) {
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public boolean banUser(Long userId) {
+        Optional<UserEntity> optUser = userRepository.findById(userId);
+
+        if(optUser.isEmpty()) {
+            return false;
+        }
+
+        UserEntity userEntity = optUser.get();
 
         userEntity.setStatus(UserStatus.BANNED);
         userRepository.save(userEntity);
+        return true;
     }
 
     @Override
-    public void removeBan(Long userId) {
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public boolean removeBan(Long userId) {
+        Optional<UserEntity> optUser = userRepository.findById(userId);
+
+        if(optUser.isEmpty()) {
+            return false;
+        }
+
+        UserEntity userEntity = optUser.get();
 
         userEntity.setStatus(UserStatus.ACTIVE);
         userRepository.save(userEntity);
+        return true;
     }
 
 }

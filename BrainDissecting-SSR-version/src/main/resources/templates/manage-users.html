@@ -7,8 +7,12 @@
 
 <div class="container mt-4">
     <h2>Manage Users</h2>
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${removeRoleSuccess}" class="alert alert-success" th:text="${removeRoleSuccess}"></div>
+    <div th:if="${removeRoleFailure}" class="alert alert-danger" th:text="${removeRoleFailure}"></div>
+    <div th:if="${BanSuccess}" class="alert alert-success" th:text="${BanSuccess}"></div>
+    <div th:if="${BanFailure}" class="alert alert-danger" th:text="${BanFailure}"></div>
+    <div th:if="${removeBanSuccess}" class="alert alert-success" th:text="${removeBanSuccess}"></div>
+    <div th:if="${removeBanFailure}" class="alert alert-danger" th:text="${removeBanFailure}"></div>
 
     <table class="table table-striped">
         <thead>

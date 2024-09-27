@@ -37,37 +37,37 @@ public class AdminController {
     public String promoteToModerator(@PathVariable Long userId,
                                      RedirectAttributes redirectAttributes,
                                      @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
-        if(!adminService.promoteToModerator(userId)) {
-            redirectAttributes.addFlashAttribute("errorMessage",  "Failed to assign role!");
+        if (!adminService.promoteToModerator(userId)) {
+            redirectAttributes.addFlashAttribute("roleAssignFailure", "Failed to assign role!");
             return "redirect:/admin/manage-roles";
         }
 
         userService.reloadUserDetails(brDissectingUserDetails.getUsername());
 
-        redirectAttributes.addFlashAttribute("successMessage", "Role assigned successfully!");
+        redirectAttributes.addFlashAttribute("roleAssignSuccess", "Role assigned successfully!");
         return "redirect:/admin/manage-roles";
 
     }
 
     @PostMapping("/demote-moderator/{userId}")
     public String demoteToModerator(@PathVariable Long userId,
-                                     RedirectAttributes redirectAttributes,
+                                    RedirectAttributes redirectAttributes,
                                     @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
-        if(!adminService.demoteFromModerator(userId)) {
-            redirectAttributes.addFlashAttribute("errorMessage",  "Failed to remove role!");
+
+        if (!adminService.demoteFromModerator(userId)) {
+            redirectAttributes.addFlashAttribute("removeRoleFailure", "Failed to remove role!");
             return "redirect:/admin/manage-roles";
         }
 
         userService.reloadUserDetails(brDissectingUserDetails.getUsername());
 
-        redirectAttributes.addFlashAttribute("successMessage", "Role removed successfully");
+        redirectAttributes.addFlashAttribute("removeRoleSuccess", "Role removed successfully");
         return "redirect:/admin/manage-roles";
 
     }
 
     @GetMapping("/delete-article")
     public String viewDeleteArticle(Model model) {
-        // TODO: Display info about number of comments / upload date
         // TODO: Add rating functionality to the articles and sort them
         model.addAttribute("articles", articleService.getAllArticles());
         return "delete-article";
@@ -81,14 +81,31 @@ public class AdminController {
     }
 
     @PostMapping("/ban-user/{userId}")
-    public String banUser(@PathVariable Long userId) {
-        adminService.banUser(userId);
+    public String banUser(@PathVariable Long userId,
+                          RedirectAttributes redirectAttributes) {
+        if (!adminService.banUser(userId)) {
+            redirectAttributes.addFlashAttribute("BanFailure", "BAN operation has failed!");
+            return "redirect:/admin/manage-roles";
+        }
+
+        redirectAttributes.addFlashAttribute("BanSuccess", "BAN operation successful!");
         return "redirect:/admin/manage-roles";
+
     }
 
+
     @PostMapping("/remove-ban/{userId}")
-    public String removeBan(@PathVariable Long userId) {
-        adminService.removeBan(userId);
+    public String removeBan(@PathVariable Long userId,
+                            RedirectAttributes redirectAttributes) {
+
+        if (!adminService.removeBan(userId)) {
+            redirectAttributes.addFlashAttribute("removeBanFailure", "Failed to remove BAN!");
+            return "redirect:/admin/manage-roles";
+        }
+
+        redirectAttributes.addFlashAttribute("removeBanSuccess", "BAN removed successfully");
         return "redirect:/admin/manage-roles";
     }
 }
+
+
