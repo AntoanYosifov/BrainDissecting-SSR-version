@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
-
 public class AdminController {
 
     private final AdminService adminService;
@@ -77,10 +76,15 @@ public class AdminController {
 
     @DeleteMapping("/delete-article/{articleId}")
     public String deleteArticle(@PathVariable Long articleId) {
-
         articleService.deleteArticle(articleId);
 
         return "redirect:/admin/delete-article";
+    }
+
+    @PostMapping("/ban-user/{userId}")
+    public String banUser(@PathVariable Long userId) {
+        adminService.banUser(userId);
+        return "redirect:/admin/manage-roles";
     }
 
 

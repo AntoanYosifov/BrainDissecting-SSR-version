@@ -6,7 +6,7 @@
 <div th:replace="fragments/commons::navbar('Manage Roles')"></div>
 
 <div class="container mt-4">
-    <h2>Manage User Roles</h2>
+    <h2>Manage Users</h2>
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
@@ -30,6 +30,9 @@
                 </form>
                 <form th:action="@{/admin/demote-moderator/{userId}(userId=${user.id})}" method="post" style="display:inline;">
                     <button class="btn btn-danger" th:if="${user.roles.contains('MODERATOR')}">Remove Moderator</button>
+                </form>
+                <form th:action="@{/admin/ban-user/{userId}(userId=${user.id})}" method="post" style="display:inline;">
+                    <button class="btn btn-danger" >BAN</button>
                 </form>
             </td>
         </tr>
