@@ -42,6 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final RestClient restClient;
 
     private final ModelMapper modelMapper;
+
     private final UserRepository userRepository;
 
     private List<String> themes = List.of("neuroscience", "brain", "psychology", "human body", "medicine");
