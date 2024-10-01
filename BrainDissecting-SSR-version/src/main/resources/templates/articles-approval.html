@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/commons::head}"></head>
+<body>
+
+<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Articles for approval'})}"></th:block>
+
+<div class="container mt-5">
+    <h2 class="text-center text-light">Moderator Review Page</h2>
+
+    <div th:if="${pendingArticles.isEmpty()}">
+        <p class="alert alert-info text-center">No articles pending review at the moment.</p>
+    </div>
+
+    <div th:if="${!pendingArticles.isEmpty()}">
+        <table class="table table-bordered table-striped mt-4 text-light bg-dark">
+            <thead class="thead-dark">
+            <tr>
+                <th>Title</th>
+                <th>Journal</th>
+                <th>Content Preview</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="article : ${pendingArticles}">
+                <td th:text="${article.title}"></td>
+                <td th:text="${article.journalTitle}"></td>
+                <td>
+                    <p th:text="${#strings.abbreviate(article.content, 100)} + '...'" th:id="'dots-' + ${article.id}"></p>
+                    <span th:id="'more-' + ${article.id}" style="display:none;" th:text="${article.content}"></span>
+                    <button class="btn text-primary bg-transparent border-0" th:onclick="'toggleContent('+ ${article.id} + ')'" th:id="'myBtn-' + ${article.id}">See More</button>
+                </td>
+                <td>
+                    <div class="d-flex justify-content-around">
+                        <form th:action="@{/moderator/approve/{id}(id=${article.id})}" method="post">
+                            <button type="submit" class="btn btn-outline-success">Approve</button>
+                        </form>
+                        <form th:action="@{/moderator/reject/{id}(id=${article.id})}" method="post">
+                            <button type="submit" class="btn btn-outline-danger">Reject</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/js/moderator.js"></script>
+</body>
+</html>

@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface ArticleService {
 
-    List<DisplayArticleDTO> getAllArticles();
+    List<DisplayArticleDTO> getAllApproved();
+
+    List<DisplayArticleDTO> getAllPending();
 
     List<DisplayArticleDTO> getAllByCategory(String categoryName);
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,4 +19,13 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     @Modifying
     @Query(value = "DELETE FROM `brain-dissecting-ssr`.user_favourite where favourite_id = :articleId", nativeQuery = true)
     void removeAllFromUsersFavourites(@Param("articleId") Long articleId);
+
+//    List<ArticleEntity> findArticleEntitiesByStatusApproved();
+//    List<ArticleEntity> findArticleEntitiesByStatusPending();
+
+    @Query("SELECT a FROM ArticleEntity a WHERE a.status = 'APPROVED'")
+    List<ArticleEntity> findApprovedArticles();
+
+    @Query("SELECT a FROM ArticleEntity a WHERE a.status = 'PENDING'")
+    List<ArticleEntity> findPendingArticles();
 }

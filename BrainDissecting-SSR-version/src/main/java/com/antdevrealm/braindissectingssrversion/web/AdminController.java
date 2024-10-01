@@ -69,7 +69,7 @@ public class AdminController {
     @GetMapping("/delete-article")
     public String viewDeleteArticle(Model model) {
         // TODO: Add rating functionality to the articles and sort them
-        model.addAttribute("articles", articleService.getAllArticles());
+        model.addAttribute("articles", articleService.getAllApproved());
         return "delete-article";
     }
 

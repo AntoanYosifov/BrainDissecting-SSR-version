@@ -20,7 +20,10 @@ public class UtilsConfig {
 
         ModelMapper modelMapper = new ModelMapper();
         TypeMap<FetchArticleDTO, ArticleEntity> fetchArticleTypeMap = modelMapper.createTypeMap(FetchArticleDTO.class, ArticleEntity.class);
-        fetchArticleTypeMap.addMappings(mapper -> mapper.skip(ArticleEntity::setComments));
+        fetchArticleTypeMap.addMappings(mapper -> {
+            mapper.skip(ArticleEntity::setComments);
+            mapper.skip(ArticleEntity::setStatus);
+        });
 
         TypeMap<ArticleEntity , DisplayArticleDTO> displayArticleTypeMap = modelMapper.createTypeMap(ArticleEntity.class, DisplayArticleDTO.class);
         displayArticleTypeMap.addMappings(mapper -> mapper.skip(DisplayArticleDTO::setCategories));

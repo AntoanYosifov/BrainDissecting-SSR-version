@@ -7,6 +7,7 @@ import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.ArticleStatus;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
@@ -66,8 +67,14 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public List<DisplayArticleDTO> getAllArticles() {
-        return articleRepository.findAll().stream().map(this::mapToArticleDTO).toList();
+    public List<DisplayArticleDTO> getAllApproved() {
+        return articleRepository.findApprovedArticles().stream().map(this::mapToArticleDTO).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<DisplayArticleDTO> getAllPending() {
+        return articleRepository.findPendingArticles().stream().map(this::mapToArticleDTO).toList();
     }
 
     @Override
@@ -75,7 +82,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Modifying
     public boolean deleteArticle(Long articleId) {
 
-        if(articleRepository.existsById(articleId)) {
+        if (articleRepository.existsById(articleId)) {
             articleRepository.removeAllFromUsersFavourites(articleId);
 
             articleRepository.deleteById(articleId);
@@ -161,9 +168,9 @@ public class ArticleServiceImpl implements ArticleService {
 
 
                 fetchArticleDTO.setTitle(titles.get(i))
-                                .setContent(Jsoup.parse(abstractTexts.get(i)).text())
-                                        .setLink(links.size() > i ?  Jsoup.parse(links.get(i)).text() : "")
-                                                .setJournalTitle(journalTitles.size() > i ? Jsoup.parse(journalTitles.get(i)).text() : "");
+                        .setContent(Jsoup.parse(abstractTexts.get(i)).text())
+                        .setLink(links.size() > i ? Jsoup.parse(links.get(i)).text() : "")
+                        .setJournalTitle(journalTitles.size() > i ? Jsoup.parse(journalTitles.get(i)).text() : "");
 
                 fetchArticleDTOS.add(fetchArticleDTO);
             }
@@ -173,13 +180,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     }
 
-
     public void addTheme(String theme) {
         this.themes.add(theme);
 
         categoryService.addCategory(theme);
     }
-
 
     // TODO: Consider changing the hard-coded themes List
     public void updateCategories() {
@@ -241,7 +246,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<CommentEntity> comments = articleEntity.getComments();
 
-        if(comments.isEmpty()) {
+        if (comments.isEmpty()) {
             displayArticleDTO.setComments(new ArrayList<>());
         } else {
             List<DisplayCommentDTO> displayCommentDTOList = comments.stream().map(this::mapToCommentDTO).toList();
@@ -259,9 +264,10 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleEntity mapToArticleEntity(FetchArticleDTO fetchArticleDTO) {
 
         Optional<ArticleEntity> optArticle = articleRepository.findByTitle(fetchArticleDTO.getTitle());
+        ArticleEntity articleEntity = optArticle.orElseGet(() -> modelMapper.map(fetchArticleDTO, ArticleEntity.class));
+        articleEntity.setStatus(ArticleStatus.PENDING);
 
-        return optArticle.orElseGet(() -> modelMapper.map(fetchArticleDTO, ArticleEntity.class));
-
+        return articleEntity;
     }
 
     private DisplayCommentDTO mapToCommentDTO(CommentEntity comment) {

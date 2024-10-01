@@ -2,16 +2,13 @@ package com.antdevrealm.braindissectingssrversion.web;
 
 
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
-import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
-import com.antdevrealm.braindissectingssrversion.service.CategoryService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -35,7 +32,7 @@ public class ArticleController {
     public String viewAllArticles(Model model,
                                   @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
-        List<DisplayArticleDTO> allArticles = articleService.getAllArticles();
+        List<DisplayArticleDTO> allArticles = articleService.getAllPending();
         List<Long> favouriteArticlesIds = userService.getFavouriteArticlesIds(brDissectingUserDetails.getId());
 
         model.addAttribute("allArticles", allArticles);

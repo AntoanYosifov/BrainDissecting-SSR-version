@@ -6,7 +6,7 @@
 <div th:replace="fragments/commons::navbar('Manage Roles')"></div>
 
 <div class="container mt-4">
-    <h2>Manage Users</h2>
+    <h2 class="text-light">Manage Users</h2>
     <div th:if="${removeRoleSuccess}" class="alert alert-success" th:text="${removeRoleSuccess}"></div>
     <div th:if="${removeRoleFailure}" class="alert alert-danger" th:text="${removeRoleFailure}"></div>
     <div th:if="${BanSuccess}" class="alert alert-success" th:text="${BanSuccess}"></div>
