@@ -8,6 +8,14 @@
 <div class="container mt-5">
     <h2 class="text-center text-light">Pending For Approval</h2>
 
+    <div th:if="${param.success}" class="alert alert-success text-center">
+        <span th:text="${param.success}"></span>
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-danger text-center">
+        <span th:text="${param.error}"></span>
+    </div>
+
     <div th:if="${pendingArticles.isEmpty()}">
         <p class="alert alert-info text-center">No articles pending to review at the moment.</p>
     </div>
@@ -33,10 +41,10 @@
                 </td>
                 <td>
                     <div class="d-flex justify-content-around">
-                        <form th:action="@{/moderator/approve/{id}(id=${article.id})}" th:method="patch">
+                        <form th:action="@{/moderator/approve/{id}(id=${article.id})}" th:method="patch" onsubmit="return confirm('Are you sure you want to approve this article?');">
                             <button type="submit" class="btn btn-outline-success">Approve</button>
                         </form>
-                        <form th:action="@{/moderator/reject/{id}(id=${article.id})}" th:method="delete">
+                        <form th:action="@{/moderator/reject/{id}(id=${article.id})}" th:method="delete" onsubmit="return confirm('Are you sure you want to reject this article?');">
                             <button type="submit" class="btn btn-outline-danger">Reject</button>
                         </form>
                     </div>

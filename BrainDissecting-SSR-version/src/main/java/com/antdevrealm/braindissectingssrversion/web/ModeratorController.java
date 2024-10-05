@@ -26,14 +26,24 @@ public class ModeratorController {
 
     @PatchMapping("/approve/{articleId}")
     public String approveArticle(@PathVariable Long articleId) {
-        moderatorService.approveArticle(articleId);
-        return "redirect:/moderator/pending-for-approval";
+        boolean isApproved = moderatorService.approveArticle(articleId);
+
+        if (!isApproved) {
+            return "redirect:/moderator/pending-for-approval?error=Could not approve the article";
+        }
+
+        return "redirect:/moderator/pending-for-approval?success=Article approved";
     }
 
     @DeleteMapping("/reject/{articleId}")
     public String rejectArticle(@PathVariable Long articleId) {
-        moderatorService.rejectArticle(articleId);
-        return "redirect:/moderator/pending-for-approval";
+        boolean isRejected = moderatorService.rejectArticle(articleId);
+
+        if (!isRejected) {
+            return "redirect:/moderator/pending-for-approval?error=Could not reject the article";
+        }
+
+        return "redirect:/moderator/pending-for-approval?success=Article rejected";
     }
 
 }
