@@ -92,7 +92,6 @@ public class AdminController {
 
     }
 
-
     @PostMapping("/remove-ban/{userId}")
     public String removeBan(@PathVariable Long userId,
                             RedirectAttributes redirectAttributes) {
@@ -105,6 +104,25 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("removeBanSuccess", "BAN removed successfully");
         return "redirect:/admin/manage-roles";
     }
+
+    @GetMapping("/manage-themes")
+    public String manageThemes(Model model) {
+        model.addAttribute("themes", articleService.getThemes());
+        return "manage-themes";
+    }
+
+    @PostMapping("/add-theme")
+    public String addTheme(@RequestParam String theme) {
+        articleService.addTheme(theme);
+        return "redirect:/admin/manage-themes";
+    }
+
+    @DeleteMapping("/remove-theme")
+    public String removeTheme(@RequestParam String theme) {
+        articleService.removeTheme(theme);
+        return "redirect:/admin/manage-themes";
+    }
+
 }
 
 

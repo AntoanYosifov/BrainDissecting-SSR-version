@@ -21,5 +21,10 @@ public interface ArticleService {
 
     void updateArticles();
 
-    void updateCategories();
+
+    List<String> getThemes();
+
+    void addTheme(String theme);
+
+    boolean removeTheme(String theme);
 }

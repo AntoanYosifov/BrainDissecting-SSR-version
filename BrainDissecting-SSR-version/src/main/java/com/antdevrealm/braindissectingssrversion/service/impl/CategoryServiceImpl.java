@@ -36,6 +36,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public void removeCategory(CategoryEntity category) {
+        categoryRepository.delete(category);
+    }
+
+    @Override
     public void assignCategory(Long articleId, Long categoryId) {
         ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow(() -> new RuntimeException("Article not found!"));
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found!"));

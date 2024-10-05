@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/commons::head}"></head>
+<body>
+
+<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Manage Themes'})}"></th:block>
+
+<div class="container mt-5">
+    <h2 class="text-center text-light">Manage Themes</h2>
+
+    <div th:if="${param.success}">
+        <p class="alert alert-success" th:text="${param.success}"></p>
+    </div>
+
+    <div th:if="${param.error}">
+        <p class="alert alert-danger" th:text="${param.error}"></p>
+    </div>
+
+    <form th:action="@{/admin/add-theme}" th:method="post">
+        <div class="form-group">
+            <label for="theme" class="text-white">New Theme:</label>
+            <input type="text" class="form-control" id="theme" name="theme" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Theme</button>
+    </form>
+
+    <h4 class="mt-5 text-white">Current Themes</h4>
+    <ul class="list-group m-3">
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+            th:each="theme : ${themes}">
+            <span th:text="${#strings.capitalize(theme)}"></span>
+            <form th:action="@{/admin/remove-theme}" th:method="delete" class="d-inline">
+                <input type="hidden" name="theme" th:value="${theme}">
+                <button type="submit" class="btn btn-outline-danger">Remove</button>
+            </form>
+        </li>
+    </ul>
+
+</div>
+
+</body>
+</html>

@@ -46,8 +46,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final UserRepository userRepository;
 
-    private List<String> themes = List.of("neuroscience", "brain", "psychology", "human body", "medicine");
-
     private final Random random = new Random();
 
     private int currentThemeIndex;
@@ -63,7 +61,6 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
-
 
     @Override
     @Transactional
@@ -96,6 +93,13 @@ public class ArticleServiceImpl implements ArticleService {
 //    @Scheduled(cron = "*/30 * * * * ?")
     public void updateArticles() {
         logger.info("Scheduled task started at: {}", LocalTime.now());
+
+        List<String> themes = getThemes();
+
+        if (themes.isEmpty()) {
+            logger.warn("No themes available to fetch articles.");
+            return;
+        }
 
         String currentTheme = themes.get(currentThemeIndex);
         currentThemeIndex = (currentThemeIndex + 1) % themes.size();
@@ -157,9 +161,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<String> links = JsonPath.parse(body).read("$.results[*].bibjson.link[?(@.type=='fulltext')].url", List.class);
         List<String> journalTitles = JsonPath.parse(body).read("$.results[*].bibjson.journal.title", List.class);
 
-
         List<FetchArticleDTO> fetchArticleDTOS = new ArrayList<>();
-
 
         if (titles.size() == abstractTexts.size()) {
 
@@ -177,32 +179,29 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return fetchArticleDTOS;
-
     }
 
-    public void addTheme(String theme) {
-        this.themes.add(theme);
+    @Override
+    public List<String> getThemes() {
+        return categoryService.getAll().stream().map(CategoryEntity::getName).toList();
+    }
 
+    @Override
+    public void addTheme(String theme) {
         categoryService.addCategory(theme);
     }
 
-    // TODO: Consider changing the hard-coded themes List
-    public void updateCategories() {
-        themes.forEach(categoryService::addCategory);
-    }
+    @Override
+    public boolean removeTheme(String theme) {
+        Optional<CategoryEntity> byName = categoryService.getByName(theme);
 
-    public boolean removeTheme(Long categoryId) {
-        Optional<CategoryEntity> byId = categoryService.getById(categoryId);
-
-        if (byId.isEmpty()) {
+        if (byName.isEmpty()) {
             return false;
         }
 
-        CategoryEntity categoryEntity = byId.get();
-        themes.remove(categoryEntity.getName());
+        CategoryEntity categoryEntity = byName.get();
 
-        categoryService.removeCategory(categoryId);
-
+        categoryService.removeCategory(categoryEntity);
         return true;
     }
 
@@ -239,7 +238,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         return userEntity.getFavourites().stream().map(this::mapToArticleDTO).toList();
     }
-
 
     private DisplayArticleDTO mapToArticleDTO(ArticleEntity articleEntity) {
         DisplayArticleDTO displayArticleDTO = modelMapper.map(articleEntity, DisplayArticleDTO.class);
@@ -280,6 +278,4 @@ public class ArticleServiceImpl implements ArticleService {
 
         return displayCommentDTO;
     }
-
-
 }

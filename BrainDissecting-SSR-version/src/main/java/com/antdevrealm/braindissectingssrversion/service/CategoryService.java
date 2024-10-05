@@ -12,6 +12,8 @@ public interface CategoryService {
 
     void removeCategory(Long id);
 
+    void removeCategory(CategoryEntity category);
+
     void assignCategory(Long articleId, Long categoryId);
 
     void unAssignCategory(Long articleId, Long categoryId);
