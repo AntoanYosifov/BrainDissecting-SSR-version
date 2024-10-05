@@ -3,8 +3,6 @@ function toggleContent(articleId) {
     const moreText = document.getElementById("more-" + articleId);
     const btnText = document.getElementById("myBtn-" + articleId);
 
-    console.log('Clicked')
-
     if (dots.style.display === "none") {
         dots.style.display = "inline";
         btnText.textContent = "See More";

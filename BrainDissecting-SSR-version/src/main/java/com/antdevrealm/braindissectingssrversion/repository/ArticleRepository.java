@@ -20,12 +20,10 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     @Query(value = "DELETE FROM `brain-dissecting-ssr`.user_favourite where favourite_id = :articleId", nativeQuery = true)
     void removeAllFromUsersFavourites(@Param("articleId") Long articleId);
 
-//    List<ArticleEntity> findArticleEntitiesByStatusApproved();
-//    List<ArticleEntity> findArticleEntitiesByStatusPending();
-
     @Query("SELECT a FROM ArticleEntity a WHERE a.status = 'APPROVED'")
     List<ArticleEntity> findApprovedArticles();
 
     @Query("SELECT a FROM ArticleEntity a WHERE a.status = 'PENDING'")
     List<ArticleEntity> findPendingArticles();
+
 }

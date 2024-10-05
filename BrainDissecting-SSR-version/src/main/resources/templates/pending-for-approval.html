@@ -6,10 +6,10 @@
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Articles for approval'})}"></th:block>
 
 <div class="container mt-5">
-    <h2 class="text-center text-light">Moderator Review Page</h2>
+    <h2 class="text-center text-light">Pending For Approval</h2>
 
     <div th:if="${pendingArticles.isEmpty()}">
-        <p class="alert alert-info text-center">No articles pending review at the moment.</p>
+        <p class="alert alert-info text-center">No articles pending to review at the moment.</p>
     </div>
 
     <div th:if="${!pendingArticles.isEmpty()}">
@@ -33,10 +33,10 @@
                 </td>
                 <td>
                     <div class="d-flex justify-content-around">
-                        <form th:action="@{/moderator/approve/{id}(id=${article.id})}" method="post">
+                        <form th:action="@{/moderator/approve/{id}(id=${article.id})}" th:method="patch">
                             <button type="submit" class="btn btn-outline-success">Approve</button>
                         </form>
-                        <form th:action="@{/moderator/reject/{id}(id=${article.id})}" method="post">
+                        <form th:action="@{/moderator/reject/{id}(id=${article.id})}" th:method="delete">
                             <button type="submit" class="btn btn-outline-danger">Reject</button>
                         </form>
                     </div>

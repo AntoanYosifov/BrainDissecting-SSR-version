@@ -32,7 +32,7 @@ public class ArticleController {
     public String viewAllArticles(Model model,
                                   @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
-        List<DisplayArticleDTO> allArticles = articleService.getAllPending();
+        List<DisplayArticleDTO> allArticles = articleService.getAllApproved();
         List<Long> favouriteArticlesIds = userService.getFavouriteArticlesIds(brDissectingUserDetails.getId());
 
         model.addAttribute("allArticles", allArticles);
