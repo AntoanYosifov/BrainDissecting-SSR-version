@@ -24,7 +24,7 @@ public interface ArticleService {
 
     List<String> getThemes();
 
-    void addTheme(String theme);
+    boolean addTheme(String theme);
 
     boolean removeTheme(String theme);
 }

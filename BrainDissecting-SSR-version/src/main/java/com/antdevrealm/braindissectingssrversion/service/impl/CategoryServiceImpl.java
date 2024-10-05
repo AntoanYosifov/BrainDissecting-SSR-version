@@ -26,8 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryEntity categoryEntity = new CategoryEntity(name);
 
         categoryEntity.setName(name);
-       return categoryRepository.save(categoryEntity);
-
+        return categoryRepository.save(categoryEntity);
     }
 
     @Override

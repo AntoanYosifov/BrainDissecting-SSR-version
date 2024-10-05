@@ -17,6 +17,7 @@ import org.jsoup.Jsoup;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -186,8 +187,14 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void addTheme(String theme) {
-        categoryService.addCategory(theme);
+    public boolean addTheme(String theme) {
+       try {
+           categoryService.addCategory(theme);
+           return true;
+       } catch (DataIntegrityViolationException e) {
+           logger.error("Data integrity violation: {}", e.getMessage());
+           return false;
+       }
     }
 
     @Override

@@ -113,8 +113,13 @@ public class AdminController {
 
     @PostMapping("/add-theme")
     public String addTheme(@RequestParam String theme) {
-        articleService.addTheme(theme);
-        return "redirect:/admin/manage-themes";
+        boolean isAdded = articleService.addTheme(theme);
+
+        if (!isAdded) {
+            return "redirect:/admin/manage-themes?error=Adding theme operation failed!";
+        }
+
+        return "redirect:/admin/manage-themes?success=Theme added!";
     }
 
     @DeleteMapping("/remove-theme")
