@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.repository;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     @Query("SELECT a FROM ArticleEntity a WHERE a.status = 'PENDING'")
     List<ArticleEntity> findPendingArticles();
 
+    @Modifying
+    void deleteAllByCategoriesContaining(CategoryEntity categoryEntity);
 }

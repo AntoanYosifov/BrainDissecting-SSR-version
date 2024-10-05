@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -192,6 +191,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
+    @Modifying
     public boolean removeTheme(String theme) {
         Optional<CategoryEntity> byName = categoryService.getByName(theme);
 
@@ -201,6 +202,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         CategoryEntity categoryEntity = byName.get();
 
+        articleRepository.deleteAllByCategoriesContaining(categoryEntity);
         categoryService.removeCategory(categoryEntity);
         return true;
     }

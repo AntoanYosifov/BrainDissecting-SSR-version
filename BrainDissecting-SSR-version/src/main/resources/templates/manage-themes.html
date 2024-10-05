@@ -29,9 +29,9 @@
         <li class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
             th:each="theme : ${themes}">
             <span th:text="${#strings.capitalize(theme)}"></span>
-            <form th:action="@{/admin/remove-theme}" th:method="delete" class="d-inline">
+            <form th:action="@{/admin/remove-theme}" th:method="delete" onsubmit="return confirm('Are you sure you want to delete this theme? If you proceed this action will automatically remove all articles with in the current theme if there are any!');" class="d-inline">
                 <input type="hidden" name="theme" th:value="${theme}">
-                <button type="submit" class="btn btn-outline-danger">Remove</button>
+                <button type="submit" class="btn btn-outline-danger" >Remove</button>
             </form>
         </li>
     </ul>
