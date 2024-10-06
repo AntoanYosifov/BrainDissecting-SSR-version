@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/commons::head}"></head>
+<body>
+
+<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Suggest Theme'})}"></th:block>
+
+<div class="container mt-5">
+    <h2 class="text-center text-light">Suggest a New Theme</h2>
+
+    <!-- Success message -->
+    <div th:if="${param.success}">
+        <p class="alert alert-success" th:text="${param.success}"></p>
+    </div>
+
+    <!-- Error message -->
+    <div th:if="${param.error}">
+        <p class="alert alert-danger" th:text="${param.error}"></p>
+    </div>
+
+    <!-- Form for suggesting a new theme -->
+    <form th:action="@{/moderator/suggest-theme}" th:method="post">
+        <div class="form-group">
+            <label for="theme" class="text-white">Theme Name:</label>
+            <input type="text" class="form-control" id="theme" name="theme" placeholder="Enter theme name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Theme Suggestion</button>
+    </form>
+
+    <!-- List of suggested themes (optional) -->
+    <h4 class="mt-5 text-white">Your Suggested Themes</h4>
+    <ul class="list-group">
+        <li class="list-group-item bg-dark text-white"
+            th:each="suggestedTheme : ${suggestedThemes}" th:text="${suggestedTheme.name}">
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

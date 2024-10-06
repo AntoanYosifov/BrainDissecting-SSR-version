@@ -2,7 +2,7 @@ package com.antdevrealm.braindissectingssrversion.model.entity;
 
 // TEST ARTICLE
 
-import com.antdevrealm.braindissectingssrversion.model.enums.ArticleStatus;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ArticleEntity extends BaseEntity {
 
     @Column(name = "article_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ArticleStatus status;
+    private Status status;
 
     // Change fetch type to lazy after adding functionality for seeing the comments onClick!
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
@@ -97,11 +97,11 @@ public class ArticleEntity extends BaseEntity {
         return this;
     }
 
-    public ArticleStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public ArticleEntity setStatus(ArticleStatus articleStatus) {
+    public ArticleEntity setStatus(Status articleStatus) {
         this.status = articleStatus;
         return this;
     }

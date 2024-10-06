@@ -1,7 +1,10 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.ModeratorService;
+import com.antdevrealm.braindissectingssrversion.service.ThemeSuggestionService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +15,12 @@ public class ModeratorController {
 
     private final ArticleService articleService;
     private final ModeratorService moderatorService;
+    private final ThemeSuggestionService themeSuggestionService;
 
-    public ModeratorController(ArticleService articleService, ModeratorService moderatorService) {
+    public ModeratorController(ArticleService articleService, ModeratorService moderatorService, ThemeSuggestionService themeSuggestionService) {
         this.articleService = articleService;
         this.moderatorService = moderatorService;
+        this.themeSuggestionService = themeSuggestionService;
     }
 
     @GetMapping("/pending-for-approval")
@@ -44,6 +49,20 @@ public class ModeratorController {
         }
 
         return "redirect:/moderator/pending-for-approval?success=Article rejected";
+    }
+
+    @GetMapping("/suggest-themes")
+    public String viewSuggestThemes(Model model ,
+                                    @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
+
+        model.addAttribute("suggestedThemes", themeSuggestionService.getAllModeratorSuggestions(brDissectingUserDetails.getId()));
+        return "suggest-themes";
+    }
+
+    @PostMapping("/suggest-theme")
+    public String suggestTheme(@RequestParam String theme ,@AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
+        themeSuggestionService.suggestTheme(theme, brDissectingUserDetails.getId());
+        return "redirect:/moderator/suggest-themes";
     }
 
 }

@@ -1,7 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
-import com.antdevrealm.braindissectingssrversion.model.enums.ArticleStatus;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.service.ModeratorService;
 import org.springframework.stereotype.Service;
@@ -27,11 +27,11 @@ public class ModeratorServiceImpl implements ModeratorService {
 
         ArticleEntity articleEntity = byId.get();
 
-        if (!articleEntity.getStatus().equals(ArticleStatus.PENDING)) {
+        if (!articleEntity.getStatus().equals(Status.PENDING)) {
             return false;
         }
 
-        articleEntity.setStatus(ArticleStatus.APPROVED);
+        articleEntity.setStatus(Status.APPROVED);
         articleRepository.save(articleEntity);
         return true;
     }
@@ -47,7 +47,7 @@ public class ModeratorServiceImpl implements ModeratorService {
 
         ArticleEntity articleEntity = byId.get();
 
-        if (!articleEntity.getStatus().equals(ArticleStatus.PENDING)) {
+        if (!articleEntity.getStatus().equals(Status.PENDING)) {
             return false;
         }
 

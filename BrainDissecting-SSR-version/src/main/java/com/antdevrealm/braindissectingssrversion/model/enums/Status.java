@@ -1,5 +1,5 @@
 package com.antdevrealm.braindissectingssrversion.model.enums;
 
-public enum ArticleStatus {
+public enum Status {
     PENDING, APPROVED
 }

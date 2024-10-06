@@ -7,7 +7,7 @@ import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
-import com.antdevrealm.braindissectingssrversion.model.enums.ArticleStatus;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
@@ -272,7 +272,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Optional<ArticleEntity> optArticle = articleRepository.findByTitle(fetchArticleDTO.getTitle());
         ArticleEntity articleEntity = optArticle.orElseGet(() -> modelMapper.map(fetchArticleDTO, ArticleEntity.class));
-        articleEntity.setStatus(ArticleStatus.PENDING);
+        articleEntity.setStatus(Status.PENDING);
 
         return articleEntity;
     }

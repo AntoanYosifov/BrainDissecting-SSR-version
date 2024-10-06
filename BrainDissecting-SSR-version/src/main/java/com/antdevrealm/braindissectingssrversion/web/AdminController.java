@@ -124,8 +124,13 @@ public class AdminController {
 
     @DeleteMapping("/remove-theme")
     public String removeTheme(@RequestParam String theme) {
-        articleService.removeTheme(theme);
-        return "redirect:/admin/manage-themes";
+        boolean isRemoved = articleService.removeTheme(theme);
+
+        if (!isRemoved) {
+            return "redirect:/admin/manage-themes?error=Remove theme operation failed!";
+        }
+
+        return "redirect:/admin/manage-themes?success=Theme removed!";
     }
 
 }
