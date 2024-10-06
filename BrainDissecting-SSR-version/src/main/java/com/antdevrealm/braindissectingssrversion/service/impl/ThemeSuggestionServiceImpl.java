@@ -42,7 +42,7 @@ public class ThemeSuggestionServiceImpl implements ThemeSuggestionService {
     public boolean suggestTheme(String name, Long moderatorId) {
         Optional<UserEntity> optUser = userRepository.findById(moderatorId);
 
-        if(optUser.isEmpty()) {
+        if(optUser.isEmpty() || themeSuggestionRepository.existsByName(name)) {
             return false;
         }
 

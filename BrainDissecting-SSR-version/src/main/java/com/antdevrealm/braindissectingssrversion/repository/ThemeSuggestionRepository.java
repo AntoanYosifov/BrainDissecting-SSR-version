@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ThemeSuggestionRepository extends JpaRepository<ThemeSuggestionEntity, Long> {
     List<ThemeSuggestionEntity> findAllBySuggestedById(Long userId);
+
+    boolean existsByName(String name);
 }
