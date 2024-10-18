@@ -37,7 +37,6 @@
             Edit Profile
         </div>
         <div class="card-body">
-            <!-- Username Change Form -->
             <form th:action="@{/users/profile/update}"
                   th:method="patch"
                   th:object="${updateData}"
@@ -65,14 +64,13 @@
                             >
                     <p class="errors alert alert-danger" th:errors="*{confirmUsername}"></p>
                 </div>
-
-                <!-- Email Change Form -->
                 <div class="form-group">
                     <label for="newEmail">New Email</label>
                     <input
                            id="newEmail"
                            name="newEmail"
                            class="form-control"
+                           placeholder="Leave empty if you don't want to change"
                            th:field="*{newEmail}"
                            >
                     <p class="errors alert alert-danger" th:errors="*{newEmail}"></p>
@@ -80,8 +78,6 @@
 
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </form>
-
-            <!-- Display Success/Error Messages -->
             <div th:if="${usernameOrEmailTaken}" class="alert alert-danger mt-2">
                 <span th:text="${usernameOrEmailTaken}"></span>
             </div>
@@ -93,34 +89,7 @@
     <div th:if="${successMessage}" class="alert alert-success mt-2 card col-sm-2 col-md-3 row mx-auto col-lg-4 m-1 p-0">
         <span th:text="${successMessage}"></span>
     </div>
-
-    <!-- Username Change Form -->
-<!--    <div class="card mt-3">-->
-<!--        <div class="card-header">-->
-<!--            Change Username-->
-<!--        </div>-->
-<!--        <div class="card-body">-->
-<!--            <form th:action="@{/profile/change-username}" th:method="post">-->
-<!--                <div class="form-group">-->
-<!--                    <label for="newUsername">New Username</label>-->
-<!--                    <input type="text" id="newUsername" name="newUsername" class="form-control" required>-->
-<!--                </div>-->
-<!--                <button type="submit" class="btn btn-primary">Change Username</button>-->
-<!--            </form>-->
-
-<!--            &lt;!&ndash; Display any messages, such as success or error &ndash;&gt;-->
-<!--            <div th:if="${successMessage}" class="alert alert-success mt-2">-->
-<!--                <span th:text="${successMessage}"></span>-->
-<!--            </div>-->
-<!--            <div th:if="${errorMessage}" class="alert alert-danger mt-2">-->
-<!--                <span th:text="${errorMessage}"></span>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-
 </div>
-<!--<script src="/js/bootstrap.min.js"></script>-->
 <script src="/js/my-profile.js"></script>
 </body>
 </html>

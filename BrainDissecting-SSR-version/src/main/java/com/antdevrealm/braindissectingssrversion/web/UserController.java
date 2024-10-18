@@ -38,8 +38,8 @@ public class UserController {
 
 
     @GetMapping("/profile")
-    public String details(@AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
-                          Model model) {
+    public String viewProfile(@AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
+                              Model model) {
 
         model.addAttribute("user", brDissectingUserDetails);
         return "my-profile";
@@ -61,9 +61,8 @@ public class UserController {
 
         try {
             userService.update(brDissectingUserDetails.getId(), updateDTO);
-        } catch (UsernameOrEmailException | NewUsernameConfirmUsernameException e) {
-            log.error(e.getMessage());
 
+        } catch (UsernameOrEmailException | NewUsernameConfirmUsernameException e) {
             if(e instanceof UsernameOrEmailException) {
                 redirectAttributes.addFlashAttribute("usernameOrEmailTaken", e.getMessage());
             }

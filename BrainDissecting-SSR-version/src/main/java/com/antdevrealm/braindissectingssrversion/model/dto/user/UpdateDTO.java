@@ -14,8 +14,8 @@ public class UpdateDTO {
     @Size(min = 5, max = 20, message = "{userEntity.username.length}")
     private String confirmUsername;
 
-    @NotNull(message = "{userEntity.registration.notBlank.email}")
-    @NotBlank(message = "{userEntity.registration.notBlank.email}")
+//    @NotNull(message = "{userEntity.registration.notBlank.email}")
+//    @NotBlank(message = "{userEntity.registration.notBlank.email}")
     @Email(message = "{userEntity.registration.email}")
     private String newEmail;
 

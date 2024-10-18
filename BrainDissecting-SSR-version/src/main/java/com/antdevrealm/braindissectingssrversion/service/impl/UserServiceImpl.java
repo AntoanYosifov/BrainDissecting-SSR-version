@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
 
 
-
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService, ArticleRepository articleRepository, ModelMapper modelMapper
     ) {
@@ -58,7 +57,6 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity userEntity = mapToUser(data);
-
         userRepository.save(userEntity);
 
         return true;
@@ -68,22 +66,25 @@ public class UserServiceImpl implements UserService {
     public boolean update(long loggedUserId, UpdateDTO updateDTO) {
         Optional<UserEntity> byId = userRepository.findById(loggedUserId);
 
-        if(byId.isEmpty()) {
+        if (byId.isEmpty()) {
             return false;
         }
 
-        if(usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
+        if (usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
             throw new UsernameOrEmailException(updateDTO.getNewUsername(), updateDTO.getNewEmail());
         }
 
-        if(!updateDTO.getNewUsername().equals(updateDTO.getConfirmUsername())) {
+        if (!updateDTO.getNewUsername().equals(updateDTO.getConfirmUsername())) {
             throw new NewUsernameConfirmUsernameException(updateDTO.getNewUsername(), updateDTO.getConfirmUsername());
         }
 
         UserEntity userEntity = byId.get();
 
-        userEntity.setUsername(updateDTO.getNewUsername())
-                .setEmail(updateDTO.getNewEmail());
+        if (!updateDTO.getNewEmail().isEmpty()) {
+            userEntity.setEmail(updateDTO.getNewEmail());
+        }
+
+        userEntity.setUsername(updateDTO.getNewUsername());
 
         userRepository.save(userEntity);
 
@@ -98,13 +99,13 @@ public class UserServiceImpl implements UserService {
 
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
-        if(optUser.isEmpty()) {
+        if (optUser.isEmpty()) {
             return false;
         }
 
         Optional<ArticleEntity> optArt = articleRepository.findById(articleId);
 
-        if(optArt.isEmpty()) {
+        if (optArt.isEmpty()) {
             return false;
         }
 
@@ -124,13 +125,13 @@ public class UserServiceImpl implements UserService {
 
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
-        if(optUser.isEmpty()) {
+        if (optUser.isEmpty()) {
             return false;
         }
 
         Optional<ArticleEntity> optArt = articleRepository.findById(articleId);
 
-        if(optArt.isEmpty()) {
+        if (optArt.isEmpty()) {
             return false;
         }
 
@@ -148,7 +149,7 @@ public class UserServiceImpl implements UserService {
     public List<Long> getFavouriteArticlesIds(Long userId) {
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
-        if(optUser.isEmpty()) {
+        if (optUser.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
     public List<DisplayUserInfoDTO> getAllUsers() {
         List<UserEntity> allUsers = userRepository.findAll();
 
-        if(allUsers.isEmpty()) {
+        if (allUsers.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -200,6 +201,7 @@ public class UserServiceImpl implements UserService {
     private boolean passwordConfirmPasswordMatch(RegistrationDTO data) {
         return data.getPassword().equals(data.getConfirmPassword());
     }
+
     @Override
     public void reloadUserDetails(String username) {
         UserDetails updatedUserDetails = brDissectingUserDetailService.loadUserByUsername(username);
