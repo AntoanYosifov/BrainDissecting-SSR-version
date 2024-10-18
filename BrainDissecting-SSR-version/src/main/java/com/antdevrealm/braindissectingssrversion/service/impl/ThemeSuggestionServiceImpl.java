@@ -57,12 +57,13 @@ public class ThemeSuggestionServiceImpl implements ThemeSuggestionService {
 
         ThemeSuggestionEntity themeSuggestionEntity = new ThemeSuggestionEntity();
 
-        themeSuggestionEntity.setName(name)
+        themeSuggestionEntity.setName(name.toLowerCase())
                 .setSuggestedBy(moderator);
 
         if (categoryRepository.existsByName(name.toLowerCase())) {
             return false;
         }
+
 
         themeSuggestionRepository.save(themeSuggestionEntity);
         return true;

@@ -4,6 +4,7 @@ package com.antdevrealm.braindissectingssrversion.web;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
+import com.antdevrealm.braindissectingssrversion.service.ThemeSuggestionService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,15 @@ public class AdminController {
     private final AdminService adminService;
     private final UserService userService;
     private final ArticleService articleService;
+    private final ThemeSuggestionService themeSuggestionService;
 
-    public AdminController(AdminService adminService, UserService userService, ArticleService articleService) {
+    public AdminController(AdminService adminService,
+                           UserService userService,
+                           ArticleService articleService, ThemeSuggestionService themeSuggestionService) {
         this.adminService = adminService;
         this.userService = userService;
         this.articleService = articleService;
-
+        this.themeSuggestionService = themeSuggestionService;
     }
 
 
@@ -108,6 +112,7 @@ public class AdminController {
     @GetMapping("/manage-themes")
     public String manageThemes(Model model) {
         model.addAttribute("themes", articleService.getThemes());
+        model.addAttribute("suggestedThemes", themeSuggestionService.getAll());
         return "manage-themes";
     }
 
@@ -131,6 +136,20 @@ public class AdminController {
         }
 
         return "redirect:/admin/manage-themes?success=Theme removed!";
+    }
+
+    @PostMapping("/approve-theme")
+    public String approveSuggestedTheme(@RequestParam Long themeId) {
+        themeSuggestionService.approveTheme(themeId);
+
+        return "redirect:/admin/manage-themes";
+    }
+
+    @DeleteMapping("/reject-theme")
+    public String rejectSuggestedTheme(@RequestParam Long themeId) {
+        themeSuggestionService.rejectTheme(themeId);
+
+        return "redirect:/admin/manage-themes";
     }
 
 }

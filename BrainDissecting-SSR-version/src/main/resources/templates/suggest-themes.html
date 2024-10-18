@@ -29,8 +29,8 @@
 
     <!-- List of suggested themes (optional) -->
     <h4 class="mt-5 text-white">Your Suggested Themes</h4>
-    <ul class="list-group">
-        <li class="list-group-item bg-dark text-white"
+    <ul class="list-group m-3">
+        <li class="list-group-item bg-dark text-white text-center"
             th:each="suggestedTheme : ${suggestedThemes}" th:text="${suggestedTheme.name}">
         </li>
     </ul>

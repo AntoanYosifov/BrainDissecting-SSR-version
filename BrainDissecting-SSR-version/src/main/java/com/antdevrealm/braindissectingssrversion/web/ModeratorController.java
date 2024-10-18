@@ -66,7 +66,7 @@ public class ModeratorController {
         boolean isSuggested = themeSuggestionService.suggestTheme(theme, brDissectingUserDetails.getId());
 
         if (!isSuggested) {
-            return "redirect:/moderator/suggest-themes?error=Failed to suggest theme.";
+            return "redirect:/moderator/suggest-themes?error=Failed to suggest theme. Please try to suggest a different theme.";
         }
 
         return "redirect:/moderator/suggest-themes?success=Theme suggested successfully.";
