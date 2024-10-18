@@ -32,4 +32,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     void deleteAllByCategoriesContaining(CategoryEntity categoryEntity);
 
     int countByStatus(Status status);
+
+    List<ArticleEntity> findAllByCategoriesContainingAndFavouriteIsTrue(CategoryEntity category);
 }

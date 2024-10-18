@@ -98,14 +98,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
 //    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 //    @Scheduled(cron = "*/30 * * * * ?")
-    public void updateArticles() {
+    public boolean updateArticles() {
         logger.info("Scheduled task started at: {}", LocalTime.now());
 
         List<String> themes = getThemes();
 
         if (themes.isEmpty()) {
             logger.warn("No themes available to fetch articles.");
-            return;
+            return false;
         }
 
         String currentTheme = themes.get(currentThemeIndex);
@@ -117,7 +117,7 @@ public class ArticleServiceImpl implements ArticleService {
 
             Optional<ArticleEntity> byTitle = articleRepository.findByTitle(dto.getTitle());
 
-            if(byTitle.isPresent()) {
+            if (byTitle.isPresent()) {
                 continue;
             }
 
@@ -127,21 +127,19 @@ public class ArticleServiceImpl implements ArticleService {
 
             Optional<CategoryEntity> optCategory = categoryService.getByName(currentTheme);
 
-            if (optCategory.isPresent()) {
-                articleCategories.add(optCategory.get());
-                articleRepository.saveAndFlush(articleEntity);
-
-                logger.info("Program in continue mode: {}", LocalTime.now());
-                continue;
+            if (optCategory.isEmpty()) {
+                return false;
             }
 
-            CategoryEntity categoryEntity = categoryService.addCategory(currentTheme);
-
-            articleCategories.add(categoryEntity);
+            articleCategories.add(optCategory.get());
             articleRepository.saveAndFlush(articleEntity);
+
+            logger.info("Program in continue mode: {}", LocalTime.now());
 
             logger.info("Scheduled task ended at: {}", LocalTime.now());
         }
+
+        return true;
     }
 
     // TODO: Error handling
@@ -153,7 +151,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         String body = restClient
                 .get()
-                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "&pageSize=2")
+                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "&pageSize=10")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
@@ -189,13 +187,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public boolean addTheme(String theme) {
-       try {
-           categoryService.addCategory(theme);
-           return true;
-       } catch (DataIntegrityViolationException e) {
-           logger.error("Data integrity violation: {}", e.getMessage());
-           return false;
-       }
+        try {
+            categoryService.addCategory(theme);
+            return true;
+        } catch (DataIntegrityViolationException e) {
+            logger.error("Data integrity violation: {}", e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -209,6 +207,12 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         CategoryEntity categoryEntity = byName.get();
+
+        List<ArticleEntity> allByCategoriesContaining = articleRepository.findAllByCategoriesContainingAndFavouriteIsTrue(categoryEntity);
+
+        for (ArticleEntity articleEntity : allByCategoriesContaining) {
+            articleRepository.removeAllFromUsersFavourites(articleEntity.getId());
+        }
 
         articleRepository.deleteAllByCategoriesContaining(categoryEntity);
         categoryService.removeCategory(categoryEntity);

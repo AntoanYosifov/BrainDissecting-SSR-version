@@ -127,6 +127,8 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = optUser.get();
         ArticleEntity toFavouritesArt = optArt.get();
 
+        toFavouritesArt.setFavourite(true);
+
         userEntity.getFavourites().add(toFavouritesArt);
 
         userRepository.save(userEntity);

@@ -27,7 +27,7 @@ public class ArticleEntity extends BaseEntity {
     private Status status;
 
     @Column(name = "is_favourite")
-    boolean isFavourite;
+    boolean favourite;
 
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
             orphanRemoval = true)
@@ -42,7 +42,7 @@ public class ArticleEntity extends BaseEntity {
     public ArticleEntity() {
         comments = new ArrayList<>();
         categories = new ArrayList<>();
-        isFavourite = false;
+        favourite = false;
     }
 
     public String getTitle() {
@@ -91,11 +91,11 @@ public class ArticleEntity extends BaseEntity {
     }
 
     public boolean isFavourite() {
-        return isFavourite;
+        return favourite;
     }
 
     public ArticleEntity setFavourite(boolean favourite) {
-        isFavourite = favourite;
+        this.favourite = favourite;
         return this;
     }
 
