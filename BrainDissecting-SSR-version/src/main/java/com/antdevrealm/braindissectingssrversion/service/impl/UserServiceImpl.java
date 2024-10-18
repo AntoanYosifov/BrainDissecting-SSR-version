@@ -8,8 +8,11 @@ import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.BaseEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -28,16 +31,18 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final BrDissectingUserDetailService brDissectingUserDetailService;
     private final ArticleRepository articleRepository;
+    private final RoleRepository roleRepository;
+    private final BrDissectingUserDetailService brDissectingUserDetailService;
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
 
-    public UserServiceImpl(UserRepository userRepository,
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService, ArticleRepository articleRepository, ModelMapper modelMapper
     ) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.brDissectingUserDetailService = brDissectingUserDetailService;
         this.articleRepository = articleRepository;
@@ -47,7 +52,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean register(RegistrationDTO data) {
-
         if (usernameOrEmailExists(data.getUsername(), data.getEmail())) {
             throw new UsernameOrEmailException(data.getUsername(), data.getEmail());
         }
@@ -57,6 +61,14 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity userEntity = mapToUser(data);
+
+        Optional<UserRoleEntity> roleUser = roleRepository.findByRole(UserRole.USER);
+
+        if(roleUser.isEmpty()) {
+            return false;
+        }
+
+        userEntity.getRoles().add(roleUser.get());
         userRepository.save(userEntity);
 
         return true;
@@ -80,8 +92,11 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = byId.get();
 
-        if (!updateDTO.getNewEmail().isEmpty()) {
-            userEntity.setEmail(updateDTO.getNewEmail());
+        if (!updateDTO.getNewUsername().isEmpty()) {
+            if (usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
+                throw new UsernameOrEmailException(updateDTO.getNewUsername(), updateDTO.getNewEmail());
+            }
+            userEntity.setEmail(userEntity.getEmail());
         }
 
         userEntity.setUsername(updateDTO.getNewUsername());

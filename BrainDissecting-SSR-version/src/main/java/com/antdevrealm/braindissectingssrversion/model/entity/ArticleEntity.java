@@ -26,6 +26,9 @@ public class ArticleEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(name = "is_favourite")
+    boolean isFavourite;
+
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
             orphanRemoval = true)
     private List<CommentEntity> comments;
@@ -39,6 +42,7 @@ public class ArticleEntity extends BaseEntity {
     public ArticleEntity() {
         comments = new ArrayList<>();
         categories = new ArrayList<>();
+        isFavourite = false;
     }
 
     public String getTitle() {
@@ -77,6 +81,24 @@ public class ArticleEntity extends BaseEntity {
         return this;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public ArticleEntity setStatus(Status articleStatus) {
+        this.status = articleStatus;
+        return this;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public ArticleEntity setFavourite(boolean favourite) {
+        isFavourite = favourite;
+        return this;
+    }
+
     public List<CommentEntity> getComments() {
         return comments;
     }
@@ -92,15 +114,6 @@ public class ArticleEntity extends BaseEntity {
 
     public ArticleEntity setCategories(List<CategoryEntity> categories) {
         this.categories = categories;
-        return this;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public ArticleEntity setStatus(Status articleStatus) {
-        this.status = articleStatus;
         return this;
     }
 }

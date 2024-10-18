@@ -1,6 +1,4 @@
 package com.antdevrealm.braindissectingssrversion.web;
-
-
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
@@ -148,7 +146,12 @@ public class AdminController {
     @DeleteMapping("/reject-theme")
     public String rejectSuggestedTheme(@RequestParam Long themeId) {
         themeSuggestionService.rejectTheme(themeId);
+        return "redirect:/admin/manage-themes";
+    }
 
+    @PostMapping("/update-articles")
+    public String manualUpdate() {
+        articleService.updateArticles();
         return "redirect:/admin/manage-themes";
     }
 

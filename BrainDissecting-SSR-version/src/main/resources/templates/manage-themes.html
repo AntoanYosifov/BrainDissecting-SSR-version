@@ -36,7 +36,11 @@
             </form>
         </li>
     </ul>
-
+    <div>
+        <form th:action="@{/admin/update-articles}" method="post">
+            <button type="submit" class="btn btn-warning">Manually Update Articles</button>
+        </form>
+    </div>
     <h4 class="mt-5 text-white">Suggested Themes (from Moderators)</h4>
     <div th:if="${suggestedThemes.isEmpty()}">
         <p class="alert alert-info text-center">No themes suggested by moderators at the moment.</p>
@@ -61,6 +65,5 @@
         </li>
     </ul>
 </div>
-
 </body>
 </html>

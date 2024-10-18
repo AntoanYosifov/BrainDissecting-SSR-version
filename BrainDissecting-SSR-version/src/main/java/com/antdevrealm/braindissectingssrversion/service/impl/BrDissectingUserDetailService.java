@@ -5,20 +5,15 @@ import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.stream.Collectors;
-
 
 public class BrDissectingUserDetailService implements UserDetailsService {
 
-    Logger log = LoggerFactory.getLogger(BrDissectingUserDetailService.class);
     private final UserRepository userRepository;
 
     public BrDissectingUserDetailService(UserRepository userRepository) {
@@ -30,19 +25,13 @@ public class BrDissectingUserDetailService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found!"));
 
-        String roles = userEntity.getRoles().stream().map(r -> r.getRole().toString()).collect(Collectors.joining(", "));
-
-        log.info("User '{}' has roles: {}", username, roles );
-        log.info("Banned: '{}'" , userEntity.isBanned());
-
-        UserDetails userDetails = map(userEntity);
-
-        return userDetails;
+        return map(userEntity);
 
     }
 
     private  UserDetails map(UserEntity user) {
-        BrDissectingUserDetails brDissectingUserDetails = new BrDissectingUserDetails(
+
+        return new BrDissectingUserDetails(
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
@@ -52,10 +41,6 @@ public class BrDissectingUserDetailService implements UserDetailsService {
                 user.getLastName(),
                 user.isBanned()
         );
-
-        log.info("BrDissectingUserDetails: {}" , brDissectingUserDetails.isBanned());
-
-        return brDissectingUserDetails;
     }
 
     private static GrantedAuthority map(UserRole userRole) {
