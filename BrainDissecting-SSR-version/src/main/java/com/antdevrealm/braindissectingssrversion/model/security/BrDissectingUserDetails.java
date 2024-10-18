@@ -98,7 +98,7 @@ public class BrDissectingUserDetails extends User {
         }
 
         if(fullName.isEmpty()) {
-            fullName.append("User");
+            fullName.append(getUsername());
         }
 
         return fullName.toString();

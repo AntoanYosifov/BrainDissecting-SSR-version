@@ -5,7 +5,7 @@
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Delete Article'})}"></th:block>
 
 <div class="container mt-5">
-    <h2 th:unless="${articles.isEmpty()}" class="text-center">Delete Articles</h2>
+    <h2 th:unless="${articles.isEmpty()}" class="text-center text-white">Delete Articles</h2>
     <h3 class="text-center text-white bg-dark p-2" th:if="${articles.isEmpty()}">Currently, there are no articles for deletion</h3>
     <div class="list-group">
         <div th:each="article : ${articles}">

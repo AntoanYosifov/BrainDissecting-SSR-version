@@ -10,7 +10,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/brain-dissecting-ssr?createDatabaseIfNotExist=true
-    username: root
+    username: ${db_username:}
     password: ${db_password:}
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -24,7 +24,7 @@ spring:
     init:
       mode: never
   mvc:
-    hiddenmethod:
+    hidden method:
       filter:
         enabled: true
 server:
