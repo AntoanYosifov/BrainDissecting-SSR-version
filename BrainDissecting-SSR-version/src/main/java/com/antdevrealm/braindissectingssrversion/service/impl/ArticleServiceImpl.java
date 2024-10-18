@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -75,6 +76,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public int countPendingArticles() {
+        return articleRepository.countByStatus(Status.PENDING);
+    }
+
+    @Override
     @Transactional
     @Modifying
     public boolean deleteArticle(Long articleId) {
@@ -90,6 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Modifying
     @Transactional
+//    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
 //    @Scheduled(cron = "*/30 * * * * ?")
     public void updateArticles() {
         logger.info("Scheduled task started at: {}", LocalTime.now());
@@ -106,19 +113,14 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(currentTheme);
 
-//        List<ArticleEntity> all = articleRepository.findAll();
-//
-//        List<ArticleEntity> withoutComments = new ArrayList<>();
-//
-//        for (ArticleEntity articleEntity : all) {
-//            if (articleEntity.getComments().isEmpty()) {
-//                withoutComments.add(articleEntity);
-//            }
-//        }
-//
-//        articleRepository.deleteAll(withoutComments);
-
         for (FetchArticleDTO dto : fetchArticleDTOS) {
+
+            Optional<ArticleEntity> byTitle = articleRepository.findByTitle(dto.getTitle());
+
+            if(byTitle.isPresent()) {
+                continue;
+            }
+
             ArticleEntity articleEntity = mapToArticleEntity(dto);
 
             List<CategoryEntity> articleCategories = articleEntity.getCategories();
@@ -142,16 +144,16 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
-
     // TODO: Error handling
     @Override
+    @SuppressWarnings("unchecked")
     public List<FetchArticleDTO> fetchArticles(String theme) {
 
         int pageNumber = random.nextInt(10) + 1;
 
         String body = restClient
                 .get()
-                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "1&pageSize=2")
+                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "&pageSize=2")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
@@ -168,8 +170,7 @@ public class ArticleServiceImpl implements ArticleService {
             for (int i = 0; i < titles.size(); i++) {
                 FetchArticleDTO fetchArticleDTO = new FetchArticleDTO();
 
-
-                fetchArticleDTO.setTitle(titles.get(i))
+                fetchArticleDTO.setTitle(Jsoup.parse(titles.get(i)).text())
                         .setContent(Jsoup.parse(abstractTexts.get(i)).text())
                         .setLink(links.size() > i ? Jsoup.parse(links.get(i)).text() : "")
                         .setJournalTitle(journalTitles.size() > i ? Jsoup.parse(journalTitles.get(i)).text() : "");

@@ -75,7 +75,10 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item bg-secondary text-white" th:href="@{/moderator/suggest-themes}">Suggest Themes</a>
-                        <a class="dropdown-item bg-secondary text-white" th:href="@{/moderator/pending-for-approval}">Pending articles for approval</a>
+                        <a class="dropdown-item bg-secondary text-white" th:href="@{/moderator/pending-for-approval}">
+                            Pending articles for approval
+                            <span class="text-warning" th:text="${pendingCount}"></span>
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item">

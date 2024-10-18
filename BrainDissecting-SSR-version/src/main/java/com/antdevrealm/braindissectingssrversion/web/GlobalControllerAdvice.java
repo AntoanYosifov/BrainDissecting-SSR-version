@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
+import com.antdevrealm.braindissectingssrversion.service.ArticleService;
 import com.antdevrealm.braindissectingssrversion.service.CategoryService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,15 +13,20 @@ import java.util.List;
 public class GlobalControllerAdvice {
 
     private final CategoryService categoryService;
+    private final ArticleService articleService;
 
-    public GlobalControllerAdvice(CategoryService categoryService) {
+    public GlobalControllerAdvice(CategoryService categoryService, ArticleService articleService) {
         this.categoryService = categoryService;
+        this.articleService = articleService;
     }
 
-    @ModelAttribute
-    public void addCategoriesModel(Model model) {
-        List<CategoryEntity> categories = categoryService.getAll();
+    @ModelAttribute("categories")
+    public List<CategoryEntity> addCategoriesModel() {
+        return categoryService.getAll();
+    }
 
-        model.addAttribute("categories", categories);
+    @ModelAttribute("pendingCount")
+    public int pendingCount() {
+        return articleService.countPendingArticles();
     }
 }

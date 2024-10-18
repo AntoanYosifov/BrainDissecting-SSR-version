@@ -27,4 +27,6 @@ public interface ArticleService {
     boolean addTheme(String theme);
 
     boolean removeTheme(String theme);
+
+    int countPendingArticles();
 }

@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.repository;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +30,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
     @Modifying
     void deleteAllByCategoriesContaining(CategoryEntity categoryEntity);
+
+    int countByStatus(Status status);
 }

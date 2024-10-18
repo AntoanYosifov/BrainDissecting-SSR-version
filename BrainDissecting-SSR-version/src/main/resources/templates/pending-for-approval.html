@@ -6,7 +6,9 @@
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Articles for approval'})}"></th:block>
 
 <div class="container mt-5">
-    <h2 class="text-center text-light">Pending For Approval</h2>
+    <h2 class="text-center text-light">Pending For Approval
+        <span class="text-warning" th:text="${pendingCount}"></span>
+    </h2>
 
     <div th:if="${param.success}" class="alert alert-success text-center">
         <span th:text="${param.success}"></span>

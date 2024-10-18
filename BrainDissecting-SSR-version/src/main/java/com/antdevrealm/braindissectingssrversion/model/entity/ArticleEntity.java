@@ -1,6 +1,5 @@
 package com.antdevrealm.braindissectingssrversion.model.entity;
 
-// TEST ARTICLE
 
 import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import jakarta.persistence.*;
@@ -27,7 +26,6 @@ public class ArticleEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    // Change fetch type to lazy after adding functionality for seeing the comments onClick!
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "article",
             orphanRemoval = true)
     private List<CommentEntity> comments;
