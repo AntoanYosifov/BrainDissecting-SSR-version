@@ -1,4 +1,5 @@
 package com.antdevrealm.braindissectingssrversion.web;
+
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
@@ -150,8 +151,13 @@ public class AdminController {
 
     @PostMapping("/update-articles")
     public String manualUpdate() {
-        articleService.updateArticles();
-        return "redirect:/admin/manage-themes";
+        boolean updated = articleService.updateArticles();
+
+        if (!updated) {
+            return "redirect:/admin/manage-themes?error=Failed to update Articles! Please try again later!";
+        }
+
+        return "redirect:/admin/manage-themes?success=Articles updated successfully!";
     }
 
 }
