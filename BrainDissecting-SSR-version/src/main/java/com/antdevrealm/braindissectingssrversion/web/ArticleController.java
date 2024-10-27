@@ -42,10 +42,6 @@ public class ArticleController {
         return "articles-all";
     }
 
-//    @GetMapping("/upload")
-//    public String testViewUpload() {
-//        return "offer-add";
-//    }
 
     @GetMapping("/category/{categoryName}")
     public String viewCategory(@PathVariable String categoryName, Model model,
