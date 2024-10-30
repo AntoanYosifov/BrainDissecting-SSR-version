@@ -44,8 +44,8 @@ public class BrDissectingUserDetailServiceTest {
                 .setLastName("testLastname")
                 .setStatus(UserStatus.ACTIVE)
                 .setRoles(List.of(
-                        new UserRoleEntity().setRole(UserRole.USER),
-                        new UserRoleEntity().setRole(UserRole.ADMIN)
+                        new UserRoleEntity().setRole(UserRole.ADMIN),
+                        new UserRoleEntity().setRole(UserRole.USER)
                 ));
 
         when(mockUserRepository.findByUsername(TEST_USERNAME))
@@ -65,18 +65,10 @@ public class BrDissectingUserDetailServiceTest {
         Assertions.assertEquals(testUser.getFirstName() + " " + testUser.getLastName(), brDissectingUserDetails.getFullName());
         Assertions.assertFalse(brDissectingUserDetails.isBanned());
 
-        Assertions.assertEquals(2, userDetails.getAuthorities().size());
+        List<String> expectedRoles = testUser.getRoles().stream().map(UserRoleEntity::getRole).map(r -> "ROLE_" + r).toList();
+        List<String> actualRoles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        Optional<? extends GrantedAuthority> adminRole =
-                userDetails.getAuthorities().
-                        stream().filter(a -> "ROLE_ADMIN".equals(a.getAuthority())).findAny();
-
-        Assertions.assertTrue(adminRole.isPresent());
-
-        Optional<? extends GrantedAuthority> userRole = userDetails.getAuthorities().
-                stream().filter(a -> "ROLE_USER".equals(a.getAuthority())).findAny();
-
-        Assertions.assertTrue(userRole.isPresent());
+        Assertions.assertEquals(expectedRoles, actualRoles);
 
     }
 
