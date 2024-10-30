@@ -56,21 +56,6 @@ public class SecurityConfig {
                 .build();
     }
 
-//    @Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return (request, response, accessDeniedException) -> {
-//            if (request.getUserPrincipal() != null) {
-//                BrDissectingUserDetails brDissectingUserDetails = (BrDissectingUserDetails) ((Authentication) request.getUserPrincipal()).getPrincipal();
-//
-//                if (brDissectingUserDetails.isBanned()) {
-//                    response.sendRedirect("/users/banned");
-//                    return;
-//                }
-//            }
-//            response.sendRedirect("/access/denied");
-//        };
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
