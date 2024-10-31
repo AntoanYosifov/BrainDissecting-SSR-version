@@ -39,7 +39,9 @@ public class UserServiceImpl implements UserService {
 
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService, ArticleRepository articleRepository, ModelMapper modelMapper
+                           PasswordEncoder passwordEncoder, BrDissectingUserDetailService brDissectingUserDetailService,
+                           ArticleRepository articleRepository,
+                           ModelMapper modelMapper
     ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;

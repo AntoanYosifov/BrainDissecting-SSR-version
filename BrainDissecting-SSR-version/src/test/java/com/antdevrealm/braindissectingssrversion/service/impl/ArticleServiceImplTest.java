@@ -45,7 +45,6 @@ public class ArticleServiceImplTest {
 
     @Test
     void getAllApproved_ReturnsMappedApprovedArticles() {
-        // Arrange: create a list of ArticleEntity objects
         ArticleEntity articleEntity1 = new ArticleEntity();
         articleEntity1.setId(1L);
         articleEntity1.setTitle("Article 1");
@@ -60,7 +59,6 @@ public class ArticleServiceImplTest {
 
         when(articleRepository.findApprovedArticles()).thenReturn(approvedArticles);
 
-        // Map ArticleEntity to DisplayArticleDTO using mock
         DisplayArticleDTO dto1 = new DisplayArticleDTO();
         dto1.setId(1L);
         dto1.setTitle("Article 1");
@@ -72,11 +70,8 @@ public class ArticleServiceImplTest {
         when(modelMapper.map(articleEntity1, DisplayArticleDTO.class)).thenReturn(dto1);
         when(modelMapper.map(articleEntity2, DisplayArticleDTO.class)).thenReturn(dto2);
 
-
-        // Act
         List<DisplayArticleDTO> result = articleService.getAllApproved();
 
-        // Assert: verify the size and contents
         assertEquals(2, result.size());
         assertEquals(dto1, result.get(0));
         assertEquals(dto2, result.get(1));
