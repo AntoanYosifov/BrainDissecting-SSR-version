@@ -81,6 +81,15 @@ public class ArticleServiceImplTest {
     }
 
     @Test
+    void getAllApproved_ReturnsEmptyListWhenNoApprovedArticlesExist() {
+        when(articleRepository.findApprovedArticles()).thenReturn(List.of());
+
+        List<DisplayArticleDTO> result = articleService.getAllApproved();
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
     void getAllPending_ReturnsMappedApprovedArticles() {
         ArticleEntity articleEntity1 = new ArticleEntity();
         articleEntity1.setId(1L);

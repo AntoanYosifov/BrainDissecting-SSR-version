@@ -14,10 +14,6 @@ public interface CategoryService {
 
     void removeCategory(CategoryEntity category);
 
-    void assignCategory(Long articleId, Long categoryId);
-
-    void unAssignCategory(Long articleId, Long categoryId);
-
     Optional<CategoryEntity> getById(Long id);
 
     Optional<CategoryEntity> getByName(String name);
