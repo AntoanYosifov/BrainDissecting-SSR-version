@@ -170,4 +170,21 @@ public class ArticleServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    void getAllByCategory_ReturnsEmptyList_WhenCategoryHasNoArticles() {
+        String categoryName = "EmptyCategory";
+
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName(categoryName);
+        categoryEntity.setArticles(List.of());
+
+        when(categoryService.getByName(categoryName)).thenReturn(Optional.of(categoryEntity));
+
+        List<DisplayArticleDTO> result = articleService.getAllByCategory(categoryName);
+
+        assertTrue(result.isEmpty());
+    }
+
+
+
 }
