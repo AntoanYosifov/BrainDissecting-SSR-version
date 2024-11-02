@@ -3,6 +3,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -183,6 +184,42 @@ public class ArticleServiceImplTest {
         List<DisplayArticleDTO> result = articleService.getAllByCategory(categoryName);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getUserFavourites_ReturnsMappedFavouriteArticles_WhenUserExists() {
+        Long userId = 1L;
+
+        UserEntity userEntity = new UserEntity();
+
+        ArticleEntity article1 = new ArticleEntity();
+        article1.setId(1L);
+        article1.setTitle("Favourite Article 1");
+
+        ArticleEntity article2 = new ArticleEntity();
+        article2.setId(2L);
+        article2.setTitle("Favourite Article 2");
+
+        userEntity.setFavourites(List.of(article1, article2));
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        DisplayArticleDTO dto1 = new DisplayArticleDTO();
+        dto1.setId(1L);
+        dto1.setTitle("Favourite Article 1");
+
+        DisplayArticleDTO dto2 = new DisplayArticleDTO();
+        dto2.setId(2L);
+        dto2.setTitle("Favourite Article 2");
+
+        when(modelMapper.map(article1, DisplayArticleDTO.class)).thenReturn(dto1);
+        when(modelMapper.map(article2, DisplayArticleDTO.class)).thenReturn(dto2);
+
+        List<DisplayArticleDTO> result = articleService.getUserFavourites(userId);
+
+        assertEquals(2, result.size());
+        assertEquals(dto1, result.get(0));
+        assertEquals(dto2, result.get(1));
     }
 
 
