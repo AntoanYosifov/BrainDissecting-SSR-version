@@ -90,6 +90,15 @@ public class ArticleServiceImplTest {
     }
 
     @Test
+    void getAllPending_ReturnsEmptyListWhenNoPendingArticlesExist() {
+        when(articleRepository.findPendingArticles()).thenReturn(List.of());
+
+        List<DisplayArticleDTO> result = articleService.getAllPending();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     void getAllPending_ReturnsMappedApprovedArticles() {
         ArticleEntity articleEntity1 = new ArticleEntity();
         articleEntity1.setId(1L);
