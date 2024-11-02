@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -157,6 +158,16 @@ public class ArticleServiceImplTest {
         assertEquals(2, result.size());
         assertEquals(dto1, result.get(0));
         assertEquals(dto2, result.get(1));
+    }
+
+    @Test
+    void getAllByCategory_ReturnsEmptyList_WhenCategoryDoesNotExist() {
+        String categoryName = "NonExistentCategory";
+        when(categoryService.getByName(categoryName)).thenReturn(Optional.empty());
+
+        List<DisplayArticleDTO> result = articleService.getAllByCategory(categoryName);
+
+        assertTrue(result.isEmpty());
     }
 
 }
