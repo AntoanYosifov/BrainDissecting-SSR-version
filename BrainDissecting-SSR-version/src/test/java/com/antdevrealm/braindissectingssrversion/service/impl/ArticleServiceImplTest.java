@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.client.RestClient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,7 +121,7 @@ public class ArticleServiceImplTest {
 
         int actualCount = articleService.countPendingArticles();
 
-        assertEquals(expectedCount, actualCount, "The count of pending articles should match the expected value.");
+        assertEquals(expectedCount, actualCount);
     }
 
     @Test
@@ -222,6 +223,28 @@ public class ArticleServiceImplTest {
         assertEquals(dto2, result.get(1));
     }
 
+    @Test
+    void getUserFavourites_ReturnsEmptyList_WhenUserDoesNotExist() {
+        Long userId = 999L;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
+        List<DisplayArticleDTO> result = articleService.getUserFavourites(userId);
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void getUserFavourites_UserExistsWithNoFavorites_ReturnsEmptyList() {
+        Long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setFavourites(Collections.emptyList());
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        List<DisplayArticleDTO> result = articleService.getUserFavourites(userId);
+
+        assertTrue(result.isEmpty());
+    }
 
 }
