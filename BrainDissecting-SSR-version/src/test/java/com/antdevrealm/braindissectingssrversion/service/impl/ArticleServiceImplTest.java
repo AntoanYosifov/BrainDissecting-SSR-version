@@ -109,5 +109,14 @@ public class ArticleServiceImplTest {
         assertEquals(dto2, result.get(1));
     }
 
+    @Test
+    void countPendingArticles_ReturnsCorrectCount() {
+        int expectedCount = 3;
+        when(articleRepository.countByStatus(Status.PENDING)).thenReturn(expectedCount);
+
+        int actualCount = articleService.countPendingArticles();
+
+        assertEquals(expectedCount, actualCount, "The count of pending articles should match the expected value.");
+    }
 
 }
