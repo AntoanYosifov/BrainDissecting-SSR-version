@@ -89,7 +89,10 @@ public class ArticleServiceImpl implements ArticleService {
             articleRepository.removeAllFromUsersFavourites(articleId);
 
             articleRepository.deleteById(articleId);
+
+            return true;
         }
+
         return false;
     }
 
