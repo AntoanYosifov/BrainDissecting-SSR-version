@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -117,6 +119,44 @@ public class ArticleServiceImplTest {
         int actualCount = articleService.countPendingArticles();
 
         assertEquals(expectedCount, actualCount, "The count of pending articles should match the expected value.");
+    }
+
+    @Test
+    void getAllByCategory_ReturnsMappedArticles_WhenCategoryExistsAndHasArticles() {
+
+        String categoryName = "Science";
+
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName(categoryName);
+
+        ArticleEntity article1 = new ArticleEntity();
+        article1.setId(1L);
+        article1.setTitle("Article 1");
+
+        ArticleEntity article2 = new ArticleEntity();
+        article2.setId(2L);
+        article2.setTitle("Article 2");
+
+        categoryEntity.setArticles(List.of(article1, article2));
+
+        when(categoryService.getByName(categoryName)).thenReturn(Optional.of(categoryEntity));
+
+        DisplayArticleDTO dto1 = new DisplayArticleDTO();
+        dto1.setId(1L);
+        dto1.setTitle("Article 1");
+
+        DisplayArticleDTO dto2 = new DisplayArticleDTO();
+        dto2.setId(2L);
+        dto2.setTitle("Article 2");
+
+        when(modelMapper.map(article1, DisplayArticleDTO.class)).thenReturn(dto1);
+        when(modelMapper.map(article2, DisplayArticleDTO.class)).thenReturn(dto2);
+
+        List<DisplayArticleDTO> result = articleService.getAllByCategory(categoryName);
+
+        assertEquals(2, result.size());
+        assertEquals(dto1, result.get(0));
+        assertEquals(dto2, result.get(1));
     }
 
 }
