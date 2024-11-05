@@ -264,5 +264,4 @@ public class ArticleServiceImplTest {
 
         assertTrue(result.isEmpty());
     }
-
 }

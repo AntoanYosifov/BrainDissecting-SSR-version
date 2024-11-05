@@ -1,5 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
@@ -76,7 +77,6 @@ public class UserServiceImplTest {
 
         UserEntity savedEntity = userEntityCaptor.getValue();
 
-
         Assertions.assertEquals(registrationDTO.getUsername(), savedEntity.getUsername());
         Assertions.assertEquals(registrationDTO.getEmail(), savedEntity.getEmail());
         Assertions.assertEquals(registrationDTO.getPassword() + registrationDTO.getPassword(), savedEntity.getPassword());
@@ -86,6 +86,19 @@ public class UserServiceImplTest {
         Assertions.assertTrue(result);
     }
 
+    @Test
+    void register_ShouldThrowException_WhenUsernameOrEmailExists() {
+        RegistrationDTO registrationDTO = new RegistrationDTO();
+        registrationDTO.setUsername("testUsername")
+                .setEmail("testEmail")
+                .setPassword("testPassword")
+                .setConfirmPassword("testPassword");
 
+        when(mockUserRepository.findByUsernameOrEmail(registrationDTO.getUsername(), registrationDTO.getEmail()))
+                .thenReturn(Optional.of(new UserEntity()));
+
+        Assertions.assertThrows(UsernameOrEmailException.class, () -> toTest.register(registrationDTO));
+
+    }
 
 }

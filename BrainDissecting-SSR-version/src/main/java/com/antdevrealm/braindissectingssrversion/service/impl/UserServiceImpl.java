@@ -141,7 +141,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean removeFromFavourites(Long articleId, Long userId) {
-
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
         if (optUser.isEmpty()) {
