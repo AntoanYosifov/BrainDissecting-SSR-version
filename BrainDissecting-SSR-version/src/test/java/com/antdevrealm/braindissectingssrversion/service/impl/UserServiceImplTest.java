@@ -148,4 +148,18 @@ public class UserServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void update_UsernameOrEmailExists_ShouldThrowException() {
+        long loggedUserId = 1L;
+        UpdateDTO updateDTO = new UpdateDTO().setNewUsername("existingUsername").setNewEmail("existingEmail");
+
+        UserEntity existingUser = new UserEntity();
+        when(mockUserRepository.findById(loggedUserId)).thenReturn(Optional.of(existingUser));
+        when(mockUserRepository.findByUsernameOrEmail(updateDTO.getNewUsername(), updateDTO.getNewEmail()))
+                .thenReturn(Optional.of(new UserEntity()));
+
+        Assertions.assertThrows(UsernameOrEmailException.class, () -> toTest.update(loggedUserId, updateDTO));
+    }
+
+
 }
