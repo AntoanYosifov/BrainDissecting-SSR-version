@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
@@ -38,7 +39,6 @@ public class UserServiceImplTest {
     private PasswordEncoder mockPasswordEncoder;
     @Mock
     private ModelMapper mockModelMapper;
-
     @Captor
     private ArgumentCaptor<UserEntity> userEntityCaptor;
 
@@ -49,41 +49,6 @@ public class UserServiceImplTest {
         toTest = new UserServiceImpl(mockUserRepository, mockRoleRepository,
                 mockPasswordEncoder, mockBrDissectingUserDetailService,
                 mockArticleRepository, mockModelMapper);
-    }
-
-    @Test
-    void register_ShouldReturnTrue() {
-        RegistrationDTO registrationDTO = new RegistrationDTO().setUsername("testUsername")
-                .setEmail("testEmail")
-                .setPassword("testPassword")
-                .setConfirmPassword("testPassword")
-                .setFirstName("testFirstname")
-                .setLastName("testLastname");
-
-        when(mockPasswordEncoder.encode(registrationDTO.getPassword()))
-                .thenReturn(registrationDTO.getPassword() + registrationDTO.getPassword());
-
-        when(mockUserRepository.findByUsernameOrEmail(registrationDTO.getUsername(), registrationDTO.getEmail()))
-                .thenReturn(Optional.empty());
-
-        UserRoleEntity userRole = new UserRoleEntity();
-        userRole.setRole(UserRole.USER);
-
-        when(mockRoleRepository.findByRole(UserRole.USER)).thenReturn(Optional.of(userRole));
-
-        boolean result = toTest.register(registrationDTO);
-
-        Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
-
-        UserEntity savedEntity = userEntityCaptor.getValue();
-
-        Assertions.assertEquals(registrationDTO.getUsername(), savedEntity.getUsername());
-        Assertions.assertEquals(registrationDTO.getEmail(), savedEntity.getEmail());
-        Assertions.assertEquals(registrationDTO.getPassword() + registrationDTO.getPassword(), savedEntity.getPassword());
-        Assertions.assertEquals(registrationDTO.getFirstName(), savedEntity.getFirstName());
-        Assertions.assertEquals(registrationDTO.getLastName(), savedEntity.getLastName());
-
-        Assertions.assertTrue(result);
     }
 
     @Test
@@ -132,6 +97,55 @@ public class UserServiceImplTest {
 
         Assertions.assertFalse(result);
         Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
+    }
+
+    @Test
+    void register_ShouldReturnTrue() {
+        RegistrationDTO registrationDTO = new RegistrationDTO().setUsername("testUsername")
+                .setEmail("testEmail")
+                .setPassword("testPassword")
+                .setConfirmPassword("testPassword")
+                .setFirstName("testFirstname")
+                .setLastName("testLastname");
+
+        when(mockPasswordEncoder.encode(registrationDTO.getPassword()))
+                .thenReturn(registrationDTO.getPassword() + registrationDTO.getPassword());
+
+        when(mockUserRepository.findByUsernameOrEmail(registrationDTO.getUsername(), registrationDTO.getEmail()))
+                .thenReturn(Optional.empty());
+
+        UserRoleEntity userRole = new UserRoleEntity();
+        userRole.setRole(UserRole.USER);
+
+        when(mockRoleRepository.findByRole(UserRole.USER)).thenReturn(Optional.of(userRole));
+
+        boolean result = toTest.register(registrationDTO);
+
+        Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
+
+        UserEntity savedEntity = userEntityCaptor.getValue();
+
+        Assertions.assertEquals(registrationDTO.getUsername(), savedEntity.getUsername());
+        Assertions.assertEquals(registrationDTO.getEmail(), savedEntity.getEmail());
+        Assertions.assertEquals(registrationDTO.getPassword() + registrationDTO.getPassword(), savedEntity.getPassword());
+        Assertions.assertEquals(registrationDTO.getFirstName(), savedEntity.getFirstName());
+        Assertions.assertEquals(registrationDTO.getLastName(), savedEntity.getLastName());
+
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void update_ShouldReturnFalse_WhenUserNotFound() {
+        long loggedUserId = 1L;
+
+        UpdateDTO updateDTO = new UpdateDTO();
+        updateDTO.setNewUsername("newUserName");
+
+        when(mockUserRepository.findById(loggedUserId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.update(loggedUserId, updateDTO);
+
+        Assertions.assertFalse(result);
     }
 
 }
