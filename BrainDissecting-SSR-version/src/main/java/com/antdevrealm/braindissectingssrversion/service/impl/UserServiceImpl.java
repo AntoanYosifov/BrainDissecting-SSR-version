@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
             if (usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
                 throw new UsernameOrEmailException(updateDTO.getNewUsername(), updateDTO.getNewEmail());
             }
-            userEntity.setEmail(userEntity.getEmail());
+            userEntity.setEmail(updateDTO.getNewEmail());
         }
 
         userEntity.setUsername(updateDTO.getNewUsername());

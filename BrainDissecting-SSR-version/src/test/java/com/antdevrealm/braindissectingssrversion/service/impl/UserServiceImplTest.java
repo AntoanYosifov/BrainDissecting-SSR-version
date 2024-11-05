@@ -7,6 +7,7 @@ import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -20,10 +21,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -175,6 +180,33 @@ public class UserServiceImplTest {
         Assertions.assertThrows(NewUsernameConfirmUsernameException.class, () -> toTest.update(loggedUserId, updateDTO));
     }
 
+    @Test
+    void update_SuccessfulUpdate_ShouldReturnTrue() {
+        long loggedUserId = 1L;
+        UpdateDTO updateDTO = new UpdateDTO()
+                .setNewUsername("newUsername")
+                .setConfirmUsername("newUsername")
+                .setNewEmail("newEmail");
 
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("oldUsername").setEmail("oldEmail");
 
+        doReturn(Optional.of(userEntity)).when(mockUserRepository).findById(loggedUserId);
+        doReturn(Optional.empty()).when(mockUserRepository).findByUsernameOrEmail(updateDTO.getNewUsername(), updateDTO.getNewEmail());
+        UserDetails mockUserDetails = Mockito.mock(UserDetails.class);
+
+        when(mockUserDetails.getPassword()).thenReturn("encodedPassword");
+        when(mockUserDetails.getAuthorities()).thenReturn(List.of());
+        when(mockBrDissectingUserDetailService.loadUserByUsername(updateDTO.getNewUsername())).thenReturn(mockUserDetails);
+
+        boolean result = toTest.update(loggedUserId, updateDTO);
+
+        Assertions.assertTrue(result);
+
+        Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
+        UserEntity savedUser = userEntityCaptor.getValue();
+
+        Assertions.assertEquals(updateDTO.getNewUsername(), savedUser.getUsername());
+        Assertions.assertEquals(updateDTO.getNewEmail(), savedUser.getEmail());
+    }
 }
