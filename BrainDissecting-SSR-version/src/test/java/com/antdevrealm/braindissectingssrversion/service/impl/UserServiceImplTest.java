@@ -101,4 +101,20 @@ public class UserServiceImplTest {
 
     }
 
+    @Test
+    void register_ShouldReturnFalse_WhenPasswordConfirmationMismatch() {
+        RegistrationDTO registrationDTO = new RegistrationDTO();
+        registrationDTO.setUsername("testUsername")
+                .setEmail("testEmail")
+                .setPassword("testPassword")
+                .setConfirmPassword("differentPassword");
+
+        boolean result = toTest.register(registrationDTO);
+
+        Assertions.assertFalse(result);
+        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
+    }
+
+
+
 }
