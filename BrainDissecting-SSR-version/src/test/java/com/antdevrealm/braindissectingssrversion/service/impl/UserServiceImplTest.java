@@ -1,5 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
@@ -160,6 +161,20 @@ public class UserServiceImplTest {
 
         Assertions.assertThrows(UsernameOrEmailException.class, () -> toTest.update(loggedUserId, updateDTO));
     }
+
+    @Test
+    void update_NewUsernameAndConfirmUsernameMisMatch_ShouldThrowException() {
+        long loggedUserId = 1L;
+        UpdateDTO updateDTO = new UpdateDTO()
+                .setNewUsername("newUsername")
+                .setConfirmUsername("differentUsername");
+
+        UserEntity userEntity = new UserEntity();
+        when(mockUserRepository.findById(loggedUserId)).thenReturn(Optional.of(userEntity));
+
+        Assertions.assertThrows(NewUsernameConfirmUsernameException.class, () -> toTest.update(loggedUserId, updateDTO));
+    }
+
 
 
 }
