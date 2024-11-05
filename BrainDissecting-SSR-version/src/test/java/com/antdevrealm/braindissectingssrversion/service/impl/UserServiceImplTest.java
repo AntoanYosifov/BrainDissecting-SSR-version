@@ -115,6 +115,23 @@ public class UserServiceImplTest {
         Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
     }
 
+    @Test
+    void register_ShouldReturnFalse_WhenUserRoleNotFound() {
+        RegistrationDTO registrationDTO = new RegistrationDTO();
+        registrationDTO.setUsername("testUsername")
+                .setEmail("testEmail")
+                .setPassword("testPassword")
+                .setConfirmPassword("testPassword");
 
+        when(mockUserRepository.findByUsernameOrEmail(registrationDTO.getUsername(), registrationDTO.getEmail()))
+                .thenReturn(Optional.empty());
+        when(mockRoleRepository.findByRole(UserRole.USER))
+                .thenReturn(Optional.empty());
+
+        boolean result = toTest.register(registrationDTO);
+
+        Assertions.assertFalse(result);
+        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
+    }
 
 }
