@@ -4,10 +4,10 @@ import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUse
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
+import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
-import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -209,4 +209,29 @@ public class UserServiceImplTest {
         Assertions.assertEquals(updateDTO.getNewUsername(), savedUser.getUsername());
         Assertions.assertEquals(updateDTO.getNewEmail(), savedUser.getEmail());
     }
+
+    @Test
+    void addArticleToFavourites_ShouldReturnTrue_WhenArticleAndUserExists() {
+        long articleId = 1L;
+        long userId = 1L;
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUser");
+        userEntity.setFavourites(new ArrayList<>());
+
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(articleId);
+        articleEntity.setTitle("testArticle");
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
+
+        boolean result = toTest.addArticleToFavourites(articleId, userId);
+
+        Assertions.assertTrue(result);
+        Assertions.assertTrue(userEntity.getFavourites().contains(articleEntity));
+        Assertions.assertTrue(articleEntity.isFavourite());
+    }
+
 }
