@@ -260,4 +260,28 @@ public class UserServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void removeFromFavourites_ShouldReturnTrue_WhenArticleAndUserExists() {
+        long articleId = 1L;
+        long userId = 1L;
+
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(articleId);
+        articleEntity.setTitle("testArticle");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUser");
+        userEntity.setFavourites(new ArrayList<>());
+        userEntity.getFavourites().add(articleEntity);
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
+
+        boolean result = toTest.removeFromFavourites(articleId, userId);
+
+        Assertions.assertTrue(result);
+        Assertions.assertFalse(userEntity.getFavourites().contains(articleEntity));
+    }
+
 }
