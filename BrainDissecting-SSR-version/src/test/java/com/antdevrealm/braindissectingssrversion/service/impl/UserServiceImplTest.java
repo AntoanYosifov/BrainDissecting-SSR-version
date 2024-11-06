@@ -295,4 +295,44 @@ public class UserServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void removeFromFavourites_ShouldReturnFalse_WhenArticleNotFound() {
+        long userId = 1L;
+        long articleId = 1L;
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("testUsername");
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.removeFromFavourites(userId, articleId);
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void getFavouriteArticlesIds_ShouldReturnListOfFavouriteArticleIds() {
+        long userId = 1L;
+        long articleId1 = 100L;
+        long articleId2 = 101L;
+
+        ArticleEntity articleEntity1 = new ArticleEntity();
+        articleEntity1.setId(articleId1);
+
+        ArticleEntity articleEntity2 = new ArticleEntity();
+        articleEntity2.setId(articleId2);
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setFavourites(List.of(articleEntity1, articleEntity2));
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        List<Long> favouriteArticlesIds = toTest.getFavouriteArticlesIds(userId);
+
+        Assertions.assertEquals(2, favouriteArticlesIds.size());
+        Assertions.assertTrue(favouriteArticlesIds.contains(articleId1));
+        Assertions.assertTrue(favouriteArticlesIds.contains(articleId2));
+    }
+
 }

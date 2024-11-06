@@ -174,7 +174,6 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = optUser.get();
 
         return userEntity.getFavourites().stream().map(BaseEntity::getId).toList();
-
     }
 
     @Override
@@ -231,6 +230,5 @@ public class UserServiceImpl implements UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
-
 
 }
