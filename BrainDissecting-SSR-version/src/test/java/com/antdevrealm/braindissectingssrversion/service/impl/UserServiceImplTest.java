@@ -335,4 +335,16 @@ public class UserServiceImplTest {
         Assertions.assertTrue(favouriteArticlesIds.contains(articleId2));
     }
 
+    @Test
+    void getFavouriteArticlesIds_ShouldReturnEmptyList_WhenUserDoesNotExist() {
+        long userId = 1L;
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(userId);
+
+        Assertions.assertTrue(favouriteArticleIds.isEmpty());
+    }
+
+
 }
