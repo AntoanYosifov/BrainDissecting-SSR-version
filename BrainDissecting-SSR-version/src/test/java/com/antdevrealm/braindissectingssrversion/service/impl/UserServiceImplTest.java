@@ -346,5 +346,18 @@ public class UserServiceImplTest {
         Assertions.assertTrue(favouriteArticleIds.isEmpty());
     }
 
+    @Test
+    void getFavouriteArticlesIds_ShouldReturnEmptyList_WhenUserHasNoFavourites() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setFavourites(new ArrayList<>()); // No favorites
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(userId);
+
+        Assertions.assertTrue(favouriteArticleIds.isEmpty());
+    }
 
 }
