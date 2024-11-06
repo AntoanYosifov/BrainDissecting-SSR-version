@@ -234,4 +234,15 @@ public class UserServiceImplTest {
         Assertions.assertTrue(articleEntity.isFavourite());
     }
 
+    @Test
+    void addArticleToFavourites_ShouldReturnFalse_WhenUserNotFound() {
+        Long userId = 1L;
+        Long articleId = 1L;
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.addArticleToFavourites(articleId, userId);
+        Assertions.assertFalse(result);
+    }
+
 }
