@@ -153,4 +153,24 @@ public class AdminServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void demoteFromModerator_ShouldReturnFalse_WhenUserDoesNotHaveModeratorRole() {
+        Long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUser");
+
+        UserRoleEntity moderatorRole = new UserRoleEntity();
+        moderatorRole.setRole(UserRole.MODERATOR);
+
+        userEntity.setRoles(new ArrayList<>());
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
+
+        boolean result = toTest.demoteFromModerator(userId);
+
+        Assertions.assertFalse(result);
+    }
+
 }
