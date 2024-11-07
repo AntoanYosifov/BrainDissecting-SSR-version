@@ -396,4 +396,13 @@ public class UserServiceImplTest {
         Assertions.assertEquals(displayUserInfoDTO2, result.get(1));
     }
 
+    @Test
+    void getAllUsers_ShouldReturnEmptyList_WhenNoUsersExist() {
+        when(mockUserRepository.count()).thenReturn(0L);
+
+        List<DisplayUserInfoDTO> result = toTest.getAllUsers();
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
 }
