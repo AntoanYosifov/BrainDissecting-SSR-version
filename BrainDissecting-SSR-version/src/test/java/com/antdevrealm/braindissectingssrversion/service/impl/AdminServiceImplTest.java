@@ -55,4 +55,15 @@ public class AdminServiceImplTest {
         Assertions.assertTrue(result);
         Assertions.assertTrue(userEntity.getRoles().contains(moderatorRole));
     }
+
+    @Test
+    void promoteToModerator_ShouldReturnFalse_WhenUserDoesNotExist() {
+        long userId = 1L;
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.promoteToModerator(userId);
+
+        Assertions.assertFalse(result);
+    }
 }

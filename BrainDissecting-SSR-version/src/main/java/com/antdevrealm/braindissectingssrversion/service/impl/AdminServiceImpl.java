@@ -8,7 +8,6 @@ import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
