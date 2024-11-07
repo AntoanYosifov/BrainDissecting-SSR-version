@@ -66,4 +66,20 @@ public class AdminServiceImplTest {
 
         Assertions.assertFalse(result);
     }
+
+    @Test
+    void promoteToModerator_ShouldReturnFalse_WhenModeratorRoleDoesNotExist() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUser");
+        userEntity.setRoles(new ArrayList<>());
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.empty());
+
+        boolean result = toTest.promoteToModerator(userId);
+
+        Assertions.assertFalse(result);
+    }
 }
