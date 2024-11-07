@@ -104,4 +104,26 @@ public class AdminServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void demoteFromModerator_ShouldReturnTrue_WhenUserExistsAndRoleIsRemoved() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUser");
+        userEntity.setRoles(new ArrayList<>());
+
+        UserRoleEntity moderatorRole = new UserRoleEntity();
+        moderatorRole.setRole(UserRole.MODERATOR);
+        userEntity.getRoles().add(moderatorRole);
+        Assertions.assertTrue(userEntity.getRoles().contains(moderatorRole));
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
+
+        boolean result = toTest.demoteFromModerator(userId);
+
+        Assertions.assertTrue(result);
+        Assertions.assertFalse(userEntity.getRoles().contains(moderatorRole));
+    }
+
 }
