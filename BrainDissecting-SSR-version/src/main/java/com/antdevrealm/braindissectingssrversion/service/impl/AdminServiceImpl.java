@@ -17,13 +17,11 @@ import java.util.Optional;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    private final BrDissectingUserDetailService brDissectingUserDetailService;
     private final UserService userService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public AdminServiceImpl(BrDissectingUserDetailService brDissectingUserDetailService, UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
-        this.brDissectingUserDetailService = brDissectingUserDetailService;
+    public AdminServiceImpl( UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
