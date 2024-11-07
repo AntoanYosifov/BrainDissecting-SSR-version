@@ -2,12 +2,14 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
+import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -358,6 +360,40 @@ public class UserServiceImplTest {
         List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(userId);
 
         Assertions.assertTrue(favouriteArticleIds.isEmpty());
+    }
+
+    @Test
+    void getAllUsers_ShouldReturnListOfDisplayUserInfoDTO_WhenUsersExist() {
+        UserEntity userEntity1 = new UserEntity();
+        userEntity1.setId(1L);
+        userEntity1.setUsername("user1");
+        userEntity1.setStatus(UserStatus.ACTIVE);
+
+        UserEntity userEntity2 = new UserEntity();
+        userEntity2.setId(2L);
+        userEntity2.setUsername("user2");
+        userEntity2.setStatus(UserStatus.ACTIVE);
+
+        List<UserEntity> userEntities = List.of(userEntity1, userEntity2);
+
+        DisplayUserInfoDTO displayUserInfoDTO1 = new DisplayUserInfoDTO();
+        displayUserInfoDTO1.setId(1L);
+        displayUserInfoDTO1.setUsername("user1");
+
+        DisplayUserInfoDTO displayUserInfoDTO2 = new DisplayUserInfoDTO();
+        displayUserInfoDTO1.setId(2L);
+        displayUserInfoDTO1.setUsername("user2");
+
+        when(mockUserRepository.count()).thenReturn((long) userEntities.size());
+        when(mockUserRepository.findAll()).thenReturn(userEntities);
+        when(mockModelMapper.map(userEntity1, DisplayUserInfoDTO.class)).thenReturn(displayUserInfoDTO1);
+        when(mockModelMapper.map(userEntity2, DisplayUserInfoDTO.class)).thenReturn(displayUserInfoDTO2);
+
+        List<DisplayUserInfoDTO> result = toTest.getAllUsers();
+
+        Assertions.assertEquals(userEntities.size(), result.size());
+        Assertions.assertEquals(displayUserInfoDTO1, result.get(0));
+        Assertions.assertEquals(displayUserInfoDTO2, result.get(1));
     }
 
 }

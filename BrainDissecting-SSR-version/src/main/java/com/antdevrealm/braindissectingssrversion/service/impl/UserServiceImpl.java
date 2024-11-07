@@ -178,11 +178,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<DisplayUserInfoDTO> getAllUsers() {
-        List<UserEntity> allUsers = userRepository.findAll();
 
-        if (allUsers.isEmpty()) {
+        if (userRepository.count() < 1) {
             return new ArrayList<>();
         }
+
+        List<UserEntity> allUsers = userRepository.findAll();
 
         return allUsers.stream().map(this::mapToDisplayUserDto).toList();
     }
