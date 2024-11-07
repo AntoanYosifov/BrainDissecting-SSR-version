@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -82,4 +83,25 @@ public class AdminServiceImplTest {
 
         Assertions.assertFalse(result);
     }
+
+    @Test
+    void promoteToModerator_ShouldReturnFalse_WhenUserAlreadyHasModeratorRole() {
+        Long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUser");
+
+        UserRoleEntity moderatorRole = new UserRoleEntity();
+        moderatorRole.setRole(UserRole.MODERATOR);
+
+        userEntity.setRoles(new ArrayList<>(List.of(moderatorRole)));
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
+
+        boolean result = toTest.promoteToModerator(userId);
+
+        Assertions.assertFalse(result);
+    }
+
 }
