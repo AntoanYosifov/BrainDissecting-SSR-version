@@ -59,4 +59,19 @@ public class CategoryServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void removeCategory_ShouldReturnTrue_WhenCategoryExists() {
+        long categoryId = 1L;
+
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(categoryId);
+
+        when(mockCategoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity));
+
+        boolean result = toTest.removeCategory(categoryEntity);
+
+        Assertions.assertTrue(result);
+
+    }
+
 }
