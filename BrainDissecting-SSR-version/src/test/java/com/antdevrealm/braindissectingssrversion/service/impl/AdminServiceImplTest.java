@@ -1,9 +1,8 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
-
-
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
@@ -11,7 +10,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class AdminServiceImplTest {
     private  UserRepository mockUserRepository;
     @Mock
     private  RoleRepository mockRoleRepository;
+
+    @Captor
+    private ArgumentCaptor<UserEntity> userEntityCaptor;
 
     private AdminServiceImpl toTest;
 
@@ -171,6 +176,27 @@ public class AdminServiceImplTest {
         boolean result = toTest.demoteFromModerator(userId);
 
         Assertions.assertFalse(result);
+    }
+
+    @Test
+    void banUser_ShouldReturnTrue_WhenUserExistsAndIsActive() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("'testUser'");
+        userEntity.setStatus(UserStatus.ACTIVE);
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        boolean result = toTest.banUser(userId);
+
+        Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
+
+        UserEntity savedEntity = userEntityCaptor.getValue();
+
+        Assertions.assertTrue(result);
+        Assertions.assertEquals(userEntity, savedEntity);
+        Assertions.assertTrue(savedEntity.isBanned());
     }
 
 }

@@ -100,6 +100,10 @@ public class AdminServiceImpl implements AdminService {
 
         UserEntity userEntity = optUser.get();
 
+        if(userEntity.isBanned()) {
+            return false;
+        }
+
         userEntity.setStatus(UserStatus.BANNED);
         userRepository.save(userEntity);
         return true;
@@ -114,6 +118,10 @@ public class AdminServiceImpl implements AdminService {
         }
 
         UserEntity userEntity = optUser.get();
+
+        if (!userEntity.isBanned()) {
+            return false;
+        }
 
         userEntity.setStatus(UserStatus.ACTIVE);
         userRepository.save(userEntity);
