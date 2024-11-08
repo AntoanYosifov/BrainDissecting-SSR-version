@@ -48,7 +48,6 @@ public class CommentServiceImpl implements CommentService {
         CommentEntity commentEntity = mapToComment(addCommentDTO, userEntity, articleEntity);
 
         return commentRepository.save(commentEntity).getId();
-
     }
 
     @Override
