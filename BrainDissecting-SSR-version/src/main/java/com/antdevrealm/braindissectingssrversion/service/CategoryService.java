@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    void addCategory(String name);
+    boolean addCategory(String name);
 
     boolean removeCategory(CategoryEntity category);
 

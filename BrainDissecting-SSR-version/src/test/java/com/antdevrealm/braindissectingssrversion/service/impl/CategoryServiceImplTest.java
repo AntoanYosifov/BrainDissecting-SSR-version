@@ -12,6 +12,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceImplTest {
     @Mock
@@ -31,12 +35,28 @@ public class CategoryServiceImplTest {
     void addCategory_ShouldSaveCategoryWithGivenName() {
         String categoryName = "testName";
 
-        toTest.addCategory(categoryName);
+        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
+
+        boolean result = toTest.addCategory(categoryName);
 
         Mockito.verify(mockCategoryRepository).save(categoryCaptor.capture());
         CategoryEntity savedCategory = categoryCaptor.getValue();
-
+        Assertions.assertTrue(result);
         Assertions.assertEquals(categoryName, savedCategory.getName());
+    }
+
+    @Test
+    void addCategory_ShouldReturnFalseWhenCategoryAlreadyExists() {
+        String categoryName = "testName";
+
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName(categoryName);
+
+        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.of(categoryEntity));
+
+        boolean result = toTest.addCategory(categoryName);
+
+        Assertions.assertFalse(result);
     }
 
 }

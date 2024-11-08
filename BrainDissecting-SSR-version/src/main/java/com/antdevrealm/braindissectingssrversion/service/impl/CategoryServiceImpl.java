@@ -18,11 +18,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void addCategory(String name) {
+    public boolean addCategory(String name) {
+        Optional<CategoryEntity> optionalCategory = categoryRepository.findByName(name);
+
+        if(optionalCategory.isPresent()) {
+            return false;
+        }
+
         CategoryEntity categoryEntity = new CategoryEntity(name);
 
         categoryEntity.setName(name);
         categoryRepository.save(categoryEntity);
+        return true;
     }
 
     @Override

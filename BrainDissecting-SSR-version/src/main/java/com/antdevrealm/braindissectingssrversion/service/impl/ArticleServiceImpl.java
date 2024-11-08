@@ -191,8 +191,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public boolean addTheme(String theme) {
         try {
-            categoryService.addCategory(theme);
-            return true;
+            return categoryService.addCategory(theme);
         } catch (DataIntegrityViolationException e) {
             logger.error("Data integrity violation: {}", e.getMessage());
             return false;
