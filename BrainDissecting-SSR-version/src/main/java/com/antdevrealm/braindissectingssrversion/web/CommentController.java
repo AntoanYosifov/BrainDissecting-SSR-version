@@ -23,12 +23,16 @@ public class CommentController {
     @PostMapping
     public String addCommentToArticle(AddCommentDTO addCommentDTO,
                                       @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
-                                      @PathVariable Long articleId
-    ) {
+                                      @PathVariable Long articleId) {
 
         long commentId = commentService.add(addCommentDTO, brDissectingUserDetails.getId(), articleId);
 
-        // Add validation for the Authentication principal. Redirect to login if the current user is anonymous!
+        if (commentId == -1) {
+            return "redirect:/articles/all?error=article_not_found&articleId=" + articleId;
+        } else if (commentId == -2) {
+            return "redirect:/articles/all?error=user_not_found&articleId=" + articleId;
+        }
+
         return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
     }
 

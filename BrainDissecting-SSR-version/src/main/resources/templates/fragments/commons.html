@@ -45,7 +45,7 @@
                        th:classappend="${activeLink == 'My Favourites'} ? 'active'" th:href="@{/users/favourites}">My Favourites</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/articles/all}"
+                    <a class="nav-link" th:href="@{/articles/all}"
                        th:classappend="${activeLink == 'All Articles'} ? 'active'">All Articles</a>
                 </li>
                 <li class="nav-item">

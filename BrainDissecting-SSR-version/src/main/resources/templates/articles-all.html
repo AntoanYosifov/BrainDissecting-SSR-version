@@ -9,6 +9,13 @@
 
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'All Articles'})}"></th:block>
 
+<div th:if="${param.error}" class="alert alert-danger">
+    <p th:switch="${param.error}">
+        <span th:case="'article_not_found'">The article you're trying to comment on does not exist.</span>
+        <span th:case="'user_not_found'">Your user information could not be verified. Please try logging in again.</span>
+    </p>
+</div>
+
 <div class="container">
     <h2 class="text-center text-white m-3">All Articles</h2>
     <div th:each=" article : ${allArticles}" class='d-flex justify-content-around'>

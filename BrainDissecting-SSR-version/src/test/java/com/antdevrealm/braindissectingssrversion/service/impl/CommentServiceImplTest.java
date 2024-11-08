@@ -45,28 +45,58 @@ public class CommentServiceImplTest {
     }
 
     @Test
-    void add_ShouldSaveComment_WhenAuthorAndArticleExist() {
+    void add_ShouldSaveCommentAndReturnItsId_WhenAuthorAndArticleExist() {
+        long authorId = 1L;
+        long articleId = 1L;
+        long expectedCommentId = 10L;
         AddCommentDTO addCommentDTO = new AddCommentDTO();
         addCommentDTO.setContent("testContent");
 
-        long authorId = 1L;
-        long articleId = 1L;
-
         UserEntity userEntity = new UserEntity();
         ArticleEntity articleEntity = new ArticleEntity();
+        CommentEntity commentEntity = new CommentEntity();
+        commentEntity.setId(expectedCommentId);
 
         when(mockUserRepository.findById(authorId)).thenReturn(Optional.of(userEntity));
         when(mockArticleRepository.findById(authorId)).thenReturn(Optional.of(articleEntity));
-        when(mockCommentRepository.save(Mockito.any(CommentEntity.class))).thenReturn(new CommentEntity());
+        when(mockCommentRepository.save(Mockito.any(CommentEntity.class))).thenReturn(commentEntity);
 
-        toTest.add(addCommentDTO, authorId, articleId);
+        long actualSavedCommentId = toTest.add(addCommentDTO, authorId, articleId);
 
         verify(mockCommentRepository).save(commentCaptor.capture());
         CommentEntity savedComment = commentCaptor.getValue();
 
+        Assertions.assertEquals(expectedCommentId, actualSavedCommentId);
         Assertions.assertEquals(addCommentDTO.getContent(), savedComment.getContent());
         Assertions.assertEquals(userEntity, savedComment.getUser());
         Assertions.assertEquals(articleEntity, savedComment.getArticle());
+    }
+
+    @Test
+    void add_ShouldReturnNegativeOne_WhenArticleNotFound() {
+        AddCommentDTO addCommentDTO = new AddCommentDTO();
+        long authorId = 1L;
+        long articleId = 1L;
+
+        Mockito.when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
+
+        long result = toTest.add(addCommentDTO, authorId, articleId);
+
+        Assertions.assertEquals(-1, result);
+    }
+
+    @Test
+    void add_ShouldReturnNegativeTwo_WhenUserNotFound() {
+        AddCommentDTO addCommentDTO = new AddCommentDTO();
+        long authorId = 1L;
+        long articleId = 1L;
+
+        Mockito.when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(new ArticleEntity()));
+        Mockito.when(mockUserRepository.findById(authorId)).thenReturn(Optional.empty());
+
+        long result = toTest.add(addCommentDTO, authorId, articleId);
+
+        Assertions.assertEquals(-2, result);
     }
 
 }

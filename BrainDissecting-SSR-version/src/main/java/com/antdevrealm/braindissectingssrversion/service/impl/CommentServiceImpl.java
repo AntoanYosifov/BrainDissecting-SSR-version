@@ -39,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<UserEntity> optUser = userRepository.findById(authorId);
 
         if(optUser.isEmpty()) {
-            return -1;
+            return -2;
         }
 
         UserEntity userEntity = optUser.get();
