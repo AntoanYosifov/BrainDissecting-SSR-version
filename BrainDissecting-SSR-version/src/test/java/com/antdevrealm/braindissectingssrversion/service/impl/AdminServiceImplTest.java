@@ -212,7 +212,17 @@ public class AdminServiceImplTest {
         boolean result = toTest.banUser(userId);
 
         Assertions.assertFalse(result);
+    }
 
+    @Test
+    void banUser_ShouldReturnFalse_WhenUserDoesNotExist() {
+        long userId = 1L;
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.banUser(userId);
+
+        Assertions.assertFalse(result);
     }
 
 }
