@@ -218,8 +218,8 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         articleRepository.deleteAllByCategoriesContaining(categoryEntity);
-        categoryService.removeCategory(categoryEntity);
-        return true;
+
+        return categoryService.removeCategory(categoryEntity);
     }
 
     @Override
