@@ -199,4 +199,20 @@ public class AdminServiceImplTest {
         Assertions.assertTrue(savedEntity.isBanned());
     }
 
+    @Test
+    void banUser_ShouldReturnFalse_WhenUserIsAlreadyBanned() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("'testUser'");
+        userEntity.setStatus(UserStatus.BANNED);
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        boolean result = toTest.banUser(userId);
+
+        Assertions.assertFalse(result);
+
+    }
+
 }
