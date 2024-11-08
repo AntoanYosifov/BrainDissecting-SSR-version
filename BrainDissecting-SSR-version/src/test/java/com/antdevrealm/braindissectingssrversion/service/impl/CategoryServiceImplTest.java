@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +40,7 @@ public class CategoryServiceImplTest {
 
         boolean result = toTest.addCategory(categoryName);
 
-        Mockito.verify(mockCategoryRepository).save(categoryCaptor.capture());
+        verify(mockCategoryRepository).save(categoryCaptor.capture());
         CategoryEntity savedCategory = categoryCaptor.getValue();
         Assertions.assertTrue(result);
         Assertions.assertEquals(categoryName, savedCategory.getName());
@@ -88,5 +89,19 @@ public class CategoryServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void getByName_ShouldReturnOptionalOfCategoryEntity_WhenEntityExists() {
+        String categoryName = "testName";
+
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName(categoryName);
+
+        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.of(categoryEntity));
+
+        Optional<CategoryEntity> optionalCategory = toTest.getByName(categoryName);
+
+        Assertions.assertTrue(optionalCategory.isPresent());
+        Assertions.assertEquals(optionalCategory.get().getName(), categoryName);
+    }
 
 }
