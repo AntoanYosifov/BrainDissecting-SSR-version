@@ -225,4 +225,25 @@ public class AdminServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void removeBan_ShouldReturnTrue_WhenUserExistsAndIsBanned() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("'testUser'");
+        userEntity.setStatus(UserStatus.BANNED);
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        boolean result = toTest.removeBan(userId);
+
+        Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
+
+        UserEntity savedEntity = userEntityCaptor.getValue();
+
+        Assertions.assertTrue(result);
+        Assertions.assertEquals(userEntity, savedEntity);
+        Assertions.assertFalse(savedEntity.isBanned());
+    }
+
 }
