@@ -246,4 +246,20 @@ public class AdminServiceImplTest {
         Assertions.assertFalse(savedEntity.isBanned());
     }
 
+    @Test
+    void removeBan_ShouldReturnFalse_WhenUserIsActive() {
+        long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("'testUser'");
+        userEntity.setStatus(UserStatus.ACTIVE);
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+
+        boolean result = toTest.removeBan(userId);
+
+        Assertions.assertFalse(result);
+    }
+
+
 }
