@@ -104,4 +104,15 @@ public class CategoryServiceImplTest {
         Assertions.assertEquals(optionalCategory.get().getName(), categoryName);
     }
 
+    @Test
+    void getByName_ShouldReturnEmptyOptionalWhenEntityDoesNotExist() {
+        String categoryName = "testName";
+
+        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
+
+        Optional<CategoryEntity> optionalCategory = toTest.getByName(categoryName);
+
+        Assertions.assertTrue(optionalCategory.isEmpty());
+    }
+
 }
