@@ -261,5 +261,15 @@ public class AdminServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void removeBan_ShouldReturnFalse_WhenUserDoesNotExist() {
+        long userId = 1L;
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.removeBan(userId);
+
+        Assertions.assertFalse(result);
+    }
 
 }
