@@ -132,7 +132,20 @@ public class CommentServiceImplTest {
         Assertions.assertTrue(result);
         Assertions.assertFalse(articleEntity.getComments().contains(commentEntity));
         Assertions.assertFalse(userEntity.getComments().contains(commentEntity));
-        
+
+    }
+
+    @Test
+    void delete_ShouldReturnFalse_WhenArticleDoesNotExist() {
+        long articleId = 1L;
+        long commentId = 1L;
+        long userId = 1L;
+
+        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.delete(articleId, commentId, userId);
+
+        Assertions.assertFalse(result);
     }
 
 }
