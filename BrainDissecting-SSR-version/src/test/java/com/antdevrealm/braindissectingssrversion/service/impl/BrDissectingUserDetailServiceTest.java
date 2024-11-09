@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +81,25 @@ public class BrDissectingUserDetailServiceTest {
         when(mockUserRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UsernameNotFoundException.class, () -> toTest.loadUserByUsername(TEST_USERNAME));
+    }
+
+    @Test
+    void testLoadUserByUsername_UserWithNoRoles_ShouldReturnUserWithNoAuthorities() {
+        UserEntity testUser = new UserEntity()
+                .setUsername(TEST_USERNAME)
+                .setEmail("testEmail")
+                .setPassword("testPassword")
+                .setFirstName("testFirstname")
+                .setLastName("testLastname")
+                .setStatus(UserStatus.ACTIVE)
+                .setRoles(new ArrayList<>());  // No roles assigned
+
+        when(mockUserRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(testUser));
+
+        UserDetails userDetails = toTest.loadUserByUsername(TEST_USERNAME);
+
+        Assertions.assertInstanceOf(BrDissectingUserDetails.class, userDetails);
+        Assertions.assertTrue(userDetails.getAuthorities().isEmpty());
     }
 
 }
