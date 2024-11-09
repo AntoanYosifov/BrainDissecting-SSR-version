@@ -78,6 +78,10 @@ public class CommentServiceImpl implements CommentService {
 
         CommentEntity commentEntity = commentById.get();
 
+        if(!userEntity.getComments().contains(commentEntity) || !articleEntity.getComments().contains(commentEntity)) {
+            return false;
+        }
+
         commentRepository.delete(commentEntity);
 
         userEntity.getComments().remove(commentEntity);

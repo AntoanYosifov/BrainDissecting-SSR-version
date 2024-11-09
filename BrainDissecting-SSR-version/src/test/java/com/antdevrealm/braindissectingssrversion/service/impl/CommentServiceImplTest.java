@@ -99,4 +99,40 @@ public class CommentServiceImplTest {
         Assertions.assertEquals(-2, result);
     }
 
+    @Test
+    void delete_ShouldReturnTrue_WhenArticleCommentAndUserExist() {
+        long articleId = 1L;
+        long commentId = 1L;
+        long userId = 1L;
+
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(articleId);
+        articleEntity.setTitle("testArticle");
+
+        CommentEntity commentEntity = new CommentEntity();
+        commentEntity.setId(commentId);
+        commentEntity.setContent("testContent");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUsername");
+
+        articleEntity.getComments().add(commentEntity);
+        userEntity.getComments().add(commentEntity);
+
+        Assertions.assertTrue(articleEntity.getComments().contains(commentEntity));
+        Assertions.assertTrue(userEntity.getComments().contains(commentEntity));
+
+        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
+        when(mockCommentRepository.findById(articleId)).thenReturn(Optional.of(commentEntity));
+        when(mockUserRepository.findById(articleId)).thenReturn(Optional.of(userEntity));
+
+        boolean result = toTest.delete(articleId, commentId, userId);
+
+        Assertions.assertTrue(result);
+        Assertions.assertFalse(articleEntity.getComments().contains(commentEntity));
+        Assertions.assertFalse(userEntity.getComments().contains(commentEntity));
+        
+    }
+
 }
