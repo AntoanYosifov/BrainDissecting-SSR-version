@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,9 +73,13 @@ public class BrDissectingUserDetailServiceTest {
         List<String> actualRoles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
         Assertions.assertEquals(expectedRoles, actualRoles);
-
     }
 
+    @Test
+    void testLoadUserByUsername_UserNotFound_ShouldThrowUsernameNotFoundException() {
+        when(mockUserRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
 
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> toTest.loadUserByUsername(TEST_USERNAME));
+    }
 
 }

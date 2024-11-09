@@ -25,7 +25,6 @@ public class BrDissectingUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found!"));
 
         return map(userEntity);
-
     }
 
     private  UserDetails map(UserEntity user) {
