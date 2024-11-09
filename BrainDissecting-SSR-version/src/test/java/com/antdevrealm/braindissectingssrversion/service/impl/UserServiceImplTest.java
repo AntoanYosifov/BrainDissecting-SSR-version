@@ -35,6 +35,17 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
+
+    private final long USER_ID = 1L;
+
+    private final String USERNAME = "testUser";
+
+    private final long ARTICLE_ID = 1L;
+
+    private UserEntity userEntity;
+
+    private ArticleEntity articleEntity;
+
     @Mock
     private UserRepository mockUserRepository;
     @Mock
@@ -57,6 +68,17 @@ public class UserServiceImplTest {
         toTest = new UserServiceImpl(mockUserRepository, mockRoleRepository,
                 mockPasswordEncoder, mockBrDissectingUserDetailService,
                 mockArticleRepository, mockModelMapper);
+
+        userEntity = new UserEntity()
+                .setUsername(USERNAME)
+                .setEmail("testEmail")
+                .setPassword("testPassword")
+                .setStatus(UserStatus.ACTIVE)
+                .setFavourites(new ArrayList<>());
+
+        articleEntity = new ArticleEntity()
+                .setTitle("testArticle");
+
     }
 
     @Test
@@ -77,7 +99,7 @@ public class UserServiceImplTest {
     @Test
     void register_ShouldReturnFalse_WhenPasswordConfirmationMismatch() {
         RegistrationDTO registrationDTO = new RegistrationDTO();
-        registrationDTO.setUsername("testUsername")
+        registrationDTO.setUsername(USERNAME)
                 .setEmail("testEmail")
                 .setPassword("testPassword")
                 .setConfirmPassword("differentPassword");
@@ -91,7 +113,7 @@ public class UserServiceImplTest {
     @Test
     void register_ShouldReturnFalse_WhenUserRoleNotFound() {
         RegistrationDTO registrationDTO = new RegistrationDTO();
-        registrationDTO.setUsername("testUsername")
+        registrationDTO.setUsername(USERNAME)
                 .setEmail("testEmail")
                 .setPassword("testPassword")
                 .setConfirmPassword("testPassword");
@@ -109,7 +131,7 @@ public class UserServiceImplTest {
 
     @Test
     void register_ShouldReturnTrue() {
-        RegistrationDTO registrationDTO = new RegistrationDTO().setUsername("testUsername")
+        RegistrationDTO registrationDTO = new RegistrationDTO().setUsername(USERNAME)
                 .setEmail("testEmail")
                 .setPassword("testPassword")
                 .setConfirmPassword("testPassword")
@@ -144,56 +166,49 @@ public class UserServiceImplTest {
 
     @Test
     void update_ShouldReturnFalse_WhenUserNotFound() {
-        long loggedUserId = 1L;
-
         UpdateDTO updateDTO = new UpdateDTO();
         updateDTO.setNewUsername("newUserName");
 
-        when(mockUserRepository.findById(loggedUserId)).thenReturn(Optional.empty());
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.update(loggedUserId, updateDTO);
+        boolean result = toTest.update(USER_ID, updateDTO);
 
         Assertions.assertFalse(result);
     }
 
     @Test
     void update_UsernameOrEmailExists_ShouldThrowException() {
-        long loggedUserId = 1L;
         UpdateDTO updateDTO = new UpdateDTO().setNewUsername("existingUsername").setNewEmail("existingEmail");
 
         UserEntity existingUser = new UserEntity();
-        when(mockUserRepository.findById(loggedUserId)).thenReturn(Optional.of(existingUser));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(existingUser));
         when(mockUserRepository.findByUsernameOrEmail(updateDTO.getNewUsername(), updateDTO.getNewEmail()))
                 .thenReturn(Optional.of(new UserEntity()));
 
-        Assertions.assertThrows(UsernameOrEmailException.class, () -> toTest.update(loggedUserId, updateDTO));
+        Assertions.assertThrows(UsernameOrEmailException.class, () -> toTest.update(USER_ID, updateDTO));
     }
 
     @Test
     void update_NewUsernameAndConfirmUsernameMisMatch_ShouldThrowException() {
-        long loggedUserId = 1L;
         UpdateDTO updateDTO = new UpdateDTO()
                 .setNewUsername("newUsername")
                 .setConfirmUsername("differentUsername");
 
-        UserEntity userEntity = new UserEntity();
-        when(mockUserRepository.findById(loggedUserId)).thenReturn(Optional.of(userEntity));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
 
-        Assertions.assertThrows(NewUsernameConfirmUsernameException.class, () -> toTest.update(loggedUserId, updateDTO));
+        Assertions.assertThrows(NewUsernameConfirmUsernameException.class, () -> toTest.update(USER_ID, updateDTO));
     }
 
     @Test
     void update_SuccessfulUpdate_ShouldReturnTrue() {
-        long loggedUserId = 1L;
         UpdateDTO updateDTO = new UpdateDTO()
                 .setNewUsername("newUsername")
                 .setConfirmUsername("newUsername")
                 .setNewEmail("newEmail");
 
-        UserEntity userEntity = new UserEntity();
         userEntity.setUsername("oldUsername").setEmail("oldEmail");
 
-        doReturn(Optional.of(userEntity)).when(mockUserRepository).findById(loggedUserId);
+        doReturn(Optional.of(userEntity)).when(mockUserRepository).findById(USER_ID);
         doReturn(Optional.empty()).when(mockUserRepository).findByUsernameOrEmail(updateDTO.getNewUsername(), updateDTO.getNewEmail());
         UserDetails mockUserDetails = Mockito.mock(UserDetails.class);
 
@@ -201,7 +216,7 @@ public class UserServiceImplTest {
         when(mockUserDetails.getAuthorities()).thenReturn(List.of());
         when(mockBrDissectingUserDetailService.loadUserByUsername(updateDTO.getNewUsername())).thenReturn(mockUserDetails);
 
-        boolean result = toTest.update(loggedUserId, updateDTO);
+        boolean result = toTest.update(USER_ID, updateDTO);
 
         Assertions.assertTrue(result);
 
@@ -214,22 +229,10 @@ public class UserServiceImplTest {
 
     @Test
     void addArticleToFavourites_ShouldReturnTrue_WhenArticleAndUserExists() {
-        long articleId = 1L;
-        long userId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
-        userEntity.setUsername("testUser");
-        userEntity.setFavourites(new ArrayList<>());
-
-        ArticleEntity articleEntity = new ArticleEntity();
-        articleEntity.setId(articleId);
-        articleEntity.setTitle("testArticle");
-
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
-
-        boolean result = toTest.addArticleToFavourites(articleId, userId);
+        boolean result = toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
 
         Assertions.assertTrue(result);
         Assertions.assertTrue(userEntity.getFavourites().contains(articleEntity));
@@ -238,49 +241,27 @@ public class UserServiceImplTest {
 
     @Test
     void addArticleToFavourites_ShouldReturnFalse_WhenUserNotFound() {
-        Long userId = 1L;
-        Long articleId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.addArticleToFavourites(articleId, userId);
+        boolean result = toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
         Assertions.assertFalse(result);
     }
 
     @Test
     void addArticleToFavourites_ShouldReturnFalse_WhenArticleNotFound() {
-        Long userId = 1L;
-        Long articleId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("testUser");
-
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.addArticleToFavourites(articleId, userId);
+        boolean result = toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
         Assertions.assertFalse(result);
     }
 
     @Test
     void removeFromFavourites_ShouldReturnTrue_WhenArticleAndUserExists() {
-        long articleId = 1L;
-        long userId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
 
-        ArticleEntity articleEntity = new ArticleEntity();
-        articleEntity.setId(articleId);
-        articleEntity.setTitle("testArticle");
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
-        userEntity.setUsername("testUser");
-        userEntity.setFavourites(new ArrayList<>());
-        userEntity.getFavourites().add(articleEntity);
-
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
-
-        boolean result = toTest.removeFromFavourites(articleId, userId);
+        boolean result = toTest.removeFromFavourites(ARTICLE_ID, USER_ID);
 
         Assertions.assertTrue(result);
         Assertions.assertFalse(userEntity.getFavourites().contains(articleEntity));
@@ -288,33 +269,23 @@ public class UserServiceImplTest {
 
     @Test
     void removeFromFavourites_ShouldReturnFalse_WhenUserNotFound() {
-        long userId = 1L;
-        long articleId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.removeFromFavourites(userId, articleId);
+        boolean result = toTest.removeFromFavourites(USER_ID, ARTICLE_ID);
         Assertions.assertFalse(result);
     }
 
     @Test
     void removeFromFavourites_ShouldReturnFalse_WhenArticleNotFound() {
-        long userId = 1L;
-        long articleId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("testUsername");
-
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.removeFromFavourites(userId, articleId);
+        boolean result = toTest.removeFromFavourites(USER_ID, ARTICLE_ID);
         Assertions.assertFalse(result);
     }
 
     @Test
     void getFavouriteArticlesIds_ShouldReturnListOfFavouriteArticleIds() {
-        long userId = 1L;
         long articleId1 = 100L;
         long articleId2 = 101L;
 
@@ -325,12 +296,12 @@ public class UserServiceImplTest {
         articleEntity2.setId(articleId2);
 
         UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
+        userEntity.setId(USER_ID);
         userEntity.setFavourites(List.of(articleEntity1, articleEntity2));
 
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
 
-        List<Long> favouriteArticlesIds = toTest.getFavouriteArticlesIds(userId);
+        List<Long> favouriteArticlesIds = toTest.getFavouriteArticlesIds(USER_ID);
 
         Assertions.assertEquals(2, favouriteArticlesIds.size());
         Assertions.assertTrue(favouriteArticlesIds.contains(articleId1));
@@ -339,25 +310,18 @@ public class UserServiceImplTest {
 
     @Test
     void getFavouriteArticlesIds_ShouldReturnEmptyList_WhenUserDoesNotExist() {
-        long userId = 1L;
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
-
-        List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(userId);
+        List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(USER_ID);
 
         Assertions.assertTrue(favouriteArticleIds.isEmpty());
     }
 
     @Test
     void getFavouriteArticlesIds_ShouldReturnEmptyList_WhenUserHasNoFavourites() {
-        long userId = 1L;
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
-        userEntity.setFavourites(new ArrayList<>()); // No favorites
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
 
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-
-        List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(userId);
+        List<Long> favouriteArticleIds = toTest.getFavouriteArticlesIds(USER_ID);
 
         Assertions.assertTrue(favouriteArticleIds.isEmpty());
     }
