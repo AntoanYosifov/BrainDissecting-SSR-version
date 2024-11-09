@@ -18,55 +18,52 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceImplTest {
+    private final String CATEGORY_NAME = "testName";
+
+    private final long CATEGORY_ID = 1L;
+
     @Mock
     private CategoryRepository mockCategoryRepository;
 
     @Captor
     private ArgumentCaptor<CategoryEntity> categoryCaptor;
 
+    private CategoryEntity categoryEntity;
+
     private CategoryServiceImpl toTest;
 
     @BeforeEach
     void setUp() {
         toTest = new CategoryServiceImpl(mockCategoryRepository);
+        categoryEntity = new CategoryEntity();
+        categoryEntity.setId(CATEGORY_ID);
+        categoryEntity.setName(CATEGORY_NAME);
     }
 
     @Test
     void addCategory_ShouldSaveCategoryWithGivenName() {
-        String categoryName = "testName";
+        when(mockCategoryRepository.findByName(CATEGORY_NAME)).thenReturn(Optional.empty());
 
-        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
-
-        boolean result = toTest.addCategory(categoryName);
+        boolean result = toTest.addCategory(CATEGORY_NAME);
 
         verify(mockCategoryRepository).save(categoryCaptor.capture());
         CategoryEntity savedCategory = categoryCaptor.getValue();
         Assertions.assertTrue(result);
-        Assertions.assertEquals(categoryName, savedCategory.getName());
+        Assertions.assertEquals(CATEGORY_NAME, savedCategory.getName());
     }
 
     @Test
     void addCategory_ShouldReturnFalseWhenCategoryAlreadyExists() {
-        String categoryName = "testName";
+        when(mockCategoryRepository.findByName(CATEGORY_NAME)).thenReturn(Optional.of(categoryEntity));
 
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setName(categoryName);
-
-        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.of(categoryEntity));
-
-        boolean result = toTest.addCategory(categoryName);
+        boolean result = toTest.addCategory(CATEGORY_NAME);
 
         Assertions.assertFalse(result);
     }
 
     @Test
     void removeCategory_ShouldReturnTrue_WhenCategoryExists() {
-        long categoryId = 1L;
-
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(categoryId);
-
-        when(mockCategoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity));
+        when(mockCategoryRepository.findById(CATEGORY_ID)).thenReturn(Optional.of(categoryEntity));
 
         boolean result = toTest.removeCategory(categoryEntity);
 
@@ -76,12 +73,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void removeCategory_ShouldReturnFalse_WhenCategoryDoesNotExist() {
-        long categoryId = 1L;
-
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(categoryId);
-
-        when(mockCategoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+        when(mockCategoryRepository.findById(CATEGORY_ID)).thenReturn(Optional.empty());
 
         boolean result = toTest.removeCategory(categoryEntity);
 
@@ -90,26 +82,19 @@ public class CategoryServiceImplTest {
 
     @Test
     void getByName_ShouldReturnOptionalOfCategoryEntity_WhenEntityExists() {
-        String categoryName = "testName";
+        when(mockCategoryRepository.findByName(CATEGORY_NAME)).thenReturn(Optional.of(categoryEntity));
 
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setName(categoryName);
-
-        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.of(categoryEntity));
-
-        Optional<CategoryEntity> optionalCategory = toTest.getByName(categoryName);
+        Optional<CategoryEntity> optionalCategory = toTest.getByName(CATEGORY_NAME);
 
         Assertions.assertTrue(optionalCategory.isPresent());
-        Assertions.assertEquals(optionalCategory.get().getName(), categoryName);
+        Assertions.assertEquals(CATEGORY_NAME, optionalCategory.get().getName() );
     }
 
     @Test
     void getByName_ShouldReturnEmptyOptionalWhenEntityDoesNotExist() {
-        String categoryName = "testName";
+        when(mockCategoryRepository.findByName(CATEGORY_NAME)).thenReturn(Optional.empty());
 
-        when(mockCategoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
-
-        Optional<CategoryEntity> optionalCategory = toTest.getByName(categoryName);
+        Optional<CategoryEntity> optionalCategory = toTest.getByName(CATEGORY_NAME);
 
         Assertions.assertTrue(optionalCategory.isEmpty());
     }

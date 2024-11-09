@@ -61,8 +61,6 @@ public class ArticleServiceImpl implements ArticleService {
         this.userRepository = userRepository;
     }
 
-//    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
-
     @Override
     @Transactional
     public List<DisplayArticleDTO> getAllApproved() {
@@ -84,7 +82,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     @Modifying
     public boolean deleteArticle(Long articleId) {
-
         if (articleRepository.existsById(articleId)) {
             articleRepository.removeAllFromUsersFavourites(articleId);
 
@@ -92,7 +89,6 @@ public class ArticleServiceImpl implements ArticleService {
 
             return true;
         }
-
         return false;
     }
 
@@ -145,13 +141,10 @@ public class ArticleServiceImpl implements ArticleService {
         return true;
     }
 
-    // TODO: Error handling
     @Override
     @SuppressWarnings("unchecked")
     public List<FetchArticleDTO> fetchArticles(String theme) {
-
         int pageNumber = random.nextInt(10) + 1;
-
         String body = restClient
                 .get()
                 .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "&pageSize=10")
@@ -276,7 +269,6 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     private ArticleEntity mapToArticleEntity(FetchArticleDTO fetchArticleDTO) {
-
         Optional<ArticleEntity> optArticle = articleRepository.findByTitle(fetchArticleDTO.getTitle());
         ArticleEntity articleEntity = optArticle.orElseGet(() -> modelMapper.map(fetchArticleDTO, ArticleEntity.class));
         articleEntity.setStatus(Status.PENDING);
