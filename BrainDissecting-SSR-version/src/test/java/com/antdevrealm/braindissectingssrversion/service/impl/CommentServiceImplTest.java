@@ -25,6 +25,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceImplTest {
 
+    private static final long USER_ID = 1L;
+    private static final long ARTICLE_ID = 1L;
+    private static final long COMMENT_ID = 1L;
+
     @Mock
     private CommentRepository mockCommentRepository;
 
@@ -37,31 +41,43 @@ public class CommentServiceImplTest {
     @Captor
     private ArgumentCaptor<CommentEntity> commentCaptor;
 
+    private AddCommentDTO addCommentDTO;
+    private UserEntity userEntity;
+    private ArticleEntity articleEntity;
+    private CommentEntity commentEntity;
+
     private CommentServiceImpl toTest;
 
     @BeforeEach
     void setUp() {
         toTest = new CommentServiceImpl(mockCommentRepository, mockArticleRepository, mockUserRepository);
+
+        addCommentDTO = new AddCommentDTO();
+        addCommentDTO.setContent("testContent");
+
+        userEntity = new UserEntity();
+        userEntity.setId(USER_ID);
+        userEntity.setUsername("testUser");
+
+        articleEntity = new ArticleEntity();
+        articleEntity.setId(ARTICLE_ID);
+        articleEntity.setTitle("testArticle");
+
+        commentEntity = new CommentEntity();
+        commentEntity.setId(COMMENT_ID);
+        commentEntity.setContent("testContent");
     }
 
     @Test
-    void add_ShouldSaveCommentAndReturnItsId_WhenAuthorAndArticleExist() {
-        long authorId = 1L;
-        long articleId = 1L;
+    void add_ShouldSaveCommentAndReturnItsId_WhenUserAndArticleExist() {
         long expectedCommentId = 10L;
-        AddCommentDTO addCommentDTO = new AddCommentDTO();
-        addCommentDTO.setContent("testContent");
-
-        UserEntity userEntity = new UserEntity();
-        ArticleEntity articleEntity = new ArticleEntity();
-        CommentEntity commentEntity = new CommentEntity();
         commentEntity.setId(expectedCommentId);
 
-        when(mockUserRepository.findById(authorId)).thenReturn(Optional.of(userEntity));
-        when(mockArticleRepository.findById(authorId)).thenReturn(Optional.of(articleEntity));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
         when(mockCommentRepository.save(Mockito.any(CommentEntity.class))).thenReturn(commentEntity);
 
-        long actualSavedCommentId = toTest.add(addCommentDTO, authorId, articleId);
+        long actualSavedCommentId = toTest.add(addCommentDTO, USER_ID, ARTICLE_ID);
 
         verify(mockCommentRepository).save(commentCaptor.capture());
         CommentEntity savedComment = commentCaptor.getValue();
@@ -74,117 +90,68 @@ public class CommentServiceImplTest {
 
     @Test
     void add_ShouldReturnNegativeOne_WhenArticleNotFound() {
-        AddCommentDTO addCommentDTO = new AddCommentDTO();
-        long authorId = 1L;
-        long articleId = 1L;
+        Mockito.when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
-        Mockito.when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
-
-        long result = toTest.add(addCommentDTO, authorId, articleId);
+        long result = toTest.add(addCommentDTO, USER_ID, ARTICLE_ID);
 
         Assertions.assertEquals(-1, result);
     }
 
     @Test
     void add_ShouldReturnNegativeTwo_WhenUserNotFound() {
-        AddCommentDTO addCommentDTO = new AddCommentDTO();
-        long authorId = 1L;
-        long articleId = 1L;
+        Mockito.when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(new ArticleEntity()));
+        Mockito.when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        Mockito.when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(new ArticleEntity()));
-        Mockito.when(mockUserRepository.findById(authorId)).thenReturn(Optional.empty());
-
-        long result = toTest.add(addCommentDTO, authorId, articleId);
+        long result = toTest.add(addCommentDTO, USER_ID, ARTICLE_ID);
 
         Assertions.assertEquals(-2, result);
     }
 
     @Test
     void delete_ShouldReturnTrue_WhenArticleCommentAndUserExist() {
-        long articleId = 1L;
-        long commentId = 1L;
-        long userId = 1L;
-
-        ArticleEntity articleEntity = new ArticleEntity();
-        articleEntity.setId(articleId);
-        articleEntity.setTitle("testArticle");
-
-        CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setId(commentId);
-        commentEntity.setContent("testContent");
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
-        userEntity.setUsername("testUsername");
-
         articleEntity.getComments().add(commentEntity);
         userEntity.getComments().add(commentEntity);
 
         Assertions.assertTrue(articleEntity.getComments().contains(commentEntity));
         Assertions.assertTrue(userEntity.getComments().contains(commentEntity));
 
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
-        when(mockCommentRepository.findById(articleId)).thenReturn(Optional.of(commentEntity));
-        when(mockUserRepository.findById(articleId)).thenReturn(Optional.of(userEntity));
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
+        when(mockCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(commentEntity));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
 
-        boolean result = toTest.delete(articleId, commentId, userId);
+        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
 
         Assertions.assertTrue(result);
         Assertions.assertFalse(articleEntity.getComments().contains(commentEntity));
         Assertions.assertFalse(userEntity.getComments().contains(commentEntity));
-
     }
 
     @Test
     void delete_ShouldReturnFalse_WhenArticleDoesNotExist() {
-        long articleId = 1L;
-        long commentId = 1L;
-        long userId = 1L;
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.delete(articleId, commentId, userId);
+        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
 
         Assertions.assertFalse(result);
     }
 
     @Test
     void delete_ShouldReturnFalse_WhenUserDoesNotExist() {
-        long articleId = 1L;
-        long commentId = 1L;
-        long userId = 1L;
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        ArticleEntity articleEntity = new ArticleEntity();
-        articleEntity.setId(articleId);
-        articleEntity.setTitle("testArticle");
-
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.delete(articleId, commentId, userId);
+        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
 
         Assertions.assertFalse(result);
     }
 
     @Test
     void delete_ShouldReturnFalse_WhenUserCommentNotExist() {
-        long articleId = 1L;
-        long commentId = 1L;
-        long userId = 1L;
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
+        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(mockCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.empty());
 
-        ArticleEntity articleEntity = new ArticleEntity();
-        articleEntity.setId(articleId);
-        articleEntity.setTitle("testArticle");
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
-        userEntity.setUsername("testUsername");
-
-        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
-        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(mockCommentRepository.findById(commentId)).thenReturn(Optional.empty());
-
-        boolean result = toTest.delete(articleId, commentId, userId);
+        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
 
         Assertions.assertFalse(result);
     }
