@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,15 +32,13 @@ public class BrDissectingUserDetailServiceTest {
     @Mock
     private UserRepository mockUserRepository;
 
+    private UserEntity testUser;
+
     @BeforeEach
     void setUp() {
         toTest = new BrDissectingUserDetailService(mockUserRepository);
-    }
 
-    @Test
-    void testLoadUserByUsername_UserFound() {
-
-        UserEntity testUser = new UserEntity()
+        testUser = new UserEntity()
                 .setUsername("testUsername")
                 .setEmail("testEmail")
                 .setPassword("testPassword")
@@ -52,6 +49,10 @@ public class BrDissectingUserDetailServiceTest {
                         new UserRoleEntity().setRole(UserRole.ADMIN),
                         new UserRoleEntity().setRole(UserRole.USER)
                 ));
+    }
+
+    @Test
+    void testLoadUserByUsername_UserFound() {
 
         when(mockUserRepository.findByUsername(TEST_USERNAME))
                 .thenReturn(Optional.of(testUser));
@@ -85,21 +86,25 @@ public class BrDissectingUserDetailServiceTest {
 
     @Test
     void testLoadUserByUsername_UserWithNoRoles_ShouldReturnUserWithNoAuthorities() {
-        UserEntity testUser = new UserEntity()
-                .setUsername(TEST_USERNAME)
-                .setEmail("testEmail")
-                .setPassword("testPassword")
-                .setFirstName("testFirstname")
-                .setLastName("testLastname")
-                .setStatus(UserStatus.ACTIVE)
-                .setRoles(new ArrayList<>());  // No roles assigned
-
+        testUser.setRoles(new ArrayList<>());
         when(mockUserRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = toTest.loadUserByUsername(TEST_USERNAME);
 
         Assertions.assertInstanceOf(BrDissectingUserDetails.class, userDetails);
         Assertions.assertTrue(userDetails.getAuthorities().isEmpty());
+    }
+
+    @Test
+    void testLoadUserByUsername_UserIsBanned_ShouldReturnUserDetailsWithBannedStatus() {
+        testUser.setStatus(UserStatus.BANNED)
+                .setRoles(List.of(new UserRoleEntity().setRole(UserRole.USER)));
+
+        when(mockUserRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(testUser));
+
+        BrDissectingUserDetails userDetails = (BrDissectingUserDetails) toTest.loadUserByUsername(TEST_USERNAME);
+
+        Assertions.assertTrue(userDetails.isBanned());
     }
 
 }
