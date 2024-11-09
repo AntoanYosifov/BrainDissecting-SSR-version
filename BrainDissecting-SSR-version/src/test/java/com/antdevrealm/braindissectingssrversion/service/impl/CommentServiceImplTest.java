@@ -166,4 +166,27 @@ public class CommentServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void delete_ShouldReturnFalse_WhenUserCommentNotExist() {
+        long articleId = 1L;
+        long commentId = 1L;
+        long userId = 1L;
+
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(articleId);
+        articleEntity.setTitle("testArticle");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUsername("testUsername");
+
+        when(mockArticleRepository.findById(articleId)).thenReturn(Optional.of(articleEntity));
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(mockCommentRepository.findById(commentId)).thenReturn(Optional.empty());
+
+        boolean result = toTest.delete(articleId, commentId, userId);
+
+        Assertions.assertFalse(result);
+    }
+
 }
