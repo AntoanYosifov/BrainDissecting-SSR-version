@@ -27,8 +27,6 @@ public class AdminServiceImplTest {
 
     private final long USER_ID = 1L;
 
-    private final String USERNAME = "testUser";
-
     @Mock
     private  UserService mockUserService;
     @Mock
@@ -49,7 +47,7 @@ public class AdminServiceImplTest {
 
         userEntity = new UserEntity();
         userEntity.setId(USER_ID);
-        userEntity.setUsername(USERNAME);
+        userEntity.setUsername("testUser");
         userEntity.setRoles(new ArrayList<>());
     }
 
