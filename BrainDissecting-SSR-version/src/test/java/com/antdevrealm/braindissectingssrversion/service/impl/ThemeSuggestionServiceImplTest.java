@@ -82,6 +82,21 @@ public class ThemeSuggestionServiceImplTest {
         when(mockUserRepository.findById(MODERATOR_ID)).thenReturn(Optional.of(userEntity));
         when(mockThemeSuggestionRepository.existsByName(THEME_NAME.toLowerCase())).thenReturn(true);
 
+
+        boolean result = toTest.suggestTheme(THEME_NAME, MODERATOR_ID);
+
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void suggestTheme_ShouldReturnFalseWhenThemeIsAlreadyApprovedAsCategory() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(MODERATOR_ID);
+
+        when(mockUserRepository.findById(MODERATOR_ID)).thenReturn(Optional.of(userEntity));
+        when(mockThemeSuggestionRepository.existsByName(THEME_NAME.toLowerCase())).thenReturn(false);
+        when(mockCategoryRepository.existsByName(THEME_NAME.toLowerCase())).thenReturn(true);
+
         boolean result = toTest.suggestTheme(THEME_NAME, MODERATOR_ID);
 
         Assertions.assertFalse(result);
