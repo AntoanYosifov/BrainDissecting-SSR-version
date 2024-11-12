@@ -3,7 +3,6 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.ThemeSuggestionEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
-import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.repository.CategoryRepository;
 import com.antdevrealm.braindissectingssrversion.repository.ThemeSuggestionRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
@@ -42,18 +41,11 @@ public class ThemeSuggestionServiceImpl implements ThemeSuggestionService {
     public boolean suggestTheme(String name, Long moderatorId) {
         Optional<UserEntity> optUser = userRepository.findById(moderatorId);
 
-        if(optUser.isEmpty() || themeSuggestionRepository.existsByName(name)) {
+        if(optUser.isEmpty() || themeSuggestionRepository.existsByName(name.toLowerCase())) {
             return false;
         }
 
         UserEntity moderator = optUser.get();
-
-        boolean isModerator = moderator.getRoles().stream()
-                .anyMatch(role -> role.getRole().equals(UserRole.MODERATOR));
-
-        if(!isModerator) {
-            return false;
-        }
 
         ThemeSuggestionEntity themeSuggestionEntity = new ThemeSuggestionEntity();
 
@@ -63,7 +55,6 @@ public class ThemeSuggestionServiceImpl implements ThemeSuggestionService {
         if (categoryRepository.existsByName(name.toLowerCase())) {
             return false;
         }
-
 
         themeSuggestionRepository.save(themeSuggestionEntity);
         return true;

@@ -1,7 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.config;
 
 import com.antdevrealm.braindissectingssrversion.filter.BannedUserFilter;
-import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.impl.ArticleServiceImpl;
 import com.antdevrealm.braindissectingssrversion.service.impl.BrDissectingUserDetailService;
