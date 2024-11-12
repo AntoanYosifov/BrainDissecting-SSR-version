@@ -102,4 +102,18 @@ public class ModeratorServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void rejectArticle_ShouldReturnFalseWhenArticleStatusIsNotPending() {
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(ARTICLE_ID);
+        articleEntity.setStatus(APPROVED);
+
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
+
+        boolean result = toTest.rejectArticle(ARTICLE_ID);
+
+        Assertions.assertFalse(result);
+    }
+
+
 }
