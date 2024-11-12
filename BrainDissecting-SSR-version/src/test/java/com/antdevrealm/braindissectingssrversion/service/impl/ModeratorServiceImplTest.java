@@ -55,5 +55,12 @@ public class ModeratorServiceImplTest {
         Assertions.assertEquals(APPROVED, savedArticle.getStatus());
     }
 
+    @Test
+    void approveArticle_ShouldReturnFalseWhenArticleDoesNotExist() {
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
+        boolean result = toTest.approveArticle(ARTICLE_ID);
+
+        Assertions.assertFalse(result);
+    }
 }
