@@ -65,4 +65,13 @@ public class ThemeSuggestionServiceImplTest {
         Assertions.assertEquals(MODERATOR_ID, suggestedTheme.getSuggestedBy().getId());
     }
 
+    @Test
+    void suggestTheme_ShouldReturnFalseWhenModeratorDoesNotExist() {
+        when(mockUserRepository.findById(MODERATOR_ID)).thenReturn(Optional.empty());
+
+        boolean result = toTest.suggestTheme(THEME_NAME, MODERATOR_ID);
+
+        Assertions.assertFalse(result);
+    }
+
 }
