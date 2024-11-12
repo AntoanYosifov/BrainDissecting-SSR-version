@@ -1,7 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
-import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -93,6 +91,15 @@ public class ModeratorServiceImplTest {
 
         Assertions.assertTrue(result);
         Assertions.assertEquals(ARTICLE_ID, rejectedArticle.getId());
+    }
+
+    @Test
+    void rejectArticle_ShouldReturnFalseWhenArticleDoesNotExist() {
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
+
+        boolean result = toTest.rejectArticle(ARTICLE_ID);
+
+        Assertions.assertFalse(result);
     }
 
 }
