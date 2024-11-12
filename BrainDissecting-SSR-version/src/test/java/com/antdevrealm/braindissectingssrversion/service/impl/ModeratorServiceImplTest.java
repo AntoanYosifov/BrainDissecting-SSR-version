@@ -78,6 +78,21 @@ public class ModeratorServiceImplTest {
         Assertions.assertFalse(result);
     }
 
+    @Test
+    void rejectArticle_ShouldReturnTrueWhenArticleExistsAndStatusIsPending() {
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(ARTICLE_ID);
+        articleEntity.setStatus(PENDING);
 
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
+
+        boolean result = toTest.rejectArticle(ARTICLE_ID);
+
+        verify(mockArticleRepository).delete(articleCaptor.capture());
+        ArticleEntity rejectedArticle = articleCaptor.getValue();
+
+        Assertions.assertTrue(result);
+        Assertions.assertEquals(ARTICLE_ID, rejectedArticle.getId());
+    }
 
 }
