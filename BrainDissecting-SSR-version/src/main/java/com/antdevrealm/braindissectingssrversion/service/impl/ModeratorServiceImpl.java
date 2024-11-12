@@ -55,4 +55,5 @@ public class ModeratorServiceImpl implements ModeratorService {
 
         return true;
     }
+
 }

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static com.antdevrealm.braindissectingssrversion.model.enums.Status.APPROVED;
+import static com.antdevrealm.braindissectingssrversion.model.enums.Status.PENDING;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,7 @@ public class ModeratorServiceImplTest {
     void approveArticle_ShouldReturnTrueWhenArticleExistsAndStatusIsPending() {
         ArticleEntity articleEntity = new ArticleEntity();
         articleEntity.setId(ARTICLE_ID);
-        articleEntity.setStatus(Status.PENDING);
+        articleEntity.setStatus(PENDING);
 
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
 
@@ -63,4 +64,20 @@ public class ModeratorServiceImplTest {
 
         Assertions.assertFalse(result);
     }
+
+    @Test
+    void approveArticle_ShouldReturnFalseWhenArticleStatusIsNotPending() {
+        ArticleEntity articleEntity = new ArticleEntity();
+        articleEntity.setId(ARTICLE_ID);
+        articleEntity.setStatus(APPROVED);
+
+        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
+
+        boolean result = toTest.approveArticle(ARTICLE_ID);
+
+        Assertions.assertFalse(result);
+    }
+
+
+
 }
