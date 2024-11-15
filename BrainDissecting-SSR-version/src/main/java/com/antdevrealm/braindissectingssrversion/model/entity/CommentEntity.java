@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "comments")
 public class CommentEntity extends BaseEntity {
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false,  length = 65535)
     private String content;
 
     @ManyToOne(targetEntity = UserEntity.class, optional = false)

@@ -14,7 +14,7 @@ public class ArticleEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 65535)
     private String content;
 
     @Column(name = "journal_title")

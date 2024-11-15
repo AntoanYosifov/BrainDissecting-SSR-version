@@ -35,9 +35,6 @@ public class UserEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "favourite_id"))
     private List<ArticleEntity> favourites;
 
-    // change cascade type by adding functionality for the comments
-    // to be displayed only when a button is clicked
-
     @OneToMany(targetEntity = CommentEntity.class, mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
