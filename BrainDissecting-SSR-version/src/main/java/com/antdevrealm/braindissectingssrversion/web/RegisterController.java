@@ -49,7 +49,10 @@ public class RegisterController {
         }
 
         try {
-            userService.register(registrationDTO);
+            boolean success = userService.register(registrationDTO);
+            if(!success) {
+                return "redirect:/users/register";
+            }
         } catch (UsernameOrEmailException e) {
 
             log.error(e.getMessage());
