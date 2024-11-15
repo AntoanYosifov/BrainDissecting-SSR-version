@@ -1,5 +1,9 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
+import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,6 +22,9 @@ public class RegisterControllerIT {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void shouldRedirectToLogin_WhenRegistrationIsSuccessful() throws Exception {
         mockMvc.perform(post("/users/register")
@@ -28,6 +35,27 @@ public class RegisterControllerIT {
                         .with(csrf())
         ).andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/login"));
+    }
 
+    @Test
+    void shouldRedirectToRegistration_WhenUsernameAlreadyExists() throws Exception {
+        UserEntity existingUser = new UserEntity()
+                .setUsername("existingUsername")
+                .setEmail("existingEmail@example.com")
+                .setPassword("encodedPassword")
+                .setStatus(UserStatus.ACTIVE);
+
+        userRepository.save(existingUser);
+
+        mockMvc.perform(post("/users/register")
+                        .param("username", "existingUsername")
+                        .param("email", "uniqueEmail@example.com")
+                        .param("password", "asdasd")
+                        .param("confirmPassword", "asdasd")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/register"));
+
+        Assertions.assertEquals(1L, userRepository.count());
     }
 }
