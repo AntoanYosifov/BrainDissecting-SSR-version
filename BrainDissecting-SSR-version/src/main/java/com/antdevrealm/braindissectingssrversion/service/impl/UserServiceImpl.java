@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
+import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!passwordConfirmPasswordMatch(data)) {
-            return false;
+            throw new PasswordConfirmPassMisMatchException();
         }
 
         UserEntity userEntity = mapToUser(data);

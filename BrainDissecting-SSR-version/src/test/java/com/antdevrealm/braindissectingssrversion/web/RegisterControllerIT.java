@@ -19,8 +19,7 @@ import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -71,7 +70,6 @@ public class RegisterControllerIT {
                 .setPassword("encodedPassword")
                 .setStatus(UserStatus.ACTIVE);
 
-
         userRepository.save(existingUser);
 
         mockMvc.perform(post("/users/register")
@@ -81,9 +79,25 @@ public class RegisterControllerIT {
                         .param("confirmPassword", "asdasd")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/register"));
+                .andExpect(redirectedUrl("/users/register"))
+                .andExpect(flash().attributeExists("registerData"));
 
         Assertions.assertEquals(1L, userRepository.count());
+    }
+
+    @Test
+    void shouldRedirectToRegistration_WhenPasswordMissMatch() throws Exception {
+        mockMvc.perform(post("/users/register")
+                        .param("username", "existingUsername")
+                        .param("email", "uniqueEmail@example.com")
+                        .param("password", "validPassword")
+                        .param("confirmPassword", "differentPassword")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/register"))
+                .andExpect(flash().attributeExists("registerData"));
+
+        Assertions.assertEquals(0L, userRepository.count());
     }
 
     @AfterEach

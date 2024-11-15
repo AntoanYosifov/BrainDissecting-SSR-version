@@ -21,8 +21,8 @@
           th:action="@{/users/register}"
           th:object="${registerData}"
           class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center">
-        <div  th:if="${usernameOrEmailTaken}">
-            <p class="errors alert alert-danger text-center" th:text="${usernameOrEmailTaken}">Username or email already taken!</p>
+        <div  th:if="${usernameOrEmailTakenPasswordMismatch}">
+            <p class="errors alert alert-danger text-center" th:text="${usernameOrEmailTakenPasswordMismatch}">Error message!</p>
         </div>
 
         <div class="row">

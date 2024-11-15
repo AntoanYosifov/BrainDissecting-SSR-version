@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 
+import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
@@ -42,22 +43,18 @@ public class RegisterController {
                              RedirectAttributes redirectAttributes) {
 
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerData", registrationDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
             return "redirect:/users/register";
         }
 
         try {
-            boolean success = userService.register(registrationDTO);
-            if(!success) {
-                return "redirect:/users/register";
-            }
-        } catch (UsernameOrEmailException e) {
-
+            userService.register(registrationDTO);
+        } catch (UsernameOrEmailException | PasswordConfirmPassMisMatchException e) {
             log.error(e.getMessage());
 
-            redirectAttributes.addFlashAttribute("usernameOrEmailTaken", e.getMessage());
+            redirectAttributes.addFlashAttribute("usernameOrEmailTakenPasswordMismatch", e.getMessage());
 
             redirectAttributes.addFlashAttribute("registerData", registrationDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerData", bindingResult);
