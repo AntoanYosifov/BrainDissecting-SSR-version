@@ -37,6 +37,5 @@ public class LoginControllerIT {
                 .andExpect(redirectedUrl("/users/login"))
                 .andExpect(flash().attributeExists("loginData"))
                 .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.loginData"));
-
     }
 }
