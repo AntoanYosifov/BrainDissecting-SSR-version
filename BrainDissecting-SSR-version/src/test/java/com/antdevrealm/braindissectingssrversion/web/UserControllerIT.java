@@ -33,4 +33,12 @@ public class UserControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/banned"));
     }
+
+    @Test
+    void viewProfile_ShouldRedirectToLogin_WhenUserIsNotAuthenticated() throws Exception {
+        mockMvc.perform(get("/users/profile"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/users/login"));
+    }
+
 }
