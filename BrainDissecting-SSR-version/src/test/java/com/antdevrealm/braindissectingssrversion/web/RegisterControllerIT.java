@@ -37,6 +37,11 @@ public class RegisterControllerIT {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
+    }
+
     @Test
     void shouldRedirectToLogin_WhenRegistrationIsSuccessful() throws Exception {
 
@@ -100,8 +105,4 @@ public class RegisterControllerIT {
         Assertions.assertEquals(0L, userRepository.count());
     }
 
-    @AfterEach
-     void cleanUp() {
-        userRepository.deleteAll();
-    }
 }
