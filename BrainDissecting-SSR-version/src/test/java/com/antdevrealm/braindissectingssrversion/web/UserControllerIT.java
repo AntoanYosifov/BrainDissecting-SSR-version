@@ -25,4 +25,12 @@ public class UserControllerIT {
                 .andExpect(view().name("my-profile"))
                 .andExpect(model().attributeExists("user"));
     }
+
+    @Test
+    @WithCustomUser(username = "bannedUser", roles = {"USER"}, banned = true)
+    void viewProfile_ShouldRedirectToBannedView_WhenUserIsBanned() throws Exception {
+        mockMvc.perform(get("/users/profile"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/banned"));
+    }
 }
