@@ -32,9 +32,6 @@ public class RegisterControllerIT {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @AfterEach
@@ -44,8 +41,6 @@ public class RegisterControllerIT {
 
     @Test
     void shouldRedirectToLogin_WhenRegistrationIsSuccessful() throws Exception {
-
-        roleRepository.save(new UserRoleEntity().setRole(UserRole.USER));
 
         mockMvc.perform(post("/users/register")
                 .param("username", "testUsername")

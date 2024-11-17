@@ -8,8 +8,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,5 +25,18 @@ public class LoginControllerIT {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("/users/perform-login"));
+    }
+
+    @Test
+    void shouldRedirectToLogin_WhenValidationFails() throws Exception {
+        mockMvc.perform(post("/users/login")
+                .param("username", "")
+                .param("password", "validPassword")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/login"))
+                .andExpect(flash().attributeExists("loginData"))
+                .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.loginData"));
+
     }
 }

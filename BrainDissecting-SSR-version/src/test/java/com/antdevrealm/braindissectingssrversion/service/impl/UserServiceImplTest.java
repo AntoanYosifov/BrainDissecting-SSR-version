@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
+import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
@@ -104,9 +105,7 @@ public class UserServiceImplTest {
                 .setPassword("testPassword")
                 .setConfirmPassword("differentPassword");
 
-        boolean result = toTest.register(registrationDTO);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(PasswordConfirmPassMisMatchException.class, () -> toTest.register(registrationDTO));
         Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
     }
 
