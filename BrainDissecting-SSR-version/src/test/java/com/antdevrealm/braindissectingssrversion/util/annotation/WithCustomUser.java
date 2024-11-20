@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = CustomUserSecurityContextFactory.class)
 public @interface WithCustomUser {
+    long id() default 1L;
     String username() default "testUser";
     String email() default "test_user@example.com";
     String[] roles() default {"USER"};

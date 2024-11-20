@@ -1,5 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.util.annotation.WithCustomUser;
 import org.junit.jupiter.api.AfterEach;
@@ -73,6 +75,29 @@ public class UserControllerIT {
                 .andExpect(flash().attributeExists("updateData"))
                 .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.updateData"))
                 .andExpect(flash().attribute("editProfile", true));
+    }
+
+    @Test
+    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
+    void update_ShouldRedirectToProfileWithError_WhenUsernameAndConfirmUsernameDoNotMatch() throws Exception {
+        UserEntity user = new UserEntity()
+                .setUsername("testUser")
+                .setEmail("testUser@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        user.setId(1L);
+
+        userRepository.save(user);
+
+        mockMvc.perform(patch("/users/profile/update")
+                        .param("newUsername", "newUsername")
+                        .param("confirmUsername", "differentUsername")
+                        .param("newEmail", "validemail@example.com")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/profile"))
+                .andExpect(flash().attributeExists("usernameConfUsernameMissMatch"));
     }
 
     @AfterEach

@@ -21,7 +21,7 @@ public class CustomUserSecurityContextFactory implements WithSecurityContextFact
                 .map(role -> new SimpleGrantedAuthority("ROLE" + role))
                 .toList();
 
-        BrDissectingUserDetails userDetails = new BrDissectingUserDetails(1L,
+        BrDissectingUserDetails userDetails = new BrDissectingUserDetails(customUser.id(),
                 customUser.email(),
                 customUser.username(),
                 "mockPassword",
