@@ -10,7 +10,7 @@ public interface UserService {
 
     boolean register(RegistrationDTO registrationDTO);
 
-    boolean update(long loggedUserId, UpdateDTO updateDTO);
+    void update(long loggedUserId, UpdateDTO updateDTO);
 
     boolean addArticleToFavourites(Long articleId, Long userId);
 

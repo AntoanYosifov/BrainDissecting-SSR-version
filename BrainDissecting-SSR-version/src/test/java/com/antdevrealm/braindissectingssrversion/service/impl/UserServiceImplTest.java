@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
@@ -164,15 +165,13 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void update_ShouldReturnFalse_WhenUserNotFound() {
+    void update_UserDoesNotExist_ShouldThrowException() {
         UpdateDTO updateDTO = new UpdateDTO();
         updateDTO.setNewUsername("newUserName");
 
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.update(USER_ID, updateDTO);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.update(USER_ID, updateDTO));
     }
 
     @Test
@@ -199,7 +198,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void update_SuccessfulUpdate_ShouldReturnTrue() {
+    void update_SuccessfulUpdate() {
         UpdateDTO updateDTO = new UpdateDTO()
                 .setNewUsername("newUsername")
                 .setConfirmUsername("newUsername")
@@ -215,9 +214,7 @@ public class UserServiceImplTest {
         when(mockUserDetails.getAuthorities()).thenReturn(List.of());
         when(mockBrDissectingUserDetailService.loadUserByUsername(updateDTO.getNewUsername())).thenReturn(mockUserDetails);
 
-        boolean result = toTest.update(USER_ID, updateDTO);
-
-        Assertions.assertTrue(result);
+        toTest.update(USER_ID, updateDTO);
 
         Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
         UserEntity savedUser = userEntityCaptor.getValue();

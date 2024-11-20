@@ -1,10 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
-import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
-import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
-import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +38,6 @@ public class RegisterControllerIT {
 
     @Test
     void shouldRedirectToLogin_WhenRegistrationIsSuccessful() throws Exception {
-
         mockMvc.perform(post("/users/register")
                 .param("username", "testUsername")
                 .param("email", "testemail@example.com")

@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,20 +63,20 @@ public class UserController {
 
         try {
             userService.update(brDissectingUserDetails.getId(), updateDTO);
-
+        } catch (UserNotFoundException e) {
+            log.error("Critical error: User not found during profile update. Logging out.");
+            return "redirect:/users/logout";
         } catch (UsernameOrEmailException | NewUsernameConfirmUsernameException e) {
-            if(e instanceof UsernameOrEmailException) {
+            if (e instanceof UsernameOrEmailException) {
                 redirectAttributes.addFlashAttribute("usernameOrEmailTaken", e.getMessage());
             }
-
-            if(e instanceof NewUsernameConfirmUsernameException) {
+            if (e instanceof NewUsernameConfirmUsernameException) {
                 redirectAttributes.addFlashAttribute("usernameConfUsernameMissMatch", e.getMessage());
             }
 
             redirectAttributes.addFlashAttribute("updateData", updateDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.updateData", bindingResult);
             redirectAttributes.addFlashAttribute("editProfile", true);
-
             return "redirect:/users/profile";
 
         }
@@ -89,7 +91,7 @@ public class UserController {
                                  @AuthenticationPrincipal
                                  BrDissectingUserDetails brDissectingUserDetails) {
 
-        model.addAttribute("favourites" , articleService.getUserFavourites(brDissectingUserDetails.getId()));
+        model.addAttribute("favourites", articleService.getUserFavourites(brDissectingUserDetails.getId()));
         model.addAttribute("currentUserId", brDissectingUserDetails.getId());
 
         return "user-favorites";

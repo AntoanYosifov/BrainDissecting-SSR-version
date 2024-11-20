@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
 import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
@@ -20,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,12 +80,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean update(long loggedUserId, UpdateDTO updateDTO) {
-        Optional<UserEntity> byId = userRepository.findById(loggedUserId);
-
-        if (byId.isEmpty()) {
-            return false;
-        }
+    public void update(long loggedUserId, UpdateDTO updateDTO) {
+        UserEntity userEntity = userRepository.findById(loggedUserId).orElseThrow(() -> new UserNotFoundException(loggedUserId));
 
         if (usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
             throw new UsernameOrEmailException(updateDTO.getNewUsername(), updateDTO.getNewEmail());
@@ -93,12 +91,7 @@ public class UserServiceImpl implements UserService {
             throw new NewUsernameConfirmUsernameException(updateDTO.getNewUsername(), updateDTO.getConfirmUsername());
         }
 
-        UserEntity userEntity = byId.get();
-
-        if (!updateDTO.getNewUsername().isEmpty()) {
-            if (usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {
-                throw new UsernameOrEmailException(updateDTO.getNewUsername(), updateDTO.getNewEmail());
-            }
+        if (updateDTO.getNewEmail() != null && !updateDTO.getNewEmail().isEmpty()) {
             userEntity.setEmail(updateDTO.getNewEmail());
         }
 
@@ -107,8 +100,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
 
         reloadUserDetails(updateDTO.getNewUsername());
-
-        return true;
     }
 
     @Override

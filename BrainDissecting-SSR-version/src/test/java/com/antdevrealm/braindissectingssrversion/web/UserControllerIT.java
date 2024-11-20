@@ -1,13 +1,17 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.util.annotation.WithCustomUser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -16,6 +20,9 @@ public class UserControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
@@ -39,6 +46,23 @@ public class UserControllerIT {
         mockMvc.perform(get("/users/profile"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/users/login"));
+    }
+
+    @Test
+    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
+    void update_ShouldRedirectToLogout_WhenUserDoesNotExist() throws Exception {
+        mockMvc.perform(patch("/users/profile/update")
+                .param("newUsername" , "newUsername")
+                .param("confirmUsername", "newUsername")
+                .param("newEmail", "newemail@example.com")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/logout"));
+    }
+
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
     }
 
 }
