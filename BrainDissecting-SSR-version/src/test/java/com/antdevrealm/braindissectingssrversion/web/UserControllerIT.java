@@ -60,6 +60,21 @@ public class UserControllerIT {
                 .andExpect(redirectedUrl("/users/logout"));
     }
 
+    @Test
+    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
+    void update_ShouldRedirectToProfileWithValidationErrors_WhenBindingResultHasErrors() throws Exception {
+        mockMvc.perform(patch("/users/profile/update")
+                        .param("newUsername", "")
+                        .param("confirmUsername", "differentUsername")
+                        .param("newEmail", "invalid-email")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/profile"))
+                .andExpect(flash().attributeExists("updateData"))
+                .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.updateData"))
+                .andExpect(flash().attribute("editProfile", true));
+    }
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();

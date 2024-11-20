@@ -101,8 +101,6 @@ public class UserController {
     @PostMapping("/add-to-favourites/{articleId}")
     public String addToFavourites(@PathVariable Long articleId,
                                   @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
-
-
         userService.addArticleToFavourites(articleId, brDissectingUserDetails.getId());
 
         return "redirect:/articles/all";
@@ -116,7 +114,6 @@ public class UserController {
         userService.removeFromFavourites(articleId, brDissectingUserDetails.getId());
 
         return "redirect:/users/favourites";
-
     }
 
     @GetMapping("/banned")
