@@ -6,6 +6,7 @@ import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ public class AdminServiceImplTest {
         userEntity.setId(USER_ID);
         userEntity.setUsername("testUser");
         userEntity.setRoles(new ArrayList<>());
+
     }
 
     @Test

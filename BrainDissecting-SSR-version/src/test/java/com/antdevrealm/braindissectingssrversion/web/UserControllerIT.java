@@ -5,11 +5,16 @@ import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.util.annotation.WithCustomUser;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,12 +24,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerIT {
-
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserRepository userRepository;
+
+    @BeforeEach
+    void resetUserRepository() {
+        userRepository.deleteAll();
+    }
 
     @Test
     @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
@@ -86,9 +95,13 @@ public class UserControllerIT {
                 .setPassword("password")
                 .setStatus(UserStatus.ACTIVE);
 
-        user.setId(1L);
+        System.out.println("userRepository count BEFORE saving the user: " + userRepository.count());
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
+
+        System.out.println("userRepository count AFTER saving the user: " + userRepository.count());
+
+        Assertions.assertEquals(1L, userRepository.count());
 
         mockMvc.perform(patch("/users/profile/update")
                         .param("newUsername", "newUsername")

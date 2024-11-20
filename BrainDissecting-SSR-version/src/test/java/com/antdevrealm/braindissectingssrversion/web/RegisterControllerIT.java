@@ -5,11 +5,13 @@ import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RegisterControllerIT {
 
     @Autowired
@@ -31,8 +34,9 @@ public class RegisterControllerIT {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @AfterEach
-    void cleanUp() {
+
+    @BeforeEach
+    void resetUserRepository() {
         userRepository.deleteAll();
     }
 
@@ -94,6 +98,11 @@ public class RegisterControllerIT {
                 .andExpect(flash().attributeExists("registerData"));
 
         Assertions.assertEquals(0L, userRepository.count());
+    }
+
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
     }
 
 }
