@@ -2,8 +2,8 @@ package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
+import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
-import com.antdevrealm.braindissectingssrversion.util.annotation.WithCustomUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,9 +37,27 @@ public class UserControllerIT {
         userRepository.deleteAll();
     }
 
+    private void setAuthenticatedUser(String username, Long id, boolean isBanned) {
+        BrDissectingUserDetails userDetails = new BrDissectingUserDetails(
+                id,
+                username + "@example.com",
+                username,
+                "password",
+                List.of(() -> "ROLE_USER"),
+                "Test",
+                "User",
+                isBanned
+        );
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
+
     @Test
-    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
     void viewProfile_ShouldReturnMyProfileViewWhenUserIsActive() throws Exception {
+        setAuthenticatedUser("testUser", 1L, false);
+
         mockMvc.perform(get("/users/profile"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("my-profile"))
@@ -45,8 +65,9 @@ public class UserControllerIT {
     }
 
     @Test
-    @WithCustomUser(username = "bannedUser", roles = {"USER"}, banned = true)
     void viewProfile_ShouldRedirectToBannedView_WhenUserIsBanned() throws Exception {
+        setAuthenticatedUser("bannedUser", 2L, true);
+
         mockMvc.perform(get("/users/profile"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/banned"));
@@ -60,8 +81,9 @@ public class UserControllerIT {
     }
 
     @Test
-    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
     void update_ShouldRedirectToLogout_WhenUserDoesNotExist() throws Exception {
+        setAuthenticatedUser("testUser", 1L, false);
+
         mockMvc.perform(patch("/users/profile/update")
                 .param("newUsername" , "newUsername")
                 .param("confirmUsername", "newUsername")
@@ -72,8 +94,9 @@ public class UserControllerIT {
     }
 
     @Test
-    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
     void update_ShouldRedirectToProfileWithValidationErrors_WhenBindingResultHasErrors() throws Exception {
+        setAuthenticatedUser("testUser", 1L, false);
+
         mockMvc.perform(patch("/users/profile/update")
                         .param("newUsername", "")
                         .param("confirmUsername", "differentUsername")
@@ -87,7 +110,6 @@ public class UserControllerIT {
     }
 
     @Test
-    @WithCustomUser(username = "testUser", roles = {"USER"}, banned = false)
     void update_ShouldRedirectToProfileWithError_WhenUsernameAndConfirmUsernameDoNotMatch() throws Exception {
         UserEntity user = new UserEntity()
                 .setUsername("testUser")
@@ -95,13 +117,8 @@ public class UserControllerIT {
                 .setPassword("password")
                 .setStatus(UserStatus.ACTIVE);
 
-        System.out.println("userRepository count BEFORE saving the user: " + userRepository.count());
-
         userRepository.saveAndFlush(user);
-
-        System.out.println("userRepository count AFTER saving the user: " + userRepository.count());
-
-        Assertions.assertEquals(1L, userRepository.count());
+        setAuthenticatedUser("testUser", user.getId(), false);
 
         mockMvc.perform(patch("/users/profile/update")
                         .param("newUsername", "newUsername")
@@ -111,6 +128,35 @@ public class UserControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/profile"))
                 .andExpect(flash().attributeExists("usernameConfUsernameMissMatch"));
+    }
+
+    @Test
+    void update_ShouldRedirectToProfileWithSuccessMessage_WhenUpdateSucceeds() throws Exception {
+        UserEntity user = new UserEntity()
+                .setUsername("testUser")
+                .setEmail("testUser@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        userRepository.saveAndFlush(user);
+        setAuthenticatedUser("testUser", user.getId(), false);
+
+        mockMvc.perform(patch("/users/profile/update")
+                        .param("newUsername", "updatedUsername")
+                        .param("confirmUsername", "updatedUsername")
+                        .param("newEmail", "updatedemail@example.com")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/profile"))
+                .andExpect(flash().attributeExists("successMessage"))
+                .andExpect(flash().attribute("successMessage", "You successfully updated your profile info!"));
+
+        Optional<UserEntity> updatedUserOpt = userRepository.findByUsername("updatedUsername");
+        Assertions.assertTrue(updatedUserOpt.isPresent());
+        UserEntity updatedUser = updatedUserOpt.get();
+
+        Assertions.assertEquals("updatedUsername", updatedUser.getUsername());
+        Assertions.assertEquals("updatedemail@example.com", updatedUser.getEmail());
     }
 
     @AfterEach
