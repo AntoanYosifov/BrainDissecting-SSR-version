@@ -1,8 +1,11 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
+import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -32,6 +35,9 @@ public class UserControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @BeforeEach
     void resetUserRepository() {
@@ -186,10 +192,22 @@ public class UserControllerIT {
                 .setPassword("password")
                 .setStatus(UserStatus.ACTIVE);
 
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
         userRepository.saveAndFlush(user);
+        articleRepository.saveAndFlush(articleEntity);
         setAuthenticatedUser("testUser", user.getId(), false);
 
-        mockMvc.perform(post("/users/add-to-favourites/{articleId}", 1L)
+        Optional<ArticleEntity> optArticle = articleRepository.findByTitle("testTitle");
+
+        Assertions.assertTrue(optArticle.isPresent());
+
+        ArticleEntity savedArticle = optArticle.get();
+
+        mockMvc.perform(post("/users/add-to-favourites/{articleId}", savedArticle.getId())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/all"));
