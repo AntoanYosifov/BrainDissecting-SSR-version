@@ -14,7 +14,7 @@ public interface UserService {
 
     void addArticleToFavourites(Long articleId, Long userId);
 
-    boolean removeFromFavourites(Long articleId, Long userId);
+    void removeFromFavourites(Long articleId, Long userId);
 
     List<Long> getFavouriteArticlesIds(Long userId);
 

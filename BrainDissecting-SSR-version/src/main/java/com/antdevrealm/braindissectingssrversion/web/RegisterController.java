@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.web;
 
 
 import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
@@ -34,7 +35,7 @@ public class RegisterController {
 
     @GetMapping("/register")
     public String viewRegister() {
-        return "auth-register";
+       return "auth-register";
     }
 
     @PostMapping("/register")

@@ -117,27 +117,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean removeFromFavourites(Long articleId, Long userId) {
-        Optional<UserEntity> optUser = userRepository.findById(userId);
-
-        if (optUser.isEmpty()) {
-            return false;
-        }
-
-        Optional<ArticleEntity> optArt = articleRepository.findById(articleId);
-
-        if (optArt.isEmpty()) {
-            return false;
-        }
-
-        UserEntity userEntity = optUser.get();
-        ArticleEntity articleEntity = optArt.get();
+    public void removeFromFavourites(Long articleId, Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException("Article not found"));
 
         userEntity.getFavourites().remove(articleEntity);
-
         userRepository.save(userEntity);
-
-        return true;
     }
 
     @Override

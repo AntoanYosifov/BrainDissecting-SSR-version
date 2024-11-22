@@ -7,6 +7,7 @@ import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
+import com.antdevrealm.braindissectingssrversion.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,24 +18,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class UserControllerIT {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -213,9 +217,45 @@ public class UserControllerIT {
                 .andExpect(redirectedUrl("/articles/all"));
     }
 
+    @Test
+    void removeFromFavourites_ShouldRedirectToUsersFavourites_WhenArticleIsRemoved() throws Exception {
+        UserEntity user = new UserEntity()
+                .setUsername("testUser")
+                .setEmail("testUser@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+        user.setId(1L);
+        userRepository.saveAndFlush(user);
+
+        UserEntity savedUser = userRepository.findByUsername("testUser").orElseThrow();
+        setAuthenticatedUser("testUser", savedUser.getId(), false);
+
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+        articleRepository.saveAndFlush(articleEntity);
+
+        ArticleEntity savedArticle = articleRepository.findByTitle("testTitle").orElseThrow();
+
+        setAuthenticatedUser("testUser", savedUser.getId(), false);
+
+        userService.addArticleToFavourites(savedArticle.getId(), savedUser.getId());
+        savedUser = userRepository.findById(savedUser.getId()).orElseThrow(); // Refresh the user
+
+        Assertions.assertTrue(savedUser.getFavourites().contains(savedArticle));
+
+        mockMvc.perform(delete("/users/remove-from-favourites/{articleId}", savedArticle.getId())
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/favourites"));
+    }
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        articleRepository.deleteAll();
+        SecurityContextHolder.clearContext();
     }
 
 }

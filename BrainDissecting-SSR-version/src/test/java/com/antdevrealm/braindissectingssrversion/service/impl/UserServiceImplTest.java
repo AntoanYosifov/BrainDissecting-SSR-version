@@ -247,31 +247,30 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void removeFromFavourites_ShouldReturnTrue_WhenArticleAndUserExists() {
+    void removeFromFavourites_FavouritesShouldNotContainArticle_WhenArticleAndUserExists() {
+        userEntity.getFavourites().add(articleEntity);
+        Assertions.assertTrue(userEntity.getFavourites().contains(articleEntity));
+
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
 
-        boolean result = toTest.removeFromFavourites(ARTICLE_ID, USER_ID);
-
-        Assertions.assertTrue(result);
+        toTest.removeFromFavourites(ARTICLE_ID, USER_ID);
         Assertions.assertFalse(userEntity.getFavourites().contains(articleEntity));
     }
 
     @Test
-    void removeFromFavourites_ShouldReturnFalse_WhenUserNotFound() {
+    void removeFromFavourites_ShouldThrowException_WhenUserNotFound() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
-
-        boolean result = toTest.removeFromFavourites(USER_ID, ARTICLE_ID);
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.removeFromFavourites(USER_ID, ARTICLE_ID));
     }
 
     @Test
-    void removeFromFavourites_ShouldReturnFalse_WhenArticleNotFound() {
+    void removeFromFavourites_ShouldThrowException_WhenArticleNotFound() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.removeFromFavourites(USER_ID, ARTICLE_ID);
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> toTest.removeFromFavourites(USER_ID, ARTICLE_ID));
+
     }
 
     @Test
