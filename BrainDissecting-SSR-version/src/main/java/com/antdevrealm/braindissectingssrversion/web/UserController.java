@@ -101,7 +101,6 @@ public class UserController {
     public String addToFavourites(@PathVariable Long articleId,
                                   @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
         userService.addArticleToFavourites(articleId, brDissectingUserDetails.getId());
-
         return "redirect:/articles/all";
     }
 

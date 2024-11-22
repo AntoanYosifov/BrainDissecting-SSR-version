@@ -1,9 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
-import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
-import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
-import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
-import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
+import com.antdevrealm.braindissectingssrversion.exception.*;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
@@ -224,32 +221,29 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void addArticleToFavourites_ShouldReturnTrue_WhenArticleAndUserExists() {
+    void addArticleToFavourites_UserFavouritesShouldContainArticle_WhenArticleAndUserExists() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
 
-        boolean result = toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
+        toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
 
-        Assertions.assertTrue(result);
         Assertions.assertTrue(userEntity.getFavourites().contains(articleEntity));
         Assertions.assertTrue(articleEntity.isFavourite());
     }
 
     @Test
-    void addArticleToFavourites_ShouldReturnFalse_WhenUserNotFound() {
+    void addArticleToFavourites_ShouldThrowException_WhenUserNotFound() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.addArticleToFavourites(ARTICLE_ID, USER_ID));
     }
 
     @Test
-    void addArticleToFavourites_ShouldReturnFalse_WhenArticleNotFound() {
+    void addArticleToFavourites_ShouldThrowException_WhenArticleNotFound() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.addArticleToFavourites(ARTICLE_ID, USER_ID);
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> toTest.addArticleToFavourites(ARTICLE_ID, USER_ID));
     }
 
     @Test

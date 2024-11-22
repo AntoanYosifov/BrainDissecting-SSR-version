@@ -12,7 +12,7 @@ public interface UserService {
 
     void update(long loggedUserId, UpdateDTO updateDTO);
 
-    boolean addArticleToFavourites(Long articleId, Long userId);
+    void addArticleToFavourites(Long articleId, Long userId);
 
     boolean removeFromFavourites(Long articleId, Long userId);
 

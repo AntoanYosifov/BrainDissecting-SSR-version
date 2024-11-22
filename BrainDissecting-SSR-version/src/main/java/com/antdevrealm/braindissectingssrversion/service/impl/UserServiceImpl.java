@@ -1,9 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
-import com.antdevrealm.braindissectingssrversion.exception.NewUsernameConfirmUsernameException;
-import com.antdevrealm.braindissectingssrversion.exception.PasswordConfirmPassMisMatchException;
-import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
-import com.antdevrealm.braindissectingssrversion.exception.UsernameOrEmailException;
+import com.antdevrealm.braindissectingssrversion.exception.*;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.DisplayUserInfoDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.RegistrationDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.user.UpdateDTO;
@@ -104,22 +101,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean addArticleToFavourites(Long articleId, Long userId) {
+    public void addArticleToFavourites(Long articleId, Long userId) {
 
-        Optional<UserEntity> optUser = userRepository.findById(userId);
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
-        if (optUser.isEmpty()) {
-            return false;
-        }
-
-        Optional<ArticleEntity> optArt = articleRepository.findById(articleId);
-
-        if (optArt.isEmpty()) {
-            return false;
-        }
-
-        UserEntity userEntity = optUser.get();
-        ArticleEntity toFavouritesArt = optArt.get();
+        ArticleEntity toFavouritesArt = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException("Article not found"));
 
         toFavouritesArt.setFavourite(true);
 
@@ -127,7 +113,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userEntity);
 
-        return true;
     }
 
     @Override

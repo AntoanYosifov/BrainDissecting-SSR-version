@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -175,6 +176,23 @@ public class UserControllerIT {
                 .andExpect(view().name("user-favorites"))
                 .andExpect(model().attributeExists("favourites"))
                 .andExpect(model().attributeExists("currentUserId"));
+    }
+
+    @Test
+    void addToFavourites_ShouldRedirectToAllArticles_WhenArticleIsAdded() throws Exception {
+        UserEntity user = new UserEntity()
+                .setUsername("testUser")
+                .setEmail("testUser@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        userRepository.saveAndFlush(user);
+        setAuthenticatedUser("testUser", user.getId(), false);
+
+        mockMvc.perform(post("/users/add-to-favourites/{articleId}", 1L)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all"));
     }
 
     @AfterEach
