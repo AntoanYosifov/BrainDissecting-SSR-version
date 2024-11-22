@@ -95,7 +95,6 @@ public class UserController {
         model.addAttribute("currentUserId", brDissectingUserDetails.getId());
 
         return "user-favorites";
-
     }
 
     @PostMapping("/add-to-favourites/{articleId}")

@@ -159,6 +159,24 @@ public class UserControllerIT {
         Assertions.assertEquals("updatedemail@example.com", updatedUser.getEmail());
     }
 
+    @Test
+    void viewFavourites_ShouldReturnUserFavorites() throws Exception {
+        UserEntity user = new UserEntity()
+                .setUsername("testUser")
+                .setEmail("testUser@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        userRepository.saveAndFlush(user);
+        setAuthenticatedUser("testUser", user.getId(), false);
+
+        mockMvc.perform(get("/users/favourites"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user-favorites"))
+                .andExpect(model().attributeExists("favourites"))
+                .andExpect(model().attributeExists("currentUserId"));
+    }
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
