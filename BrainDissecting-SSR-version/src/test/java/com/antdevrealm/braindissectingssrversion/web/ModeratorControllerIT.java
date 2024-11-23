@@ -73,4 +73,11 @@ public class ModeratorControllerIT {
                 .andExpect(redirectedUrl("/access-denied"));
     }
 
+    @Test
+    void viewApproveArticles_ShouldRedirectToLogin_WhenUserIsUnauthenticated() throws Exception {
+        mockMvc.perform(get("/moderator/pending-for-approval"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/users/login"));
+    }
+
 }
