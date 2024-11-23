@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,24 +63,6 @@ public class UserControllerIT {
 
         authenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
-
-    }
-
-    private void setAuthenticatedUser(String username, Long id, boolean isBanned) {
-        BrDissectingUserDetails userDetails = new BrDissectingUserDetails(
-                id,
-                username + "@example.com",
-                username,
-                "password",
-                List.of(() -> "ROLE_USER"),
-                "Test",
-                "User",
-                isBanned
-        );
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
     @Test
@@ -265,7 +246,6 @@ public class UserControllerIT {
         userRepository.saveAndFlush(user);
 
         UserEntity savedUser = userRepository.findByUsername("testUser").orElseThrow();
-        setAuthenticatedUser("testUser", savedUser.getId(), false);
 
         ArticleEntity articleEntity = new ArticleEntity()
                 .setTitle("testTitle")
