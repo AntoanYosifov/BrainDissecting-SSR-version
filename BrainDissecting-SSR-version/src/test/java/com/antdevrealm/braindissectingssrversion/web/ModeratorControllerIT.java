@@ -1,6 +1,10 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
+import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -22,11 +28,16 @@ public class ModeratorControllerIT {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ArticleRepository articleRepository;
+
     private BrDissectingUserDetails userDetails;
     private UsernamePasswordAuthenticationToken authenticationToken;
 
     @BeforeEach
     void setUp() {
+        articleRepository.deleteAll();
+
         userDetails = new BrDissectingUserDetails(
                 1L,
                 "testUser@example.com",
@@ -78,6 +89,27 @@ public class ModeratorControllerIT {
         mockMvc.perform(get("/moderator/pending-for-approval"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/users/login"));
+    }
+
+    @Test
+    void approveArticle_ShouldApproveArticleAndRedirectToSuccess_WhenArticleIsPendingAndUserIsModerator() throws Exception {
+        ArticleEntity pendingArticle = new ArticleEntity()
+                        .setTitle("testTitle")
+                        .setContent("testContent")
+                        .setStatus(Status.PENDING);
+
+        articleRepository.saveAndFlush(pendingArticle);
+
+        mockMvc.perform(patch("/moderator/approve/{articleId}", pendingArticle.getId())
+                .with(authentication(authenticationToken))
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article approved"));
+    }
+
+    @AfterEach
+    void cleanUp () {
+        articleRepository.deleteAll();
     }
 
 }
