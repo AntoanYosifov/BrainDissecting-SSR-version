@@ -44,8 +44,11 @@ public class ModeratorControllerIT {
     @Autowired
     private ThemeSuggestionRepository themeSuggestionRepository;
 
-    private BrDissectingUserDetails userDetails;
-    private UsernamePasswordAuthenticationToken authenticationToken;
+    private BrDissectingUserDetails moderatorDetails;
+    private UsernamePasswordAuthenticationToken moderatorAuthenticationToken;
+
+    private BrDissectingUserDetails nonModeratorDetails;
+    private UsernamePasswordAuthenticationToken nonModeratorAuthenticationToken;
 
     @BeforeEach
     void setUp() {
@@ -53,7 +56,7 @@ public class ModeratorControllerIT {
         userRepository.deleteAll();
         themeSuggestionRepository.deleteAll();
 
-        userDetails = new BrDissectingUserDetails(
+        moderatorDetails = new BrDissectingUserDetails(
                 1L,
                 "testUser@example.com",
                 "testUser",
@@ -64,14 +67,29 @@ public class ModeratorControllerIT {
                 false
         );
 
-        authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+        moderatorAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                moderatorDetails, null, moderatorDetails.getAuthorities());
+
+        nonModeratorDetails = new BrDissectingUserDetails(
+                1L,
+                "testUser@example.com",
+                "testUser",
+                "password",
+                List.of(() -> "ROLE_USER"),
+                "Test",
+                "User",
+                false
+        );
+
+        nonModeratorAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                nonModeratorDetails, null, nonModeratorDetails.getAuthorities());
+
     }
 
     @Test
     void viewApproveArticleShouldReturnPendingForApproval() throws Exception {
         mockMvc.perform(get("/moderator/pending-for-approval")
-                        .with(authentication(authenticationToken)))
+                        .with(authentication(moderatorAuthenticationToken)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("pending-for-approval"))
                 .andExpect(model().attributeExists("pendingArticles"));
@@ -79,22 +97,8 @@ public class ModeratorControllerIT {
 
     @Test
     void viewApproveArticleShouldRedirectToAccessDenied_WhenUserIsNotModerator() throws Exception {
-        BrDissectingUserDetails nonModeratorUserDetails = new BrDissectingUserDetails(
-                2L,
-                "regularUser@example.com",
-                "regularUser",
-                "password",
-                List.of(() -> "ROLE_USER"), // User does not have ROLE_MODERATOR
-                "Regular",
-                "User",
-                false
-        );
-
-        UsernamePasswordAuthenticationToken nonModeratorAuthToken = new UsernamePasswordAuthenticationToken(
-                nonModeratorUserDetails, null, nonModeratorUserDetails.getAuthorities());
-
         mockMvc.perform(get("/moderator/pending-for-approval")
-                        .with(authentication(nonModeratorAuthToken)))
+                        .with(authentication(nonModeratorAuthenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/access-denied"));
     }
@@ -116,7 +120,7 @@ public class ModeratorControllerIT {
         articleRepository.saveAndFlush(pendingArticle);
 
         mockMvc.perform(patch("/moderator/approve/{articleId}", pendingArticle.getId())
-                        .with(authentication(authenticationToken))
+                        .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article approved"));
@@ -125,7 +129,7 @@ public class ModeratorControllerIT {
     @Test
     void approveArticle_ShouldRedirectToError_WhenArticleDoesNotExist() throws Exception {
         mockMvc.perform(patch("/moderator/approve/9999")
-                        .with(authentication(authenticationToken))
+                        .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
@@ -141,7 +145,7 @@ public class ModeratorControllerIT {
         articleRepository.saveAndFlush(approvedArticle);
 
         mockMvc.perform(patch("/moderator/approve/{articleId}", approvedArticle.getId())
-                        .with(authentication(authenticationToken))
+                        .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
@@ -157,7 +161,7 @@ public class ModeratorControllerIT {
         articleRepository.saveAndFlush(pendingArticle);
 
         mockMvc.perform(delete("/moderator/reject/{articleId}", pendingArticle.getId())
-                        .with(authentication(authenticationToken))
+                        .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article rejected"));
@@ -166,7 +170,7 @@ public class ModeratorControllerIT {
     @Test
     void rejectArticle_ShouldRedirectToError_WhenArticleDoesNotExist() throws Exception {
         mockMvc.perform(delete("/moderator/reject/9999")
-                        .with(authentication(authenticationToken))
+                        .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article"));
@@ -182,7 +186,7 @@ public class ModeratorControllerIT {
         articleRepository.saveAndFlush(approvedArticle);
 
         mockMvc.perform(delete("/moderator/reject/{articleId}", approvedArticle.getId())
-                        .with(authentication(authenticationToken))
+                        .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article"));
@@ -207,15 +211,24 @@ public class ModeratorControllerIT {
 
         themeSuggestionRepository.saveAll(List.of(suggestion1, suggestion2));
 
-        userDetails.setId(userEntity.getId());
+        moderatorDetails.setId(userEntity.getId());
 
         mockMvc.perform(get("/moderator/suggest-themes")
-                        .with(authentication(authenticationToken)))
+                        .with(authentication(moderatorAuthenticationToken)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("suggest-themes"))
                 .andExpect(model().attributeExists("suggestedThemes"))
                 .andExpect(model().attribute("suggestedThemes", hasSize(2)));
     }
+
+    @Test
+    void viewSuggestThemes_ShouldRedirectToAccessDenied_WhenUserIsNotModerator() throws Exception {
+        mockMvc.perform(get("/moderator/suggest-themes")
+                        .with(authentication(nonModeratorAuthenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/access-denied"));
+    }
+
 
     @AfterEach
     void cleanUp() {
