@@ -107,6 +107,15 @@ public class ModeratorControllerIT {
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article approved"));
     }
 
+    @Test
+    void approveArticle_ShouldRedirectToError_WhenArticleDoesNotExist() throws Exception {
+        mockMvc.perform(patch("/moderator/approve/9999")
+                        .with(authentication(authenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
+    }
+
     @AfterEach
     void cleanUp () {
         articleRepository.deleteAll();
