@@ -2,6 +2,7 @@ package com.antdevrealm.braindissectingssrversion.config;
 
 import com.antdevrealm.braindissectingssrversion.filter.BannedUserFilter;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
+import com.antdevrealm.braindissectingssrversion.security.CustomAccessDeniedHandler;
 import com.antdevrealm.braindissectingssrversion.service.impl.ArticleServiceImpl;
 import com.antdevrealm.braindissectingssrversion.service.impl.BrDissectingUserDetailService;
 import org.slf4j.Logger;
@@ -9,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.server.authorization.HttpStatusServerAccessDeniedHandler;
 
 @Configuration
 
@@ -31,7 +34,7 @@ public class SecurityConfig {
                         authorizeRequests ->
                                 authorizeRequests
                                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                        .requestMatchers("/", "/users/login", "/users/register",  "/users/banned", "/users/logout")
+                                        .requestMatchers("/", "/users/login", "/users/register", "/users/banned", "/users/logout")
                                         .permitAll()
                                         .requestMatchers("/admin/**").hasRole("ADMIN")
                                         .requestMatchers("/moderator/**").hasAnyRole("ADMIN", "MODERATOR")
@@ -51,6 +54,9 @@ public class SecurityConfig {
                                 logout.logoutUrl("/users/logout")
                                         .logoutSuccessUrl("/")
                                         .invalidateHttpSession(true)
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(new CustomAccessDeniedHandler("/access-denied"))
                 )
                 .build();
     }

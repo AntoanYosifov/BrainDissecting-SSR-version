@@ -2,7 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/fragments/commons::head}"></head>
 <body>
-<h1>Access Denied</h1>
-<p>You do not have permission to access this page.</p>
+<div class="text-center bg-dark" >
+    <h1 class="text-danger">Access Denied</h1>
+    <p class="text-danger">You do not have permission to access this page.</p>
+    <a th:href="@{/}">Return to home page</a>
+</div>
 </body>
 </html>
