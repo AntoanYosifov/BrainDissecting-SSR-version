@@ -51,4 +51,26 @@ public class ModeratorControllerIT {
                 .andExpect(model().attributeExists("pendingArticles"));
     }
 
+    @Test
+    void viewApproveArticleShouldRedirectToAccessDenied_WhenUserIsNotModerator() throws Exception {
+        BrDissectingUserDetails nonModeratorUserDetails = new BrDissectingUserDetails(
+                2L,
+                "regularUser@example.com",
+                "regularUser",
+                "password",
+                List.of(() -> "ROLE_USER"), // User does not have ROLE_MODERATOR
+                "Regular",
+                "User",
+                false
+        );
+
+        UsernamePasswordAuthenticationToken nonModeratorAuthToken = new UsernamePasswordAuthenticationToken(
+                nonModeratorUserDetails, null, nonModeratorUserDetails.getAuthorities());
+
+        mockMvc.perform(get("/moderator/pending-for-approval")
+                        .with(authentication(nonModeratorAuthToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/access-denied"));
+    }
+
 }
