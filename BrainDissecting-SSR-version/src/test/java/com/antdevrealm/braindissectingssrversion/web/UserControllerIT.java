@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,9 +44,27 @@ public class UserControllerIT {
     @Autowired
     private ArticleRepository articleRepository;
 
+    private BrDissectingUserDetails userDetails;
+    private UsernamePasswordAuthenticationToken authenticationToken;
+
     @BeforeEach
-    void resetUserRepository() {
+    void setUp() {
         userRepository.deleteAll();
+
+        userDetails = new BrDissectingUserDetails(
+                1L,
+                "testUser@example.com",
+                "testUser",
+                "password",
+                List.of(() -> "ROLE_USER"),
+                "Test",
+                "User",
+                false
+        );
+
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
     }
 
     private void setAuthenticatedUser(String username, Long id, boolean isBanned) {
@@ -67,9 +86,8 @@ public class UserControllerIT {
 
     @Test
     void viewProfile_ShouldReturnMyProfileViewWhenUserIsActive() throws Exception {
-        setAuthenticatedUser("testUser", 1L, false);
-
-        mockMvc.perform(get("/users/profile"))
+        mockMvc.perform(get("/users/profile")
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("my-profile"))
                 .andExpect(model().attributeExists("user"));
@@ -77,9 +95,13 @@ public class UserControllerIT {
 
     @Test
     void viewProfile_ShouldRedirectToBannedView_WhenUserIsBanned() throws Exception {
-        setAuthenticatedUser("bannedUser", 2L, true);
+        userDetails.setBanned(true);
 
-        mockMvc.perform(get("/users/profile"))
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
+        mockMvc.perform(get("/users/profile")
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/banned"));
     }
@@ -93,26 +115,24 @@ public class UserControllerIT {
 
     @Test
     void update_ShouldRedirectToLogout_WhenUserDoesNotExist() throws Exception {
-        setAuthenticatedUser("testUser", 1L, false);
-
         mockMvc.perform(patch("/users/profile/update")
-                .param("newUsername" , "newUsername")
-                .param("confirmUsername", "newUsername")
-                .param("newEmail", "newemail@example.com")
-                .with(csrf()))
+                        .param("newUsername", "newUsername")
+                        .param("confirmUsername", "newUsername")
+                        .param("newEmail", "newemail@example.com")
+                        .with(csrf())
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/logout"));
     }
 
     @Test
     void update_ShouldRedirectToProfileWithValidationErrors_WhenBindingResultHasErrors() throws Exception {
-        setAuthenticatedUser("testUser", 1L, false);
-
         mockMvc.perform(patch("/users/profile/update")
                         .param("newUsername", "")
                         .param("confirmUsername", "differentUsername")
                         .param("newEmail", "invalid-email")
-                        .with(csrf()))
+                        .with(csrf())
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/profile"))
                 .andExpect(flash().attributeExists("updateData"))
@@ -129,13 +149,18 @@ public class UserControllerIT {
                 .setStatus(UserStatus.ACTIVE);
 
         userRepository.saveAndFlush(user);
-        setAuthenticatedUser("testUser", user.getId(), false);
+
+        userDetails.setId(user.getId());
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
 
         mockMvc.perform(patch("/users/profile/update")
                         .param("newUsername", "newUsername")
                         .param("confirmUsername", "differentUsername")
                         .param("newEmail", "validemail@example.com")
-                        .with(csrf()))
+                        .with(csrf())
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/profile"))
                 .andExpect(flash().attributeExists("usernameConfUsernameMissMatch"));
@@ -150,13 +175,18 @@ public class UserControllerIT {
                 .setStatus(UserStatus.ACTIVE);
 
         userRepository.saveAndFlush(user);
-        setAuthenticatedUser("testUser", user.getId(), false);
+
+        userDetails.setId(user.getId());
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
 
         mockMvc.perform(patch("/users/profile/update")
                         .param("newUsername", "updatedUsername")
                         .param("confirmUsername", "updatedUsername")
                         .param("newEmail", "updatedemail@example.com")
-                        .with(csrf()))
+                        .with(csrf())
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/profile"))
                 .andExpect(flash().attributeExists("successMessage"))
@@ -179,9 +209,12 @@ public class UserControllerIT {
                 .setStatus(UserStatus.ACTIVE);
 
         userRepository.saveAndFlush(user);
-        setAuthenticatedUser("testUser", user.getId(), false);
 
-        mockMvc.perform(get("/users/favourites"))
+        userDetails.setId(user.getId());
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
+        mockMvc.perform(get("/users/favourites").with(authentication(authenticationToken)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user-favorites"))
                 .andExpect(model().attributeExists("favourites"))
@@ -203,7 +236,10 @@ public class UserControllerIT {
 
         userRepository.saveAndFlush(user);
         articleRepository.saveAndFlush(articleEntity);
-        setAuthenticatedUser("testUser", user.getId(), false);
+
+        userDetails.setId(user.getId());
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
 
         Optional<ArticleEntity> optArticle = articleRepository.findByTitle("testTitle");
 
@@ -212,7 +248,8 @@ public class UserControllerIT {
         ArticleEntity savedArticle = optArticle.get();
 
         mockMvc.perform(post("/users/add-to-favourites/{articleId}", savedArticle.getId())
-                        .with(csrf()))
+                        .with(csrf())
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/all"));
     }
@@ -238,24 +275,27 @@ public class UserControllerIT {
 
         ArticleEntity savedArticle = articleRepository.findByTitle("testTitle").orElseThrow();
 
-        setAuthenticatedUser("testUser", savedUser.getId(), false);
+        userDetails.setId(savedUser.getId());
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
 
         userService.addArticleToFavourites(savedArticle.getId(), savedUser.getId());
-        savedUser = userRepository.findById(savedUser.getId()).orElseThrow(); // Refresh the user
 
         Assertions.assertTrue(savedUser.getFavourites().contains(savedArticle));
 
         mockMvc.perform(delete("/users/remove-from-favourites/{articleId}", savedArticle.getId())
-                        .with(csrf()))
+                        .with(csrf())
+                        .with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/favourites"));
+
+        Assertions.assertFalse(savedUser.getFavourites().contains(savedArticle));
     }
 
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
         articleRepository.deleteAll();
-        SecurityContextHolder.clearContext();
     }
 
 }
