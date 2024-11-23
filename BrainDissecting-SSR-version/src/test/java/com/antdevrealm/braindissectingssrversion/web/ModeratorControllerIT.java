@@ -116,6 +116,22 @@ public class ModeratorControllerIT {
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
     }
 
+    @Test
+    void approveArticle_ShouldRedirectToError_WhenArticleIsNotPending() throws Exception {
+        ArticleEntity approvedArticle = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
+        articleRepository.saveAndFlush(approvedArticle);
+
+        mockMvc.perform(patch("/moderator/approve/{articleId}", approvedArticle.getId())
+                        .with(authentication(authenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
+    }
+
     @AfterEach
     void cleanUp () {
         articleRepository.deleteAll();
