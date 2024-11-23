@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -131,6 +130,32 @@ public class ModeratorControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
     }
+
+    @Test
+    void rejectArticle_ShouldRejectArticleAndRedirectToSuccess_WhenArticleIsPendingAndUserIsModerator() throws Exception {
+        ArticleEntity pendingArticle = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.PENDING);
+
+        articleRepository.saveAndFlush(pendingArticle);
+
+        mockMvc.perform(delete("/moderator/reject/{articleId}", pendingArticle.getId())
+                        .with(authentication(authenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article rejected"));
+    }
+
+    @Test
+    void rejectArticle_ShouldRedirectToError_WhenArticleDoesNotExist() throws Exception {
+        mockMvc.perform(delete("/moderator/reject/9999")
+                        .with(authentication(authenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article"));
+    }
+
 
     @AfterEach
     void cleanUp () {
