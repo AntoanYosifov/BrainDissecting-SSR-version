@@ -7,6 +7,7 @@ import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.CategoryRepository;
 import com.antdevrealm.braindissectingssrversion.repository.ThemeSuggestionRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -20,8 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,11 +47,16 @@ public class ModeratorControllerIT {
     @Autowired
     private ThemeSuggestionRepository themeSuggestionRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     private BrDissectingUserDetails moderatorDetails;
     private UsernamePasswordAuthenticationToken moderatorAuthenticationToken;
+    private UserEntity moderatorUserEntity;
 
     private BrDissectingUserDetails nonModeratorDetails;
     private UsernamePasswordAuthenticationToken nonModeratorAuthenticationToken;
+    private UserEntity nonModeratorUserEntity;
 
     @BeforeEach
     void setUp() {
@@ -56,13 +64,21 @@ public class ModeratorControllerIT {
         userRepository.deleteAll();
         themeSuggestionRepository.deleteAll();
 
+        moderatorUserEntity = new UserEntity()
+                .setUsername("moderatorUser")
+                .setEmail("moderator@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        userRepository.saveAndFlush(moderatorUserEntity);
+
         moderatorDetails = new BrDissectingUserDetails(
-                1L,
-                "testUser@example.com",
-                "testUser",
-                "password",
+                moderatorUserEntity.getId(),
+                moderatorUserEntity.getEmail(),
+                moderatorUserEntity.getUsername(),
+                moderatorUserEntity.getPassword(),
                 List.of(() -> "ROLE_MODERATOR"),
-                "Test",
+                "Moderator",
                 "User",
                 false
         );
@@ -70,13 +86,20 @@ public class ModeratorControllerIT {
         moderatorAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 moderatorDetails, null, moderatorDetails.getAuthorities());
 
+        nonModeratorUserEntity = new UserEntity()
+                .setUsername("nonModeratorUser")
+                .setEmail("user@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+        userRepository.saveAndFlush(nonModeratorUserEntity);
+
         nonModeratorDetails = new BrDissectingUserDetails(
-                1L,
-                "testUser@example.com",
-                "testUser",
-                "password",
+                nonModeratorUserEntity.getId(),
+                nonModeratorUserEntity.getEmail(),
+                nonModeratorUserEntity.getUsername(),
+                nonModeratorUserEntity.getPassword(),
                 List.of(() -> "ROLE_USER"),
-                "Test",
+                "NonModerator",
                 "User",
                 false
         );
@@ -194,24 +217,14 @@ public class ModeratorControllerIT {
 
     @Test
     void viewSuggestThemes_ShouldReturnSuggestThemesViewWithModel_WhenUserIsModerator() throws Exception {
-        UserEntity userEntity = new UserEntity()
-                .setUsername("testUser")
-                .setEmail("testUser@example.com")
-                .setPassword("password")
-                .setStatus(UserStatus.ACTIVE);
-        userEntity.setId(1L);
-        userRepository.saveAndFlush(userEntity);
-
         ThemeSuggestionEntity suggestion1 = new ThemeSuggestionEntity()
                 .setName("Theme 1")
-                .setSuggestedBy(userEntity);
+                .setSuggestedBy(moderatorUserEntity);
         ThemeSuggestionEntity suggestion2 = new ThemeSuggestionEntity()
                 .setName("Theme 2")
-                .setSuggestedBy(userEntity);
+                .setSuggestedBy(moderatorUserEntity);
 
-        themeSuggestionRepository.saveAll(List.of(suggestion1, suggestion2));
-
-        moderatorDetails.setId(userEntity.getId());
+        themeSuggestionRepository.saveAllAndFlush(List.of(suggestion1, suggestion2));
 
         mockMvc.perform(get("/moderator/suggest-themes")
                         .with(authentication(moderatorAuthenticationToken)))
@@ -229,6 +242,51 @@ public class ModeratorControllerIT {
                 .andExpect(redirectedUrl("/access-denied"));
     }
 
+    @Test
+    void viewSuggestThemes_ShouldRedirectToLogin_WhenUserIsUnauthenticated() throws Exception {
+        mockMvc.perform(get("/moderator/suggest-themes"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/users/login"));
+    }
+
+    @Test
+    void suggestTheme_ShouldRedirectToSuccess_WhenSuggestionIsSuccessful() throws Exception {
+        String themeName = "New Unique Theme";
+        assertFalse(themeSuggestionRepository.existsByName(themeName.toLowerCase()));
+        assertFalse(categoryRepository.existsByName(themeName.toLowerCase()));
+
+        mockMvc.perform(post("/moderator/suggest-theme")
+                        .param("theme", themeName)
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/suggest-themes?success=Theme suggested successfully."));
+
+        Optional<ThemeSuggestionEntity> savedSuggestion = themeSuggestionRepository.findByName(themeName.toLowerCase());
+        assertTrue(savedSuggestion.isPresent());
+        assertEquals(moderatorDetails.getId(), savedSuggestion.get().getSuggestedBy().getId());
+    }
+
+    @Test
+    void suggestTheme_ShouldRedirectToError_WhenSuggestionAlreadyExist() throws Exception {
+        String existingThemeName = "existingName";
+
+        ThemeSuggestionEntity existingTheme = new ThemeSuggestionEntity()
+                .setName(existingThemeName.toLowerCase())
+                .setSuggestedBy(moderatorUserEntity);
+
+        themeSuggestionRepository.saveAndFlush(existingTheme);
+
+        assertTrue(themeSuggestionRepository.existsByName(existingThemeName.toLowerCase()));
+
+        mockMvc.perform(post("/moderator/suggest-theme")
+                        .param("theme", existingThemeName)
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/suggest-themes?error=Failed to suggest theme. Please try to suggest a different theme."));
+
+    }
 
     @AfterEach
     void cleanUp() {

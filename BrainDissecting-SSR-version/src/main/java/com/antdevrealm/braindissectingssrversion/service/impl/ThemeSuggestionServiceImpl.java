@@ -39,9 +39,17 @@ public class ThemeSuggestionServiceImpl implements ThemeSuggestionService {
 
     @Override
     public boolean suggestTheme(String name, Long moderatorId) {
+        if(themeSuggestionRepository.existsByName(name.toLowerCase())) {
+            return false;
+        }
+
+        if (categoryRepository.existsByName(name.toLowerCase())) {
+            return false;
+        }
+
         Optional<UserEntity> optUser = userRepository.findById(moderatorId);
 
-        if(optUser.isEmpty() || themeSuggestionRepository.existsByName(name.toLowerCase())) {
+        if(optUser.isEmpty()) {
             return false;
         }
 
@@ -51,10 +59,6 @@ public class ThemeSuggestionServiceImpl implements ThemeSuggestionService {
 
         themeSuggestionEntity.setName(name.toLowerCase())
                 .setSuggestedBy(moderator);
-
-        if (categoryRepository.existsByName(name.toLowerCase())) {
-            return false;
-        }
 
         themeSuggestionRepository.save(themeSuggestionEntity);
         return true;
