@@ -1,11 +1,13 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.CommentRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
@@ -36,15 +38,18 @@ public class CommentControllerIT {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
     private UserEntity loggedUserEntity;
 
-    private BrDissectingUserDetails userDetails;
     private UsernamePasswordAuthenticationToken authenticationToken;
 
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
         articleRepository.deleteAll();
+        commentRepository.deleteAll();
 
         loggedUserEntity = new UserEntity()
                 .setUsername("loggedUser")
@@ -54,7 +59,7 @@ public class CommentControllerIT {
 
         userRepository.saveAndFlush(loggedUserEntity);
 
-        userDetails = new BrDissectingUserDetails(
+        BrDissectingUserDetails userDetails = new BrDissectingUserDetails(
                 loggedUserEntity.getId(),
                 loggedUserEntity.getEmail(),
                 loggedUserEntity.getUsername(),
@@ -82,7 +87,7 @@ public class CommentControllerIT {
                         .param("content", "Test content for comment on an article")
                         .with(csrf()).with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/articles/all?open=" + articleId + "#comment-1"));
+                .andExpect(redirectedUrlPattern("/articles/all?open=" + articleId + "#comment-**"));
     }
 
     @Test
@@ -105,16 +110,40 @@ public class CommentControllerIT {
 
         userRepository.delete(loggedUserEntity);
 
-        mockMvc.perform(post("/articles/"+ articleId + "/comments")
+        mockMvc.perform(post("/articles/" + articleId + "/comments")
                         .param("content", "Test content for comment on an article")
                         .with(csrf()).with(authentication(authenticationToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/articles/all?error=user_not_found"));
     }
 
+    @Test
+    void delete_ShouldRedirectWithSuccess_WhenCommentDeleted() throws Exception {
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
+        long articleId = articleRepository.saveAndFlush(articleEntity).getId();
+
+        CommentEntity commentToDelete = new CommentEntity()
+                .setContent("Test content for comment to delete")
+                .setUser(loggedUserEntity)
+                .setArticle(articleEntity);
+
+        long commentId = commentRepository.saveAndFlush(commentToDelete).getId();
+
+        mockMvc.perform(delete("/articles/" + articleId + "/comments/delete/" + commentId)
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all"));
+    }
+
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
         articleRepository.deleteAll();
+        commentRepository.deleteAll();
     }
 }

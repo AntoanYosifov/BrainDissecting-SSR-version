@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.exception.ArticleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.CommentAuthorException;
 import com.antdevrealm.braindissectingssrversion.exception.CommentNotFoundException;
 import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.AddCommentDTO;
@@ -27,18 +28,22 @@ public class CommentController {
     public String addCommentToArticle(AddCommentDTO addCommentDTO,
                                       @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
                                       @PathVariable Long articleId) {
-       try {
-           long commentId = commentService.add(addCommentDTO, brDissectingUserDetails.getId(), articleId);
-           return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
-       } catch (ArticleNotFoundException e) {
-           return "redirect:/articles/all?error=add_article_not_found";
-       } catch (UserNotFoundException e) {
-           return "redirect:/articles/all?error=user_not_found";
-       }
+        long commentId;
+
+        try {
+            commentId = commentService.add(addCommentDTO, brDissectingUserDetails.getId(), articleId);
+        } catch (ArticleNotFoundException e) {
+            return "redirect:/articles/all?error=add_article_not_found";
+        } catch (UserNotFoundException e) {
+            return "redirect:/articles/all?error=user_not_found";
+        }
+
+        return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
+
     }
 
     @DeleteMapping("/delete/{commentId}")
-    public String deleteComment(@PathVariable Long articleId , @PathVariable Long commentId,
+    public String deleteComment(@PathVariable Long articleId, @PathVariable Long commentId,
                                 @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
         try {
@@ -49,6 +54,8 @@ public class CommentController {
             return "redirect:/articles/all?error=user_not_found";
         } catch (CommentNotFoundException e) {
             return "redirect:/articles/all?error=comment_not_found";
+        } catch (CommentAuthorException e) {
+            return "redirect:/articles/all?error=current_user_comment_author_mismatch";
         }
 
         return "redirect:/articles/all";

@@ -69,6 +69,7 @@ public class CommentServiceImplTest {
         commentEntity = new CommentEntity();
         commentEntity.setId(COMMENT_ID);
         commentEntity.setContent("testContent");
+        commentEntity.setUser(userEntity);
     }
 
     @Test

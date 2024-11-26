@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
 import com.antdevrealm.braindissectingssrversion.exception.ArticleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.CommentAuthorException;
 import com.antdevrealm.braindissectingssrversion.exception.CommentNotFoundException;
 import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.AddCommentDTO;
@@ -56,6 +57,10 @@ public class CommentServiceImpl implements CommentService {
 
         CommentEntity commentEntity = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
+
+        if(userId != commentEntity.getUser().getId()) {
+            throw new CommentAuthorException(userId, commentId);
+        }
 
         commentRepository.delete(commentEntity);
 
