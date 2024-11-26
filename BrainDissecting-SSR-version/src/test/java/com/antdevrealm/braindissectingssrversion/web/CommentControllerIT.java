@@ -1,10 +1,12 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
+import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
-import com.antdevrealm.braindissectingssrversion.service.impl.ArticleServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,31 +17,36 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class HomeControllerIT {
-
+public class CommentControllerIT {
     @Autowired
     private MockMvc mockMvc;
-
-    private BrDissectingUserDetails userDetails;
-
-    private UsernamePasswordAuthenticationToken authenticationToken;
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    private UserEntity loggedUserEntity;
+
+    private BrDissectingUserDetails userDetails;
+    private UsernamePasswordAuthenticationToken authenticationToken;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
+        articleRepository.deleteAll();
 
-        UserEntity loggedUserEntity = new UserEntity()
+        loggedUserEntity = new UserEntity()
                 .setUsername("loggedUser")
                 .setEmail("loggeduser@example.com")
                 .setPassword("password")
@@ -57,28 +64,30 @@ public class HomeControllerIT {
                 "User",
                 false
         );
-        authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
     }
 
     @Test
-    void shouldReturnHomeWithWelcomeMessageAndFavourites_WhenUserIsAuthenticated() throws Exception {
-        mockMvc.perform(get("/").with(authentication(authenticationToken)))
-                .andExpect(model().attributeExists("welcomeMessage"))
-                .andExpect(model().attribute("welcomeMessage", "Logged User"))
-                .andExpect(model().attributeExists("favourites"))
-                .andExpect(view().name("home"));
-    }
+    void add_ShouldRedirectWithSuccess_WhenCommentIsAdded() throws Exception {
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
 
-    @Test
-    void shouldReturnIndex_WhenUserIsNotAuthenticated() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(model().attribute("welcomeMessage", "Anonymous"))
-                .andExpect(view().name("index"));
+        long articleId = articleRepository.saveAndFlush(articleEntity).getId();
+
+        mockMvc.perform(post("/articles/" + articleId + "/comments")
+                        .param("content", "Test content for comment on an article")
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all?open=" + articleId + "#comment-1"));
     }
 
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
+        articleRepository.deleteAll();
     }
-
 }

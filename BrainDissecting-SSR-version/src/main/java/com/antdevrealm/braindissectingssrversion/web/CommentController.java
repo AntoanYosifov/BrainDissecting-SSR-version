@@ -1,5 +1,8 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.exception.ArticleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.CommentNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.AddCommentDTO;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.CommentService;
@@ -25,24 +28,31 @@ public class CommentController {
                                       @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
                                       @PathVariable Long articleId) {
 
-        long commentId = commentService.add(addCommentDTO, brDissectingUserDetails.getId(), articleId);
+       try {
+           long commentId = commentService.add(addCommentDTO, brDissectingUserDetails.getId(), articleId);
+           return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
+       } catch (ArticleNotFoundException e) {
+           return "redirect:/articles/all?error=add_article_not_found";
+       } catch (UserNotFoundException e) {
+           return "redirect:/articles/all?error=user_not_found";
+       }
 
-        if (commentId == -1) {
-            return "redirect:/articles/all?error=article_not_found&articleId=" + articleId;
-        } else if (commentId == -2) {
-            return "redirect:/articles/all?error=user_not_found&articleId=" + articleId;
-        }
-
-        return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
     }
 
     @DeleteMapping("/delete/{commentId}")
     public String deleteComment(@PathVariable Long articleId , @PathVariable Long commentId,
                                 @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
-        boolean success = commentService.delete(articleId, commentId, brDissectingUserDetails.getId());
+        try {
+            commentService.delete(articleId, commentId, brDissectingUserDetails.getId());
+        } catch (ArticleNotFoundException e) {
+            return "redirect:/articles/all?error=delete_article_not_found";
+        } catch (UserNotFoundException e) {
+            return "redirect:/articles/all?error=user_not_found";
+        } catch (CommentNotFoundException e) {
+            return "redirect:/articles/all?error=comment_not_found";
+        }
 
         return "redirect:/articles/all";
-
     }
 }

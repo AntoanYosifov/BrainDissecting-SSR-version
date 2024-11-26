@@ -1,5 +1,8 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.exception.ArticleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.CommentNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.AddCommentDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
@@ -89,26 +92,21 @@ public class CommentServiceImplTest {
     }
 
     @Test
-    void add_ShouldReturnNegativeOne_WhenArticleNotFound() {
+    void add_ShouldThrowArticleException_WhenArticleDoesNotExist() {
         Mockito.when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
-
-        long result = toTest.add(addCommentDTO, USER_ID, ARTICLE_ID);
-
-        Assertions.assertEquals(-1, result);
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> toTest.add(addCommentDTO, USER_ID, ARTICLE_ID));
     }
 
     @Test
-    void add_ShouldReturnNegativeTwo_WhenUserNotFound() {
+    void add_ShouldThrowUserException_WhenDoesNotExist() {
         Mockito.when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(new ArticleEntity()));
         Mockito.when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        long result = toTest.add(addCommentDTO, USER_ID, ARTICLE_ID);
-
-        Assertions.assertEquals(-2, result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.add(addCommentDTO, USER_ID, ARTICLE_ID));
     }
 
     @Test
-    void delete_ShouldReturnTrue_WhenArticleCommentAndUserExist() {
+    void delete_ShouldDeleteComment_WhenArticleCommentAndUserExist() {
         articleEntity.getComments().add(commentEntity);
         userEntity.getComments().add(commentEntity);
 
@@ -119,41 +117,33 @@ public class CommentServiceImplTest {
         when(mockCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(commentEntity));
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
 
-        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
+        toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
 
-        Assertions.assertTrue(result);
         Assertions.assertFalse(articleEntity.getComments().contains(commentEntity));
         Assertions.assertFalse(userEntity.getComments().contains(commentEntity));
     }
 
     @Test
-    void delete_ShouldReturnFalse_WhenArticleDoesNotExist() {
+    void delete_ShouldThrowArticleException_WhenArticleDoesNotExist() {
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
-
-        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID));
     }
 
     @Test
-    void delete_ShouldReturnFalse_WhenUserDoesNotExist() {
+    void delete_ShouldThrowUserException_WhenUserDoesNotExist() {
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID));
     }
 
     @Test
-    void delete_ShouldReturnFalse_WhenUserCommentNotExist() {
+    void delete_ShouldThrowCommentException_WhenUserCommentNotExist() {
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.of(articleEntity));
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.empty());
 
-        boolean result = toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(CommentNotFoundException.class, () -> toTest.delete(ARTICLE_ID, COMMENT_ID, USER_ID));
     }
 
 }

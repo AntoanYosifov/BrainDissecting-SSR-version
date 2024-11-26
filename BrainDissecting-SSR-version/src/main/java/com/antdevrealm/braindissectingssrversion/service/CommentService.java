@@ -6,5 +6,5 @@ public interface CommentService {
 
     long add(AddCommentDTO addCommentDTO, long authorId, long articleId);
 
-    boolean delete(long articleId, long commentId, long userId);
+    void delete(long articleId, long commentId, long userId);
 }

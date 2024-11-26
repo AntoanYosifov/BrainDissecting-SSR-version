@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
-        ArticleEntity toFavouritesArt = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException("Article not found"));
+        ArticleEntity toFavouritesArt = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException(articleId));
 
         toFavouritesArt.setFavourite(true);
 
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void removeFromFavourites(Long articleId, Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException("Article not found"));
+        ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException(articleId));
 
         userEntity.getFavourites().remove(articleEntity);
         userRepository.save(userEntity);

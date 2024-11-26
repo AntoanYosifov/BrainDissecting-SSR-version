@@ -1,5 +1,8 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.exception.ArticleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.CommentNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.AddCommentDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CommentEntity;
@@ -29,21 +32,12 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public long add(AddCommentDTO addCommentDTO , long authorId, long articleId) {
-        Optional<ArticleEntity> optionalArt = articleRepository.findById(articleId);
+    public long add(AddCommentDTO addCommentDTO, long authorId, long articleId) {
+        ArticleEntity articleEntity = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ArticleNotFoundException(articleId));
 
-        if(optionalArt.isEmpty()) {
-            return -1;
-        }
-
-        Optional<UserEntity> optUser = userRepository.findById(authorId);
-
-        if(optUser.isEmpty()) {
-            return -2;
-        }
-
-        UserEntity userEntity = optUser.get();
-        ArticleEntity articleEntity = optionalArt.get();
+        UserEntity userEntity = userRepository.findById(authorId)
+                .orElseThrow(() -> new UserNotFoundException(authorId));
 
         CommentEntity commentEntity = mapToComment(addCommentDTO, userEntity, articleEntity);
 
@@ -53,41 +47,21 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Modifying
     @Transactional
-    public boolean delete(long articleId, long commentId, long userId) {
-        Optional<ArticleEntity> optionalArt = articleRepository.findById(articleId);
+    public void delete(long articleId, long commentId, long userId) {
+        ArticleEntity articleEntity = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ArticleNotFoundException(articleId));
 
-        if(optionalArt.isEmpty()) {
-            return false;
-        }
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
-        ArticleEntity articleEntity = optionalArt.get();
-
-        Optional<UserEntity> optUser = userRepository.findById(userId);
-
-        if(optUser.isEmpty()) {
-            return false;
-        }
-
-        UserEntity userEntity = optUser.get();
-
-        Optional<CommentEntity> commentById = commentRepository.findById(commentId);
-
-        if(commentById.isEmpty()) {
-            return false;
-        }
-
-        CommentEntity commentEntity = commentById.get();
-
-        if(!userEntity.getComments().contains(commentEntity) || !articleEntity.getComments().contains(commentEntity)) {
-            return false;
-        }
+        CommentEntity commentEntity = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         commentRepository.delete(commentEntity);
 
         userEntity.getComments().remove(commentEntity);
         articleEntity.getComments().remove(commentEntity);
 
-        return true;
     }
 
     private static CommentEntity mapToComment(AddCommentDTO addCommentDTO,
