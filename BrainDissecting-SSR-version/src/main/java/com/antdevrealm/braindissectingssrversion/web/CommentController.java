@@ -27,7 +27,6 @@ public class CommentController {
     public String addCommentToArticle(AddCommentDTO addCommentDTO,
                                       @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails,
                                       @PathVariable Long articleId) {
-
        try {
            long commentId = commentService.add(addCommentDTO, brDissectingUserDetails.getId(), articleId);
            return "redirect:/articles/all?open=" + articleId + "#comment-" + commentId;
@@ -36,7 +35,6 @@ public class CommentController {
        } catch (UserNotFoundException e) {
            return "redirect:/articles/all?error=user_not_found";
        }
-
     }
 
     @DeleteMapping("/delete/{commentId}")

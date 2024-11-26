@@ -85,6 +85,15 @@ public class CommentControllerIT {
                 .andExpect(redirectedUrl("/articles/all?open=" + articleId + "#comment-1"));
     }
 
+    @Test
+    void add_ShouldRedirectWithError_ArticleNotFound() throws Exception {
+        mockMvc.perform(post("/articles/99999/comments")
+                        .param("content", "Test content for comment on an article")
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all?error=add_article_not_found"));
+    }
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
