@@ -69,8 +69,16 @@ public class HomeControllerIT {
     void shouldReturnHomeWithWelcomeMessageAndFavourites_WhenUserIsAuthenticated() throws Exception {
         mockMvc.perform(get("/").with(authentication(authenticationToken)))
                 .andExpect(model().attributeExists("welcomeMessage"))
+                .andExpect(model().attribute("welcomeMessage", "Logged User"))
                 .andExpect(model().attributeExists("favourites"))
                 .andExpect(view().name("home"));
+    }
+
+    @Test
+    void shouldReturnIndex_WhenUserIsNotAuthenticated() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(model().attribute("welcomeMessage", "Anonymous"))
+                .andExpect(view().name("index"));
     }
 
     @AfterEach
