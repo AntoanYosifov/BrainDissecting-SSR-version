@@ -94,6 +94,24 @@ public class CommentControllerIT {
                 .andExpect(redirectedUrl("/articles/all?error=add_article_not_found"));
     }
 
+    @Test
+    void add_ShouldRedirectWithError_UserNotFound() throws Exception {
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
+        long articleId = articleRepository.saveAndFlush(articleEntity).getId();
+
+        userRepository.delete(loggedUserEntity);
+
+        mockMvc.perform(post("/articles/"+ articleId + "/comments")
+                        .param("content", "Test content for comment on an article")
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all?error=user_not_found"));
+    }
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
