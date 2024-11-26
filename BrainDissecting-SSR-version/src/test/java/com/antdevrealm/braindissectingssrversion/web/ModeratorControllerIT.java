@@ -50,13 +50,11 @@ public class ModeratorControllerIT {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private UserEntity moderatorUserEntity;
     private BrDissectingUserDetails moderatorDetails;
     private UsernamePasswordAuthenticationToken moderatorAuthenticationToken;
-    private UserEntity moderatorUserEntity;
 
-    private BrDissectingUserDetails nonModeratorDetails;
     private UsernamePasswordAuthenticationToken nonModeratorAuthenticationToken;
-    private UserEntity nonModeratorUserEntity;
 
     @BeforeEach
     void setUp() {
@@ -86,14 +84,14 @@ public class ModeratorControllerIT {
         moderatorAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 moderatorDetails, null, moderatorDetails.getAuthorities());
 
-        nonModeratorUserEntity = new UserEntity()
+        UserEntity nonModeratorUserEntity = new UserEntity()
                 .setUsername("nonModeratorUser")
                 .setEmail("user@example.com")
                 .setPassword("password")
                 .setStatus(UserStatus.ACTIVE);
         userRepository.saveAndFlush(nonModeratorUserEntity);
 
-        nonModeratorDetails = new BrDissectingUserDetails(
+        BrDissectingUserDetails nonModeratorDetails = new BrDissectingUserDetails(
                 nonModeratorUserEntity.getId(),
                 nonModeratorUserEntity.getEmail(),
                 nonModeratorUserEntity.getUsername(),
@@ -285,7 +283,6 @@ public class ModeratorControllerIT {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/suggest-themes?error=Failed to suggest theme. Please try to suggest a different theme."));
-
     }
 
     @AfterEach

@@ -10,5 +10,4 @@ public class BrainDissectingSsrVersionApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BrainDissectingSsrVersionApplication.class, args);
 	}
-
 }
