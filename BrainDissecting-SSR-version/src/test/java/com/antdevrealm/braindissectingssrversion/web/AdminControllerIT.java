@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
@@ -28,41 +27,71 @@ public class AdminControllerIT {
 
     @Autowired
     private UserRepository userRepository;
-    private UserEntity loggedUserEntity;
+    private UserEntity loggedUserAdminEntity;
+    private UserEntity loggedUserNonAdminEntity;
 
-    private UsernamePasswordAuthenticationToken authenticationToken;
+    private UsernamePasswordAuthenticationToken authenticationAdminToken;
+    private UsernamePasswordAuthenticationToken authenticationNonAdminToken;
 
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
 
-        loggedUserEntity = new UserEntity()
+        loggedUserAdminEntity = new UserEntity()
                 .setUsername("adminUser")
                 .setEmail("adminuser@example.com")
                 .setPassword("password")
                 .setStatus(UserStatus.ACTIVE);
 
-        userRepository.saveAndFlush(loggedUserEntity);
+        userRepository.saveAndFlush(loggedUserAdminEntity);
 
-        BrDissectingUserDetails userDetails = new BrDissectingUserDetails(
-                loggedUserEntity.getId(),
-                loggedUserEntity.getEmail(),
-                loggedUserEntity.getUsername(),
-                loggedUserEntity.getPassword(),
+        BrDissectingUserDetails userAdminDetails = new BrDissectingUserDetails(
+                loggedUserAdminEntity.getId(),
+                loggedUserAdminEntity.getEmail(),
+                loggedUserAdminEntity.getUsername(),
+                loggedUserAdminEntity.getPassword(),
                 List.of(() -> "ROLE_ADMIN"),
                 "Admin",
                 "User",
                 false
         );
 
-        authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+        authenticationAdminToken = new UsernamePasswordAuthenticationToken(
+                userAdminDetails, null, userAdminDetails.getAuthorities());
+
+        loggedUserNonAdminEntity = new UserEntity()
+                .setUsername("nonAdminUser")
+                .setEmail("nonadminuser@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        userRepository.saveAndFlush(loggedUserNonAdminEntity);
+
+        BrDissectingUserDetails userNonAdminDetails = new BrDissectingUserDetails(
+                loggedUserAdminEntity.getId(),
+                loggedUserAdminEntity.getEmail(),
+                loggedUserAdminEntity.getUsername(),
+                loggedUserAdminEntity.getPassword(),
+                List.of(() -> "ROLE_USER"),
+                "NonAdmin",
+                "User",
+                false
+        );
+
+        authenticationNonAdminToken = new UsernamePasswordAuthenticationToken(
+                userNonAdminDetails, null, userNonAdminDetails.getAuthorities());
     }
 
     @Test
     void viewAdminManage_ShouldReturn_ManageUsers_WhenUserIsAdmin() throws Exception {
-        mockMvc.perform(get("/admin/manage-roles").with(authentication(authenticationToken)))
+        mockMvc.perform(get("/admin/manage-roles").with(authentication(authenticationAdminToken)))
                 .andExpect(model().attributeExists("users"))
                 .andExpect(view().name("manage-users"));
+    }
+
+    @Test
+    void viewAdminManage_ShouldRedirectToAccessDenied_WhenUserIsNotAdmin() throws Exception {
+        mockMvc.perform(get("/admin/manage-roles").with(authentication(authenticationNonAdminToken)))
+                .andExpect(redirectedUrl("/access-denied"));
     }
 }
