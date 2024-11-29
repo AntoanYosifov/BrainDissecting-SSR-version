@@ -1,9 +1,14 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
+import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +18,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -27,6 +35,10 @@ public class AdminControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
     private UserEntity loggedUserAdminEntity;
     private UserEntity loggedUserNonAdminEntity;
 
@@ -94,4 +106,42 @@ public class AdminControllerIT {
         mockMvc.perform(get("/admin/manage-roles").with(authentication(authenticationNonAdminToken)))
                 .andExpect(redirectedUrl("/access-denied"));
     }
+
+    @Test
+    void promoteToModerator_ShouldRedirectWithSuccess_WhenUserIsPromoted() throws Exception {
+        UserEntity userToPromote = new UserEntity()
+                .setUsername("userToPromote")
+                .setEmail("email@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        long userToPromoteId = userRepository.saveAndFlush(userToPromote).getId();
+
+        mockMvc.perform(post("/admin/promote-moderator/" + userToPromoteId)
+                .with(csrf())
+                .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("roleAssignSuccess"))
+                .andExpect(flash().attribute("roleAssignSuccess", "Role assigned successfully!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+
+        Optional<UserEntity> optPromotedUser = userRepository.findById(userToPromoteId);
+
+        Assertions.assertTrue(optPromotedUser.isPresent());
+
+        UserEntity moderatorEntity = optPromotedUser.get();
+
+        Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
+
+        Assertions.assertTrue(optModeratorRole.isPresent());
+
+        UserRoleEntity moderatorRole = optModeratorRole.get();
+
+        Assertions.assertTrue(moderatorEntity.getRoles().contains(moderatorRole));
+    }
+
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
+    }
+
 }
