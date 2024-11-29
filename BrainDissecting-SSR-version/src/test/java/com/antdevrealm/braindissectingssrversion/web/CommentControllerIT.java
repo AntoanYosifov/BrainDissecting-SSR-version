@@ -19,15 +19,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class CommentControllerIT {
     @Autowired
     private MockMvc mockMvc;
@@ -47,9 +49,9 @@ public class CommentControllerIT {
 
     @BeforeEach
     void setUp() {
+        commentRepository.deleteAll();
         userRepository.deleteAll();
         articleRepository.deleteAll();
-        commentRepository.deleteAll();
 
         loggedUserEntity = new UserEntity()
                 .setUsername("loggedUser")
@@ -139,11 +141,78 @@ public class CommentControllerIT {
                 .andExpect(redirectedUrl("/articles/all"));
     }
 
+    @Test
+    void delete_ShouldRedirectWithError_ArticleNotFound() throws Exception {
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
+        articleRepository.saveAndFlush(articleEntity);
+
+        CommentEntity commentToDelete = new CommentEntity()
+                .setContent("Test content for comment to delete")
+                .setUser(loggedUserEntity)
+                .setArticle(articleEntity);
+
+        long nonExistArticleId = 9999999;
+
+        long commentId = commentRepository.saveAndFlush(commentToDelete).getId();
+
+        mockMvc.perform(delete("/articles/" + nonExistArticleId + "/comments/delete/" + commentId)
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all?error=delete_article_not_found"));
+    }
+
+    @Test
+    void delete_ShouldRedirectWithError_UserNotFound() throws Exception {
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
+        long articleId = articleRepository.saveAndFlush(articleEntity).getId();
+
+        long commentId = 1L;
+
+        userRepository.delete(loggedUserEntity);
+
+        mockMvc.perform(delete("/articles/" + articleId + "/comments/delete/" + commentId)
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all?error=user_not_found"));
+    }
+
+    @Test
+    void delete_ShouldRedirectWithError_CommentNotFound() throws Exception {
+        ArticleEntity articleEntity = new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED);
+
+        long articleId = articleRepository.saveAndFlush(articleEntity).getId();
+
+        CommentEntity commentToDelete = new CommentEntity()
+                .setContent("Test content for comment to delete")
+                .setUser(loggedUserEntity)
+                .setArticle(articleEntity);
+
+        commentRepository.saveAndFlush(commentToDelete);
+
+        long nonExistCommentId = 9999999;
+
+        mockMvc.perform(delete("/articles/" + articleId + "/comments/delete/" + nonExistCommentId)
+                        .with(csrf()).with(authentication(authenticationToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/articles/all?error=comment_not_found"));
+    }
+
 
     @AfterEach
     void cleanUp() {
+        commentRepository.deleteAll();
         userRepository.deleteAll();
         articleRepository.deleteAll();
-        commentRepository.deleteAll();
     }
 }
