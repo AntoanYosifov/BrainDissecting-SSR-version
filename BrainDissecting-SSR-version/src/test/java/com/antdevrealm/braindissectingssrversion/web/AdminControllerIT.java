@@ -213,6 +213,18 @@ public class AdminControllerIT {
         Assertions.assertFalse(demotedEntity.getRoles().contains(moderatorRole));
     }
 
+    @Test
+    void demoteFromModerator_ShouldRedirectWithFailure_WhenUserToDemoteNotFound() throws Exception {
+        long fakeUserId = 99999;
+
+        mockMvc.perform(post("/admin/demote-moderator/" + fakeUserId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("removeRoleFailure"))
+                .andExpect(flash().attribute("removeRoleFailure", "Failed to remove role!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();
