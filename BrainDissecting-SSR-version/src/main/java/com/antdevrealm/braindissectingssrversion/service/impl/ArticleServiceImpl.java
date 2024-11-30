@@ -83,8 +83,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Modifying
     public boolean deleteArticle(Long articleId) {
         if (articleRepository.existsById(articleId)) {
-            articleRepository.removeAllFromUsersFavourites(articleId);
 
+            Optional<ArticleEntity> byId = articleRepository.findById(articleId);
+
+            if (byId.isPresent() && byId.get().isFavourite()) {
+                articleRepository.removeAllFromUsersFavourites(articleId);
+            }
             articleRepository.deleteById(articleId);
 
             return true;

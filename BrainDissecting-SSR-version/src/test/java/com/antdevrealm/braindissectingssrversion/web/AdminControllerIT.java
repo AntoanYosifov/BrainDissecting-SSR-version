@@ -1,10 +1,13 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
+import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
+import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -17,16 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,6 +42,9 @@ public class AdminControllerIT {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private ArticleRepository articleRepository;
+
     private UserEntity loggedUserAdminEntity;
     private UserEntity loggedUserNonAdminEntity;
 
@@ -49,6 +53,7 @@ public class AdminControllerIT {
 
     @BeforeEach
     void setUp() {
+        articleRepository.deleteAll();
         userRepository.deleteAll();
 
         loggedUserAdminEntity = new UserEntity()
@@ -257,8 +262,33 @@ public class AdminControllerIT {
         roleRepository.save(new UserRoleEntity().setRole(UserRole.MODERATOR));
     }
 
+//    @DeleteMapping("/delete-article/{articleId}")
+//    public String deleteArticle(@PathVariable Long articleId) {
+//        articleService.deleteArticle(articleId);
+//        return "redirect:/admin/delete-article";
+//    }
+
+    @Test
+    void deleteArticle_ShouldDeleteExistingArticle_RedirectToAdminDeleteArticle() throws Exception {
+        long articleToDeleteId = articleRepository.save(new ArticleEntity()
+                .setTitle("articleToDeleteTitle")
+                .setContent("articleToDeleteContent")
+                .setStatus(Status.APPROVED)).getId();
+
+        Assertions.assertTrue(articleRepository.existsById(articleToDeleteId));
+
+
+        mockMvc.perform(delete("/admin/delete-article/" + articleToDeleteId)
+                .with(csrf())
+                .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/delete-article"));
+
+        Assertions.assertFalse(articleRepository.existsById(articleToDeleteId));
+    }
+
     @AfterEach
     void cleanUp() {
+        articleRepository.deleteAll();
         userRepository.deleteAll();
     }
 

@@ -19,7 +19,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     Optional<ArticleEntity> findByTitle(String title);
 
     @Modifying
-    @Query(value = "DELETE FROM `brain-dissecting-ssr`.user_favourite where favourite_id = :articleId", nativeQuery = true)
+    @Query(value = "DELETE FROM `brain-dissecting-ssr`. user_favourite where favourite_id = :articleId", nativeQuery = true)
     void removeAllFromUsersFavourites(@Param("articleId") Long articleId);
 
     @Query("SELECT a FROM ArticleEntity a WHERE a.status = 'APPROVED'")
