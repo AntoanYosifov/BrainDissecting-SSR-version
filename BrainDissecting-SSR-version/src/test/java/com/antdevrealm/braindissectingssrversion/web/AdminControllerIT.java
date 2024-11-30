@@ -351,6 +351,18 @@ public class AdminControllerIT {
         Assertions.assertFalse(unBannedUser.get().isBanned());
     }
 
+    @Test
+    void removeBan_ShouldRedirectWithFailure_WhenUserIsNotFound() throws Exception {
+        long fakeUserId = 9999L;
+
+        mockMvc.perform(patch("/admin/remove-ban/" + fakeUserId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("removeBanFailure"))
+                .andExpect(flash().attribute("removeBanFailure", "Failed to remove BAN!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
 
     @AfterEach
     void cleanUp() {
