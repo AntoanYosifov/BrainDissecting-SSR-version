@@ -151,6 +151,31 @@ public class AdminControllerIT {
                 .andExpect(redirectedUrl("/admin/manage-roles"));
     }
 
+    @Test
+    void promoteToModerator_ShouldRedirectWithFailure_WhenRoleIsNotFound() throws Exception {
+        UserEntity userToPromote = new UserEntity()
+                .setUsername("userToPromote")
+                .setEmail("email@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        long userToPromoteId = userRepository.saveAndFlush(userToPromote).getId();
+
+        Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
+
+        Assertions.assertTrue(optModeratorRole.isPresent());
+
+        UserRoleEntity moderatorRole = optModeratorRole.get();
+
+        roleRepository.delete(moderatorRole);
+
+        mockMvc.perform(post("/admin/promote-moderator/" + userToPromoteId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("roleAssignFailure"))
+                .andExpect(flash().attribute("roleAssignFailure", "Failed to assign role!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
 
     @AfterEach
     void cleanUp() {
