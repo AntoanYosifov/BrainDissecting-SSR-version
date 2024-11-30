@@ -51,36 +51,23 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public boolean demoteFromModerator(Long userId) {
+    public void demoteFromModerator(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
-        Optional<UserEntity> optUser = userRepository.findById(userId);
-
-        if (optUser.isEmpty()) {
-            return false;
-        }
-
-        UserEntity userEntity = optUser.get();
-
-        Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
-
-        if (optModeratorRole.isEmpty()) {
-            return false;
-        }
-
-        UserRoleEntity moderatorRole = optModeratorRole.get();
+        UserRoleEntity moderatorRole = roleRepository.findByRole(UserRole.MODERATOR)
+                .orElseThrow(() -> new RoleNotFoundException(UserRole.MODERATOR));
 
         List<UserRoleEntity> userRoles = userEntity.getRoles();
 
         if (!userRoles.contains(moderatorRole)) {
-            return false;
+            return;
         }
 
         userRoles.remove(moderatorRole);
         userRepository.save(userEntity);
 
         userService.reloadUserDetails(userEntity.getUsername());
-        return true;
-
     }
 
     @Override

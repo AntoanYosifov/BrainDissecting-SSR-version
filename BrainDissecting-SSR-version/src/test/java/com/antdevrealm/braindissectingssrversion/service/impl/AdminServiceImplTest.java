@@ -85,7 +85,7 @@ public class AdminServiceImplTest {
 
 
     @Test
-    void demoteFromModerator_ShouldReturnTrue_WhenUserExistsAndRoleIsRemoved() {
+    void demoteFromModerator_UserRolesShouldNotContainModerator_WhenUserExistsAndRoleIsRemoved() {
         UserRoleEntity moderatorRole = new UserRoleEntity();
         moderatorRole.setRole(UserRole.MODERATOR);
         userEntity.getRoles().add(moderatorRole);
@@ -94,43 +94,25 @@ public class AdminServiceImplTest {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
 
-        boolean result = toTest.demoteFromModerator(USER_ID);
+        toTest.demoteFromModerator(USER_ID);
 
-        Assertions.assertTrue(result);
         Assertions.assertFalse(userEntity.getRoles().contains(moderatorRole));
     }
 
     @Test
-    void demoteFromModerator_ShouldReturnFalse_WhenUserDoesNotExist() {
+    void demoteFromModerator_ShouldThrowException_WhenUserDoesNotExist() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
-
-        boolean result = toTest.demoteFromModerator(USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(UserNotFoundException.class , () -> toTest.demoteFromModerator(USER_ID));
     }
 
     @Test
-    void demoteFromModerator_ShouldReturnFalse_WhenModeratorRoleDoesNotExist() {
+    void demoteFromModerator_ShouldThrowException_WhenModeratorRoleDoesNotExist() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.empty());
 
-        boolean result = toTest.demoteFromModerator(USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(RoleNotFoundException.class , () -> toTest.demoteFromModerator(USER_ID));
     }
 
-    @Test
-    void demoteFromModerator_ShouldReturnFalse_WhenUserDoesNotHaveModeratorRole() {
-        UserRoleEntity moderatorRole = new UserRoleEntity();
-        moderatorRole.setRole(UserRole.MODERATOR);
-
-        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
-        when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
-
-        boolean result = toTest.demoteFromModerator(USER_ID);
-
-        Assertions.assertFalse(result);
-    }
 
     @Test
     void banUser_ShouldReturnTrue_WhenUserExistsAndIsActive() {

@@ -59,16 +59,17 @@ public class AdminController {
                                       RedirectAttributes redirectAttributes,
                                       @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
-        if (!adminService.demoteFromModerator(userId)) {
+        try {
+            adminService.demoteFromModerator(userId);
+
+            userService.reloadUserDetails(brDissectingUserDetails.getUsername());
+
+            redirectAttributes.addFlashAttribute("removeRoleSuccess", "Role removed successfully!");
+            return "redirect:/admin/manage-roles";
+        } catch (UserNotFoundException | RoleNotFoundException e) {
             redirectAttributes.addFlashAttribute("removeRoleFailure", "Failed to remove role!");
             return "redirect:/admin/manage-roles";
         }
-
-        userService.reloadUserDetails(brDissectingUserDetails.getUsername());
-
-        redirectAttributes.addFlashAttribute("removeRoleSuccess", "Role removed successfully!");
-        return "redirect:/admin/manage-roles";
-
     }
 
     @GetMapping("/delete-article")

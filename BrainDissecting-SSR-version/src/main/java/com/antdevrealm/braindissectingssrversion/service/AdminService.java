@@ -4,7 +4,7 @@ public interface AdminService {
 
     void promoteToModerator(Long userId);
 
-    boolean demoteFromModerator(Long userId);
+    void demoteFromModerator(Long userId);
 
     boolean banUser(Long userId);
 
