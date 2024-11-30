@@ -1,6 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.Status;
@@ -397,6 +398,18 @@ public class AdminControllerIT {
         Assertions.assertTrue(categoryRepository.existsByName(themeToAdd));
     }
 
+    @Test
+    void addTheme_ShouldRedirectWithFailure_WhenThemeAlreadyExist() throws Exception {
+        String addedTheme = "AlreadyAddedTheme";
+
+        categoryRepository.save(new CategoryEntity(addedTheme));
+
+        mockMvc.perform(post("/admin/add-theme")
+                        .param("theme", addedTheme)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?error=Adding theme operation failed!"));
+    }
 
     @AfterEach
     void cleanUp() {
