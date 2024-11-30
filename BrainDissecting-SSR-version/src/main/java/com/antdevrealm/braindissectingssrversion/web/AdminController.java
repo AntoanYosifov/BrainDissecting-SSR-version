@@ -55,9 +55,9 @@ public class AdminController {
     }
 
     @PostMapping("/demote-moderator/{userId}")
-    public String demoteToModerator(@PathVariable Long userId,
-                                    RedirectAttributes redirectAttributes,
-                                    @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
+    public String demoteFromModerator(@PathVariable Long userId,
+                                      RedirectAttributes redirectAttributes,
+                                      @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
 
         if (!adminService.demoteFromModerator(userId)) {
             redirectAttributes.addFlashAttribute("removeRoleFailure", "Failed to remove role!");
@@ -66,7 +66,7 @@ public class AdminController {
 
         userService.reloadUserDetails(brDissectingUserDetails.getUsername());
 
-        redirectAttributes.addFlashAttribute("removeRoleSuccess", "Role removed successfully");
+        redirectAttributes.addFlashAttribute("removeRoleSuccess", "Role removed successfully!");
         return "redirect:/admin/manage-roles";
 
     }

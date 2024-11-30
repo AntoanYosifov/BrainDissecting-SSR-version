@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -175,6 +176,41 @@ public class AdminControllerIT {
                 .andExpect(flash().attributeExists("roleAssignFailure"))
                 .andExpect(flash().attribute("roleAssignFailure", "Failed to assign role!"))
                 .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
+    @Test
+    void demoteFromModerator_ShouldRedirectWithSuccess_WhenUserIsDemoted() throws Exception {
+        Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
+
+        Assertions.assertTrue(optModeratorRole.isPresent());
+
+        UserRoleEntity moderatorRole = optModeratorRole.get();
+
+        UserEntity userToDemote = new UserEntity()
+                .setUsername("userToDemote")
+                .setEmail("email@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE)
+                .setRoles(new ArrayList<>(List.of(moderatorRole)));
+
+        Assertions.assertTrue(userToDemote.getRoles().contains(moderatorRole));
+
+        long userToDemoteId = userRepository.saveAndFlush(userToDemote).getId();
+
+        mockMvc.perform(post("/admin/demote-moderator/" + userToDemoteId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("removeRoleSuccess"))
+                .andExpect(flash().attribute("removeRoleSuccess", "Role removed successfully!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+
+        Optional<UserEntity> optDemotedUser = userRepository.findById(userToDemoteId);
+
+        Assertions.assertTrue(optDemotedUser.isPresent());
+
+        UserEntity demotedEntity = optDemotedUser.get();
+
+        Assertions.assertFalse(demotedEntity.getRoles().contains(moderatorRole));
     }
 
     @AfterEach
