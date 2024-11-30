@@ -106,7 +106,7 @@ public class AdminController {
             return "redirect:/admin/manage-roles";
         }
 
-        redirectAttributes.addFlashAttribute("removeBanSuccess", "BAN removed successfully");
+        redirectAttributes.addFlashAttribute("removeBanSuccess", "BAN removed successfully!");
         return "redirect:/admin/manage-roles";
     }
 

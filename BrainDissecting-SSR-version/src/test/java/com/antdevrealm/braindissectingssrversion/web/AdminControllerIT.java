@@ -330,6 +330,28 @@ public class AdminControllerIT {
                 .andExpect(redirectedUrl("/admin/manage-roles"));
     }
 
+    @Test
+    void removeBan_ShouldRedirectWithSuccess_WhenBanIsRemoved() throws Exception {
+        long userToRemoveBanFromId = userRepository.save(new UserEntity()
+                .setUsername("userToRemoveBan")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.BANNED)).getId();
+
+        mockMvc.perform(patch("/admin/remove-ban/" + userToRemoveBanFromId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("removeBanSuccess"))
+                .andExpect(flash().attribute("removeBanSuccess", "BAN removed successfully!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+
+        Optional<UserEntity> unBannedUser = userRepository.findById(userToRemoveBanFromId);
+
+        Assertions.assertTrue(unBannedUser.isPresent());
+        Assertions.assertFalse(unBannedUser.get().isBanned());
+    }
+
+
     @AfterEach
     void cleanUp() {
         articleRepository.deleteAll();
