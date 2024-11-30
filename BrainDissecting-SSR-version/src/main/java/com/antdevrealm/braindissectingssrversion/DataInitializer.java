@@ -31,7 +31,6 @@ public class DataInitializer implements CommandLineRunner {
                 UserRoleEntity newRole = new UserRoleEntity();
                 newRole.setRole(role);
                 roleRepository.save(newRole);
-                System.out.println("Initialized role: " + role);
             }
         });
     }

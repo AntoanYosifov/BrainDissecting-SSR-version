@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,7 @@ public class AdminControllerIT {
 
         authenticationNonAdminToken = new UsernamePasswordAuthenticationToken(
                 userNonAdminDetails, null, userNonAdminDetails.getAuthorities());
+
     }
 
     @Test
@@ -176,6 +178,8 @@ public class AdminControllerIT {
                 .andExpect(flash().attributeExists("roleAssignFailure"))
                 .andExpect(flash().attribute("roleAssignFailure", "Failed to assign role!"))
                 .andExpect(redirectedUrl("/admin/manage-roles"));
+
+        roleRepository.save(new UserRoleEntity().setRole(UserRole.MODERATOR));
     }
 
     @Test
@@ -223,6 +227,34 @@ public class AdminControllerIT {
                 .andExpect(flash().attributeExists("removeRoleFailure"))
                 .andExpect(flash().attribute("removeRoleFailure", "Failed to remove role!"))
                 .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
+    @Test
+    void demoteFromModerator_ShouldRedirectWithFailure_WhenRoleNotFound() throws Exception {
+        Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
+
+        Assertions.assertTrue(optModeratorRole.isPresent());
+
+        UserRoleEntity moderatorRole = optModeratorRole.get();
+
+        UserEntity userToDemote = new UserEntity()
+                .setUsername("userToPromote")
+                .setEmail("email@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        long userToDemoteId = userRepository.saveAndFlush(userToDemote).getId();
+
+        roleRepository.delete(moderatorRole);
+
+        mockMvc.perform(post("/admin/demote-moderator/" + userToDemoteId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("removeRoleFailure"))
+                .andExpect(flash().attribute("removeRoleFailure", "Failed to remove role!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+
+        roleRepository.save(new UserRoleEntity().setRole(UserRole.MODERATOR));
     }
 
     @AfterEach
