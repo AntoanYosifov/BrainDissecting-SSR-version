@@ -139,6 +139,19 @@ public class AdminControllerIT {
         Assertions.assertTrue(moderatorEntity.getRoles().contains(moderatorRole));
     }
 
+    @Test
+    void promoteToModerator_ShouldRedirectWithFailure_WhenUserToPromoteNotFound() throws Exception {
+        long fakeUserId = 99999;
+
+        mockMvc.perform(post("/admin/promote-moderator/" + fakeUserId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("roleAssignFailure"))
+                .andExpect(flash().attribute("roleAssignFailure", "Failed to assign role!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
+
     @AfterEach
     void cleanUp() {
         userRepository.deleteAll();

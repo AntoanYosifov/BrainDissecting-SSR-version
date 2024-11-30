@@ -1,5 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.exception.RoleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
@@ -8,6 +10,7 @@ import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,34 +30,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public boolean promoteToModerator(Long userId) {
-        Optional<UserEntity> optUser = userRepository.findById(userId);
+    public void promoteToModerator(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
-        if (optUser.isEmpty()) {
-            return false;
-        }
-
-        UserEntity userEntity = optUser.get();
-
-        Optional<UserRoleEntity> optModeratorRole = roleRepository.findByRole(UserRole.MODERATOR);
-
-        if (optModeratorRole.isEmpty()) {
-            return false;
-        }
-
-        UserRoleEntity moderatorRole = optModeratorRole.get();
+        UserRoleEntity moderatorRole = roleRepository.findByRole(UserRole.MODERATOR)
+                .orElseThrow(() -> new RoleNotFoundException(UserRole.MODERATOR));
 
         List<UserRoleEntity> userRoles = userEntity.getRoles();
 
         if (userRoles.contains(moderatorRole)) {
-            return false;
+            return;
         }
 
         userRoles.add(moderatorRole);
         userRepository.save(userEntity);
 
         userService.reloadUserDetails(userEntity.getUsername());
-        return true;
+
     }
 
     @Override

@@ -1,4 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
+
+import com.antdevrealm.braindissectingssrversion.exception.RoleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
@@ -29,11 +32,11 @@ public class AdminServiceImplTest {
     private final long USER_ID = 1L;
 
     @Mock
-    private  UserService mockUserService;
+    private UserService mockUserService;
     @Mock
-    private  UserRepository mockUserRepository;
+    private UserRepository mockUserRepository;
     @Mock
-    private  RoleRepository mockRoleRepository;
+    private RoleRepository mockRoleRepository;
 
     @Captor
     private ArgumentCaptor<UserEntity> userEntityCaptor;
@@ -54,52 +57,32 @@ public class AdminServiceImplTest {
     }
 
     @Test
-    void promoteToModerator_ShouldReturnTrue_WhenUserExistsAndRoleIsAdded() {
+    void promoteToModerator_UserRolesShouldContainModeratorRole_WhenUserExistsAndRoleIsAdded() {
         UserRoleEntity moderatorRole = new UserRoleEntity();
         moderatorRole.setRole(UserRole.MODERATOR);
 
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
 
-        boolean result = toTest.promoteToModerator(USER_ID);
+        toTest.promoteToModerator(USER_ID);
 
-        Assertions.assertTrue(result);
         Assertions.assertTrue(userEntity.getRoles().contains(moderatorRole));
     }
 
     @Test
-    void promoteToModerator_ShouldReturnFalse_WhenUserDoesNotExist() {
+    void promoteToModerator_ShouldThrowException_WhenUserDoesNotExist() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
-
-        boolean result = toTest.promoteToModerator(USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.promoteToModerator(USER_ID));
     }
 
     @Test
-    void promoteToModerator_ShouldReturnFalse_WhenModeratorRoleDoesNotExist() {
+    void promoteToModerator_ShouldThrowException_WhenModeratorRoleDoesNotExist() {
         when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
         when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.empty());
 
-        boolean result = toTest.promoteToModerator(USER_ID);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThrows(RoleNotFoundException.class, () -> toTest.promoteToModerator(USER_ID));
     }
 
-    @Test
-    void promoteToModerator_ShouldReturnFalse_WhenUserAlreadyHasModeratorRole() {
-        UserRoleEntity moderatorRole = new UserRoleEntity();
-        moderatorRole.setRole(UserRole.MODERATOR);
-
-        userEntity.setRoles(new ArrayList<>(List.of(moderatorRole)));
-
-        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
-        when(mockRoleRepository.findByRole(UserRole.MODERATOR)).thenReturn(Optional.of(moderatorRole));
-
-        boolean result = toTest.promoteToModerator(USER_ID);
-
-        Assertions.assertFalse(result);
-    }
 
     @Test
     void demoteFromModerator_ShouldReturnTrue_WhenUserExistsAndRoleIsRemoved() {

@@ -1,5 +1,7 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
+import com.antdevrealm.braindissectingssrversion.exception.RoleNotFoundException;
+import com.antdevrealm.braindissectingssrversion.exception.UserNotFoundException;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.ArticleService;
@@ -40,15 +42,15 @@ public class AdminController {
     public String promoteToModerator(@PathVariable Long userId,
                                      RedirectAttributes redirectAttributes,
                                      @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
-        if (!adminService.promoteToModerator(userId)) {
+        try {
+            adminService.promoteToModerator(userId);
+            userService.reloadUserDetails(brDissectingUserDetails.getUsername());
+            redirectAttributes.addFlashAttribute("roleAssignSuccess", "Role assigned successfully!");
+            return "redirect:/admin/manage-roles";
+        } catch (UserNotFoundException | RoleNotFoundException e) {
             redirectAttributes.addFlashAttribute("roleAssignFailure", "Failed to assign role!");
             return "redirect:/admin/manage-roles";
         }
-
-        userService.reloadUserDetails(brDissectingUserDetails.getUsername());
-
-        redirectAttributes.addFlashAttribute("roleAssignSuccess", "Role assigned successfully!");
-        return "redirect:/admin/manage-roles";
 
     }
 
