@@ -302,6 +302,18 @@ public class AdminControllerIT {
         Assertions.assertTrue(optBannedUser.get().isBanned());
     }
 
+    @Test
+    void banUser_ShouldRedirectWithFailure_WhenUserIsNotFound() throws Exception {
+        long fakeUserId = 9999L;
+
+        mockMvc.perform(post("/admin/ban-user/" + fakeUserId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("BanFailure"))
+                .andExpect(flash().attribute("BanFailure", "BAN operation has failed!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
     @AfterEach
     void cleanUp() {
         articleRepository.deleteAll();
