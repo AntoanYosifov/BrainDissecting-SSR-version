@@ -8,6 +8,7 @@ import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
 import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
+import com.antdevrealm.braindissectingssrversion.repository.CategoryRepository;
 import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -45,6 +46,9 @@ public class AdminControllerIT {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     private UserEntity loggedUserAdminEntity;
     private UserEntity loggedUserNonAdminEntity;
 
@@ -53,6 +57,7 @@ public class AdminControllerIT {
 
     @BeforeEach
     void setUp() {
+        categoryRepository.deleteAll();
         articleRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -363,9 +368,39 @@ public class AdminControllerIT {
                 .andExpect(redirectedUrl("/admin/manage-roles"));
     }
 
+    @Test
+    void removeBan_ShouldRedirectWithFailure_WhenUserIsNotBanned() throws Exception {
+        long activeUserId = userRepository.save(new UserEntity()
+                .setUsername("userToRemoveBan")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE)).getId();
+
+        mockMvc.perform(patch("/admin/remove-ban/" + activeUserId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("removeBanFailure"))
+                .andExpect(flash().attribute("removeBanFailure", "Failed to remove BAN!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
+    @Test
+    void addTheme_ShouldRedirectWithSuccess_WhenThemeIsAdded() throws Exception {
+        String themeToAdd = "testThemeForAddition";
+
+        mockMvc.perform(post("/admin/add-theme")
+                        .param("theme", themeToAdd)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?success=Theme added!"));
+
+        Assertions.assertTrue(categoryRepository.existsByName(themeToAdd));
+    }
+
 
     @AfterEach
     void cleanUp() {
+        categoryRepository.deleteAll();
         articleRepository.deleteAll();
         userRepository.deleteAll();
     }
