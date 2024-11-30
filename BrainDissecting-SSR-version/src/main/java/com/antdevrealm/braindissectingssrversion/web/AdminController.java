@@ -38,7 +38,7 @@ public class AdminController {
         return "manage-users";
     }
 
-    @PostMapping("/promote-moderator/{userId}")
+    @PatchMapping("/promote-moderator/{userId}")
     public String promoteToModerator(@PathVariable Long userId,
                                      RedirectAttributes redirectAttributes,
                                      @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
@@ -54,7 +54,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("/demote-moderator/{userId}")
+    @PatchMapping("/demote-moderator/{userId}")
     public String demoteFromModerator(@PathVariable Long userId,
                                       RedirectAttributes redirectAttributes,
                                       @AuthenticationPrincipal BrDissectingUserDetails brDissectingUserDetails) {
@@ -84,7 +84,7 @@ public class AdminController {
         return "redirect:/admin/delete-article";
     }
 
-    @PostMapping("/ban-user/{userId}")
+    @PatchMapping("/ban-user/{userId}")
     public String banUser(@PathVariable Long userId,
                           RedirectAttributes redirectAttributes) {
         if (!adminService.banUser(userId)) {
@@ -97,7 +97,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("/remove-ban/{userId}")
+    @PatchMapping("/remove-ban/{userId}")
     public String removeBan(@PathVariable Long userId,
                             RedirectAttributes redirectAttributes) {
 

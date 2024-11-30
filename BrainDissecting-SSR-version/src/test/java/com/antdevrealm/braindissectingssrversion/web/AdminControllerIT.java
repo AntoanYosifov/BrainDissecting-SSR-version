@@ -125,7 +125,7 @@ public class AdminControllerIT {
 
         long userToPromoteId = userRepository.saveAndFlush(userToPromote).getId();
 
-        mockMvc.perform(post("/admin/promote-moderator/" + userToPromoteId)
+        mockMvc.perform(patch("/admin/promote-moderator/" + userToPromoteId)
                 .with(csrf())
                 .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("roleAssignSuccess"))
@@ -151,7 +151,7 @@ public class AdminControllerIT {
     void promoteToModerator_ShouldRedirectWithFailure_WhenUserToPromoteNotFound() throws Exception {
         long fakeUserId = 99999;
 
-        mockMvc.perform(post("/admin/promote-moderator/" + fakeUserId)
+        mockMvc.perform(patch("/admin/promote-moderator/" + fakeUserId)
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("roleAssignFailure"))
@@ -177,7 +177,7 @@ public class AdminControllerIT {
 
         roleRepository.delete(moderatorRole);
 
-        mockMvc.perform(post("/admin/promote-moderator/" + userToPromoteId)
+        mockMvc.perform(patch("/admin/promote-moderator/" + userToPromoteId)
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("roleAssignFailure"))
@@ -206,7 +206,7 @@ public class AdminControllerIT {
 
         long userToDemoteId = userRepository.saveAndFlush(userToDemote).getId();
 
-        mockMvc.perform(post("/admin/demote-moderator/" + userToDemoteId)
+        mockMvc.perform(patch("/admin/demote-moderator/" + userToDemoteId)
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("removeRoleSuccess"))
@@ -226,7 +226,7 @@ public class AdminControllerIT {
     void demoteFromModerator_ShouldRedirectWithFailure_WhenUserToDemoteNotFound() throws Exception {
         long fakeUserId = 99999;
 
-        mockMvc.perform(post("/admin/demote-moderator/" + fakeUserId)
+        mockMvc.perform(patch("/admin/demote-moderator/" + fakeUserId)
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("removeRoleFailure"))
@@ -252,7 +252,7 @@ public class AdminControllerIT {
 
         roleRepository.delete(moderatorRole);
 
-        mockMvc.perform(post("/admin/demote-moderator/" + userToDemoteId)
+        mockMvc.perform(patch("/admin/demote-moderator/" + userToDemoteId)
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("removeRoleFailure"))
@@ -288,7 +288,7 @@ public class AdminControllerIT {
                 .setPassword("password")
                 .setStatus(UserStatus.ACTIVE)).getId();
 
-        mockMvc.perform(post("/admin/ban-user/" + userToBanId)
+        mockMvc.perform(patch("/admin/ban-user/" + userToBanId)
                 .with(csrf())
                 .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("BanSuccess"))
@@ -306,7 +306,23 @@ public class AdminControllerIT {
     void banUser_ShouldRedirectWithFailure_WhenUserIsNotFound() throws Exception {
         long fakeUserId = 9999L;
 
-        mockMvc.perform(post("/admin/ban-user/" + fakeUserId)
+        mockMvc.perform(patch("/admin/ban-user/" + fakeUserId)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("BanFailure"))
+                .andExpect(flash().attribute("BanFailure", "BAN operation has failed!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+    }
+
+    @Test
+    void banUser_ShouldRedirectWithFailure_WhenUserIsAlreadyBanned() throws Exception {
+        long alreadyBannedUserId = userRepository.save(new UserEntity()
+                .setUsername("alreadyBanned")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.BANNED)).getId();
+
+        mockMvc.perform(patch("/admin/ban-user/" + alreadyBannedUserId)
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("BanFailure"))

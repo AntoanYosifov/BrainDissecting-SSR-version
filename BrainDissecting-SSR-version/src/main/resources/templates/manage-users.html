@@ -32,16 +32,16 @@
             <td th:text="${user.status}"
                 th:classappend="${user.status == 'BANNED'} ? 'text-danger' : 'text-success'"></td>
             <td>
-                <form th:action="@{/admin/promote-moderator/{userId}(userId=${user.id})}" th:method="post" style="display:inline;">
+                <form th:action="@{/admin/promote-moderator/{userId}(userId=${user.id})}" th:method="patch" style="display:inline;">
                     <button class="btn btn-outline-success" th:if="${!user.roles.contains('MODERATOR') && user.status.equals('ACTIVE')}">Make Moderator</button>
                 </form>
-                <form th:action="@{/admin/demote-moderator/{userId}(userId=${user.id})}" method="post" style="display:inline;">
+                <form th:action="@{/admin/demote-moderator/{userId}(userId=${user.id})}" th:method="patch" style="display:inline;">
                     <button class="btn btn-outline-danger" th:if="${user.roles.contains('MODERATOR')}">Remove Moderator</button>
                 </form>
-                <form th:action="@{/admin/ban-user/{userId}(userId=${user.id})}" method="post" style="display:inline;">
+                <form th:action="@{/admin/ban-user/{userId}(userId=${user.id})}" th:method="patch" style="display:inline;">
                     <button class="btn btn-outline-danger" th:if="${user.status.equals('ACTIVE')}">BAN</button>
                 </form>
-                <form th:action="@{/admin/remove-ban/{userId}(userId=${user.id})}" method="post" style="display:inline;">
+                <form th:action="@{/admin/remove-ban/{userId}(userId=${user.id})}" th:method="patch" style="display:inline;">
                     <button class="btn btn-outline-primary " th:if="${user.status.equals('BANNED')}">REMOVE BAN</button>
                 </form>
             </td>
