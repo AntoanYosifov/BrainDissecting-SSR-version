@@ -262,12 +262,6 @@ public class AdminControllerIT {
         roleRepository.save(new UserRoleEntity().setRole(UserRole.MODERATOR));
     }
 
-//    @DeleteMapping("/delete-article/{articleId}")
-//    public String deleteArticle(@PathVariable Long articleId) {
-//        articleService.deleteArticle(articleId);
-//        return "redirect:/admin/delete-article";
-//    }
-
     @Test
     void deleteArticle_ShouldDeleteExistingArticle_RedirectToAdminDeleteArticle() throws Exception {
         long articleToDeleteId = articleRepository.save(new ArticleEntity()
@@ -284,6 +278,28 @@ public class AdminControllerIT {
                 .andExpect(redirectedUrl("/admin/delete-article"));
 
         Assertions.assertFalse(articleRepository.existsById(articleToDeleteId));
+    }
+
+    @Test
+    void banUser_ShouldRedirectWithSuccess_WhenUserIsBanned() throws Exception {
+        long userToBanId = userRepository.save(new UserEntity()
+                .setUsername("userToBan")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE)).getId();
+
+        mockMvc.perform(post("/admin/ban-user/" + userToBanId)
+                .with(csrf())
+                .with(authentication(authenticationAdminToken)))
+                .andExpect(flash().attributeExists("BanSuccess"))
+                .andExpect(flash().attribute("BanSuccess", "BAN operation successful!"))
+                .andExpect(redirectedUrl("/admin/manage-roles"));
+
+        Optional<UserEntity> optBannedUser = userRepository.findById(userToBanId);
+
+        Assertions.assertTrue(optBannedUser.isPresent());
+
+        Assertions.assertTrue(optBannedUser.get().isBanned());
     }
 
     @AfterEach
