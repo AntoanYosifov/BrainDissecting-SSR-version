@@ -1,17 +1,11 @@
 package com.antdevrealm.braindissectingssrversion.web;
 
-import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
-import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
-import com.antdevrealm.braindissectingssrversion.model.entity.UserEntity;
-import com.antdevrealm.braindissectingssrversion.model.entity.UserRoleEntity;
+import com.antdevrealm.braindissectingssrversion.model.entity.*;
 import com.antdevrealm.braindissectingssrversion.model.enums.Status;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserRole;
 import com.antdevrealm.braindissectingssrversion.model.enums.UserStatus;
 import com.antdevrealm.braindissectingssrversion.model.security.BrDissectingUserDetails;
-import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
-import com.antdevrealm.braindissectingssrversion.repository.CategoryRepository;
-import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
-import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
+import com.antdevrealm.braindissectingssrversion.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +47,9 @@ public class AdminControllerIT {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ThemeSuggestionRepository themeSuggestionRepository;
+
     private UserEntity loggedUserAdminEntity;
     private UserEntity loggedUserNonAdminEntity;
 
@@ -60,6 +58,7 @@ public class AdminControllerIT {
 
     @BeforeEach
     void setUp() {
+        themeSuggestionRepository.deleteAll();
         categoryRepository.deleteAll();
         articleRepository.deleteAll();
         userRepository.deleteAll();
@@ -423,16 +422,12 @@ public class AdminControllerIT {
                 .setContent("testContent")
                 .setStatus(Status.APPROVED));
 
-        UserEntity userEntity = new UserEntity()
-                .setUsername("testUsername")
-                .setEmail("example@example.com")
-                .setPassword("password")
-                .setStatus(UserStatus.ACTIVE);
+
 
         long savedArticleId = savedArticle.getId();
 
         savedArticle.setCategories(new ArrayList<>(List.of(categoryOfThemeToRemove)));
-        userEntity.setFavourites(new ArrayList<>(List.of(savedArticle)));
+
 
         Assertions.assertTrue(categoryRepository.existsByName(themeToRemove));
 
@@ -443,7 +438,6 @@ public class AdminControllerIT {
         ArticleEntity articleUnderThemeToRemove = articleById.get();
 
         Assertions.assertTrue(articleUnderThemeToRemove.getCategories().contains(categoryOfThemeToRemove));
-        Assertions.assertTrue(userEntity.getFavourites().contains(articleUnderThemeToRemove));
 
         mockMvc.perform(delete("/admin/remove-theme")
                         .param("theme", themeToRemove)
@@ -466,8 +460,34 @@ public class AdminControllerIT {
                 .andExpect(redirectedUrl("/admin/manage-themes?error=Remove theme operation failed!"));
     }
 
+    @Test
+    void approveSuggestedTheme_ShouldRedirectWithSuccess_WhenThemeSuggestionIsApproved() throws Exception {
+        String testSuggestionName = "testSuggestionName";
+
+        UserEntity suggestedBy = userRepository.save(new UserEntity()
+                .setUsername("testUsername")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE));
+
+        long testSuggestionId = themeSuggestionRepository.save(new ThemeSuggestionEntity()
+                .setName(testSuggestionName)
+                .setSuggestedBy(suggestedBy)).getId();
+
+        mockMvc.perform(post("/admin/approve-theme")
+                        .param("themeId", String.valueOf(testSuggestionId))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?success=Theme approved!"));
+
+        Assertions.assertFalse(themeSuggestionRepository.existsByName(testSuggestionName));
+        Assertions.assertTrue(categoryRepository.existsByName(testSuggestionName));
+
+    }
+
     @AfterEach
     void cleanUp() {
+        themeSuggestionRepository.deleteAll();
         categoryRepository.deleteAll();
         articleRepository.deleteAll();
         userRepository.deleteAll();

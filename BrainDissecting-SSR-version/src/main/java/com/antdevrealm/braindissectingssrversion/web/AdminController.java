@@ -141,14 +141,22 @@ public class AdminController {
 
     @PostMapping("/approve-theme")
     public String approveSuggestedTheme(@RequestParam Long themeId) {
-        themeSuggestionService.approveTheme(themeId);
-        return "redirect:/admin/manage-themes";
+        boolean isApproved = themeSuggestionService.approveTheme(themeId);
+
+        if(!isApproved) {
+            return "redirect:/admin/manage-themes?error=Approve theme operation failed!";
+        }
+        return "redirect:/admin/manage-themes?success=Theme approved!";
     }
 
     @DeleteMapping("/reject-theme")
     public String rejectSuggestedTheme(@RequestParam Long themeId) {
-        themeSuggestionService.rejectTheme(themeId);
-        return "redirect:/admin/manage-themes";
+        boolean isRejected = themeSuggestionService.rejectTheme(themeId);
+
+        if(!isRejected) {
+            return "redirect:/admin/manage-themes?error=Reject theme operation failed!";
+        }
+        return "redirect:/admin/manage-themes?success=Theme rejected!";
     }
 
     @PostMapping("/update-articles")
