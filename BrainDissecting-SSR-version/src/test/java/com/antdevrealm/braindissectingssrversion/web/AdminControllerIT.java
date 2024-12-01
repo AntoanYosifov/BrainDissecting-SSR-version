@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -520,6 +519,31 @@ public class AdminControllerIT {
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(redirectedUrl("/admin/manage-themes?error=Approve theme operation failed!"));
+    }
+
+    @Test
+    void rejectSuggestedTheme_ShouldRedirectWithSuccess_WhenThemeSuggestionIsRejected() throws Exception {
+        String suggestionToRejectName = "testRejectedSuggestionName";
+
+        UserEntity suggestedBy = userRepository.save(new UserEntity()
+                .setUsername("testUsername")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE));
+
+        long themeSuggestionId = themeSuggestionRepository.save(new ThemeSuggestionEntity()
+                .setName(suggestionToRejectName.toLowerCase())
+                .setSuggestedBy(suggestedBy)).getId();
+
+        Assertions.assertTrue(themeSuggestionRepository.existsById(themeSuggestionId));
+
+        mockMvc.perform(delete("/admin/reject-theme")
+                        .param("themeId", String.valueOf(themeSuggestionId))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?success=Theme rejected!"));
+
+        Assertions.assertFalse(themeSuggestionRepository.existsById(themeSuggestionId));
     }
 
     @AfterEach
