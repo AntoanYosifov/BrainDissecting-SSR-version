@@ -546,6 +546,18 @@ public class AdminControllerIT {
         Assertions.assertFalse(themeSuggestionRepository.existsById(themeSuggestionId));
     }
 
+    @Test
+    void rejectSuggestedTheme_ShouldRedirectWithFailure_WhenThemeSuggestionIsNotFound() throws Exception {
+        long nonExistentSuggestionId = 99999L;
+
+        mockMvc.perform(delete("/admin/reject-theme")
+                        .param("themeId", String.valueOf(nonExistentSuggestionId))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?error=Reject theme operation failed!"));
+
+    }
+
     @AfterEach
     void cleanUp() {
         themeSuggestionRepository.deleteAll();

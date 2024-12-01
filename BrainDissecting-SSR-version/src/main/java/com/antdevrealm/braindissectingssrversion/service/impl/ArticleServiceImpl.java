@@ -17,15 +17,12 @@ import org.jsoup.Jsoup;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -96,15 +93,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Modifying
     @Transactional
-//    @Scheduled(cron = "0 0 0 * * ?") runs once a day at midnight
-//    @Scheduled(cron = "*/30 * * * * ?")
     public boolean updateArticles() {
-        logger.info("Scheduled task started at: {}", LocalTime.now());
-
         List<String> themes = getThemes();
 
         if (themes.isEmpty()) {
-            logger.warn("No themes available to fetch articles.");
             return false;
         }
 
@@ -113,8 +105,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(currentTheme);
 
-        for (FetchArticleDTO dto : fetchArticleDTOS) {
+        if(fetchArticleDTOS.isEmpty()) {
+            return false;
+        }
 
+        for (FetchArticleDTO dto : fetchArticleDTOS) {
             Optional<ArticleEntity> byTitle = articleRepository.findByTitle(dto.getTitle());
 
             if (byTitle.isPresent()) {
@@ -133,10 +128,6 @@ public class ArticleServiceImpl implements ArticleService {
 
             articleCategories.add(optCategory.get());
             articleRepository.saveAndFlush(articleEntity);
-
-            logger.info("Program in continue mode: {}", LocalTime.now());
-
-            logger.info("Scheduled task ended at: {}", LocalTime.now());
         }
 
         return true;
