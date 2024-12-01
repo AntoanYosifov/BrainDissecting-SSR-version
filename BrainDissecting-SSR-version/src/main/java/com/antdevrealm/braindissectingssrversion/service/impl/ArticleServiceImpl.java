@@ -142,9 +142,18 @@ public class ArticleServiceImpl implements ArticleService {
 
             for (int i = 0; i < titles.size(); i++) {
                 FetchArticleDTO fetchArticleDTO = new FetchArticleDTO();
+                String rawAbstract = Jsoup.parse(abstractTexts.get(i)).text();
+
+                String cleanAbstract = rawAbstract.startsWith("Abstract Background")
+                        ? rawAbstract.substring("Abstract Background".length()).trim()
+                        : rawAbstract.startsWith("Abstract")
+                        ? rawAbstract.substring("Abstract".length()).trim()
+                        : rawAbstract.startsWith("Background")
+                        ? rawAbstract.substring("Background".length()).trim()
+                        : rawAbstract;
 
                 fetchArticleDTO.setTitle(Jsoup.parse(titles.get(i)).text())
-                        .setContent(Jsoup.parse(abstractTexts.get(i)).text())
+                        .setContent(cleanAbstract)
                         .setLink(links.size() > i ? Jsoup.parse(links.get(i)).text() : "")
                         .setJournalTitle(journalTitles.size() > i ? Jsoup.parse(journalTitles.get(i)).text() : "");
 

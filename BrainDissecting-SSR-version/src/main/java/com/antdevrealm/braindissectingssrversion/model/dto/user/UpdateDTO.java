@@ -1,7 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.model.dto.user;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -14,8 +13,6 @@ public class UpdateDTO {
     @Size(min = 5, max = 20, message = "{userEntity.username.length}")
     private String confirmUsername;
 
-//    @NotNull(message = "{userEntity.registration.notBlank.email}")
-//    @NotBlank(message = "{userEntity.registration.notBlank.email}")
     @Email(message = "{userEntity.registration.email}")
     private String newEmail;
 
