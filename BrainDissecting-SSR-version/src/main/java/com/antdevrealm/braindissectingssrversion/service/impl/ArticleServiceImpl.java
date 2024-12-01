@@ -81,19 +81,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     @Modifying
-    public boolean deleteArticle(Long articleId) {
+    public void deleteArticle(Long articleId) {
         if (articleRepository.existsById(articleId)) {
-
             Optional<ArticleEntity> byId = articleRepository.findById(articleId);
 
             if (byId.isPresent() && byId.get().isFavourite()) {
                 articleRepository.removeAllFromUsersFavourites(articleId);
             }
             articleRepository.deleteById(articleId);
-
-            return true;
         }
-        return false;
+
     }
 
     @Override
@@ -204,8 +201,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<ArticleEntity> allByCategoriesContaining = articleRepository.findAllByCategoriesContainingAndFavouriteIsTrue(categoryEntity);
 
-        for (ArticleEntity articleEntity : allByCategoriesContaining) {
-            articleRepository.removeAllFromUsersFavourites(articleEntity.getId());
+        if (!allByCategoriesContaining.isEmpty()) {
+            for (ArticleEntity articleEntity : allByCategoriesContaining) {
+                articleRepository.removeAllFromUsersFavourites(articleEntity.getId());
+            }
         }
 
         articleRepository.deleteAllByCategoriesContaining(categoryEntity);

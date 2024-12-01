@@ -17,10 +17,9 @@ public interface ArticleService {
 
     List<FetchArticleDTO> fetchArticles(String theme);
 
-    boolean deleteArticle(Long articleId);
+    void deleteArticle(Long articleId);
 
     boolean updateArticles();
-
 
     List<String> getThemes();
 

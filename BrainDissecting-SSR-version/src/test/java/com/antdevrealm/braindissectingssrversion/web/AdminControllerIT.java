@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class AdminControllerIT {
 
     @Autowired
@@ -409,6 +411,48 @@ public class AdminControllerIT {
                         .with(csrf())
                         .with(authentication(authenticationAdminToken)))
                 .andExpect(redirectedUrl("/admin/manage-themes?error=Adding theme operation failed!"));
+    }
+
+    @Test
+    void removeTheme_ShouldRedirectWithSuccess_WhenThemeIsRemoved() throws Exception {
+        String themeToRemove = "ThemeToRemove";
+        CategoryEntity categoryOfThemeToRemove = categoryRepository.save(new CategoryEntity(themeToRemove));
+
+        ArticleEntity savedArticle = articleRepository.save(new ArticleEntity()
+                .setTitle("testTitle")
+                .setContent("testContent")
+                .setStatus(Status.APPROVED));
+
+        UserEntity userEntity = new UserEntity()
+                .setUsername("testUsername")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE);
+
+        long savedArticleId = savedArticle.getId();
+
+        savedArticle.setCategories(new ArrayList<>(List.of(categoryOfThemeToRemove)));
+        userEntity.setFavourites(new ArrayList<>(List.of(savedArticle)));
+
+        Assertions.assertTrue(categoryRepository.existsByName(themeToRemove));
+
+        Optional<ArticleEntity> articleById = articleRepository.findById(savedArticleId);
+
+        Assertions.assertTrue(articleById.isPresent());
+
+        ArticleEntity articleUnderThemeToRemove = articleById.get();
+
+        Assertions.assertTrue(articleUnderThemeToRemove.getCategories().contains(categoryOfThemeToRemove));
+        Assertions.assertTrue(userEntity.getFavourites().contains(articleUnderThemeToRemove));
+
+        mockMvc.perform(delete("/admin/remove-theme")
+                        .param("theme", themeToRemove)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?success=Theme removed!"));
+
+        Assertions.assertFalse(categoryRepository.existsByName(themeToRemove));
+        Assertions.assertFalse(articleRepository.existsById(savedArticleId));
     }
 
     @AfterEach

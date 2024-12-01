@@ -142,7 +142,6 @@ public class AdminController {
     @PostMapping("/approve-theme")
     public String approveSuggestedTheme(@RequestParam Long themeId) {
         themeSuggestionService.approveTheme(themeId);
-
         return "redirect:/admin/manage-themes";
     }
 
