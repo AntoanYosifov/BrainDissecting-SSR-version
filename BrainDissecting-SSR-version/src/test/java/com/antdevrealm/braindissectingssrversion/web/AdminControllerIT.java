@@ -482,7 +482,17 @@ public class AdminControllerIT {
 
         Assertions.assertFalse(themeSuggestionRepository.existsByName(testSuggestionName));
         Assertions.assertTrue(categoryRepository.existsByName(testSuggestionName));
+    }
 
+    @Test
+    void approveSuggestedTheme_ShouldRedirectWithFailure_WhenThemeSuggestionIsNotFound() throws Exception {
+        long fakeThemeSuggestionId = 99999L;
+
+        mockMvc.perform(post("/admin/approve-theme")
+                        .param("themeId", String.valueOf(fakeThemeSuggestionId))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?error=Approve theme operation failed!"));
     }
 
     @AfterEach
