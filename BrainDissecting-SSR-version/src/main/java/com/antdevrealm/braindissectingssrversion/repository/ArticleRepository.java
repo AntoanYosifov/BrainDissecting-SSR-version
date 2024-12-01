@@ -34,4 +34,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     int countByStatus(Status status);
 
     List<ArticleEntity> findAllByCategoriesContainingAndFavouriteIsTrue(CategoryEntity category);
+
+    boolean existsByTitle(String title);
 }

@@ -153,11 +153,13 @@ public class ArticleServiceImplTest {
 
         ArticleEntity article1 = new ArticleEntity();
         article1.setId(1L);
-        article1.setTitle("Article 1");
+        article1.setTitle("Article 1")
+                .setStatus(Status.APPROVED);
 
         ArticleEntity article2 = new ArticleEntity();
         article2.setId(2L);
-        article2.setTitle("Article 2");
+        article2.setTitle("Article 2")
+                .setStatus(Status.APPROVED);
 
         categoryEntity.setArticles(List.of(article1, article2));
 

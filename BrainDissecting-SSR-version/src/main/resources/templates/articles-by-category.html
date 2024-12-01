@@ -42,6 +42,7 @@
 
                 >
                     Comments
+                    <small th:text="${article.comments.size()}"></small>
                 </button>
 
                 <div th:id="'collapse-comments-' + ${article.id}"

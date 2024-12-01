@@ -46,8 +46,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final Random random = new Random();
 
-    private int currentThemeIndex;
-
     public ArticleServiceImpl(RestClient restClient,
                               ArticleRepository articleRepository, CategoryService categoryService,
                               ModelMapper modelMapper, UserRepository userRepository) {
@@ -93,38 +91,27 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Modifying
     @Transactional
-    public boolean updateArticles() {
-        List<String> themes = getThemes();
-
-        if (themes.isEmpty()) {
-            return false;
-        }
-
-        String currentTheme = themes.get(currentThemeIndex);
-        currentThemeIndex = (currentThemeIndex + 1) % themes.size();
-
-        List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(currentTheme);
+    public boolean updateArticles(String theme) {
+        List<FetchArticleDTO> fetchArticleDTOS = fetchArticles(theme);
 
         if(fetchArticleDTOS.isEmpty()) {
             return false;
         }
 
         for (FetchArticleDTO dto : fetchArticleDTOS) {
-            Optional<ArticleEntity> byTitle = articleRepository.findByTitle(dto.getTitle());
-
-            if (byTitle.isPresent()) {
+            if (articleRepository.existsByTitle(dto.getTitle())) {
                 continue;
+            }
+
+            Optional<CategoryEntity> optCategory = categoryService.getByName(theme);
+
+            if (optCategory.isEmpty()) {
+                return false;
             }
 
             ArticleEntity articleEntity = mapToArticleEntity(dto);
 
             List<CategoryEntity> articleCategories = articleEntity.getCategories();
-
-            Optional<CategoryEntity> optCategory = categoryService.getByName(currentTheme);
-
-            if (optCategory.isEmpty()) {
-                return false;
-            }
 
             articleCategories.add(optCategory.get());
             articleRepository.saveAndFlush(articleEntity);
@@ -214,7 +201,8 @@ public class ArticleServiceImpl implements ArticleService {
 
         CategoryEntity categoryEntity = categoryByName.get();
 
-        List<ArticleEntity> articlesByCategory = categoryEntity.getArticles();
+        List<ArticleEntity> articlesByCategory = categoryEntity.getArticles()
+                .stream().filter(articleEntity -> articleEntity.getStatus().equals(Status.APPROVED)).toList();
 
         if (articlesByCategory.isEmpty()) {
             return new ArrayList<>();

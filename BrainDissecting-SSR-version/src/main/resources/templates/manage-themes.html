@@ -26,21 +26,20 @@
 
     <h4 class="mt-5 text-white">Current Themes</h4>
     <ul class="list-group m-3">
-        <li class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+        <li class="list-group-item d-flex justify-content-center align-items-center bg-dark text-white"
             th:each="theme : ${themes}">
             <span th:text="${#strings.capitalize(theme)}"></span>
+            <form  th:action="@{/admin/update-articles}" method="post" class="m-2">
+                <input type="hidden" name="theme" th:value="${theme}">
+                <button type="submit" class="btn btn-outline-success">Update articles with current theme</button>
+            </form>
             <form th:action="@{/admin/remove-theme}" th:method="delete"
-                  onsubmit="return confirm('Are you sure you want to delete this theme? If you proceed, all articles in this theme will also be removed!');" class="d-inline">
+                  onsubmit="return confirm('Are you sure you want to delete this theme? If you proceed, all articles in this theme will also be removed!');" class="d-inline m-2">
                 <input type="hidden" name="theme" th:value="${theme}">
                 <button type="submit" class="btn btn-outline-danger">Remove</button>
             </form>
         </li>
     </ul>
-    <div>
-        <form th:action="@{/admin/update-articles}" method="post">
-            <button type="submit" class="btn btn-warning">Manually Update Articles</button>
-        </form>
-    </div>
     <h4 class="mt-5 text-white">Suggested Themes (from Moderators)</h4>
     <div th:if="${suggestedThemes.isEmpty()}">
         <p class="alert alert-info text-center">No themes suggested by moderators at the moment.</p>

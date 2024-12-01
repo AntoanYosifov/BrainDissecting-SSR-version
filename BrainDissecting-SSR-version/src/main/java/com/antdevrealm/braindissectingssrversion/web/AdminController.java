@@ -160,11 +160,11 @@ public class AdminController {
     }
 
     @PostMapping("/update-articles")
-    public String manualUpdate() {
-        boolean updated = articleService.updateArticles();
+    public String updateArticlesWithTheme(@RequestParam String theme) {
+        boolean updated = articleService.updateArticles(theme);
 
         if (!updated) {
-            return "redirect:/admin/manage-themes?error=Failed to update Articles! Please try again later!";
+            return "redirect:/admin/manage-themes?error=Failed to update Articles! Pick another theme or try again later!";
         }
 
         return "redirect:/admin/manage-themes?success=Articles updated successfully!";

@@ -19,7 +19,7 @@ public interface ArticleService {
 
     void deleteArticle(Long articleId);
 
-    boolean updateArticles();
+    boolean updateArticles(String theme);
 
     List<String> getThemes();
 
