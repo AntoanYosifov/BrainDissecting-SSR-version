@@ -134,8 +134,8 @@ public class AdminControllerIT {
         long userToPromoteId = userRepository.saveAndFlush(userToPromote).getId();
 
         mockMvc.perform(patch("/admin/promote-moderator/" + userToPromoteId)
-                .with(csrf())
-                .with(authentication(authenticationAdminToken)))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("roleAssignSuccess"))
                 .andExpect(flash().attribute("roleAssignSuccess", "Role assigned successfully!"))
                 .andExpect(redirectedUrl("/admin/manage-roles"));
@@ -281,8 +281,8 @@ public class AdminControllerIT {
 
 
         mockMvc.perform(delete("/admin/delete-article/" + articleToDeleteId)
-                .with(csrf())
-                .with(authentication(authenticationAdminToken)))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
                 .andExpect(redirectedUrl("/admin/delete-article"));
 
         Assertions.assertFalse(articleRepository.existsById(articleToDeleteId));
@@ -297,8 +297,8 @@ public class AdminControllerIT {
                 .setStatus(UserStatus.ACTIVE)).getId();
 
         mockMvc.perform(patch("/admin/ban-user/" + userToBanId)
-                .with(csrf())
-                .with(authentication(authenticationAdminToken)))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
                 .andExpect(flash().attributeExists("BanSuccess"))
                 .andExpect(flash().attribute("BanSuccess", "BAN operation successful!"))
                 .andExpect(redirectedUrl("/admin/manage-roles"));
@@ -453,6 +453,17 @@ public class AdminControllerIT {
 
         Assertions.assertFalse(categoryRepository.existsByName(themeToRemove));
         Assertions.assertFalse(articleRepository.existsById(savedArticleId));
+    }
+
+    @Test
+    void removeTheme_ShouldRedirectWithFailure_WhenThemeIsNotFound() throws Exception {
+        String nonExistentTheme = "nonExistentTheme";
+
+        mockMvc.perform(delete("/admin/remove-theme")
+                        .param("theme", nonExistentTheme)
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?error=Remove theme operation failed!"));
     }
 
     @AfterEach
