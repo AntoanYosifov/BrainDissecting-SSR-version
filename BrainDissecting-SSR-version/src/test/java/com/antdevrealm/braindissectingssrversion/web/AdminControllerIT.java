@@ -495,6 +495,33 @@ public class AdminControllerIT {
                 .andExpect(redirectedUrl("/admin/manage-themes?error=Approve theme operation failed!"));
     }
 
+    @Test
+    void approveSuggestedTheme_ShouldRedirectWithFailure_WhenCategoryOfTheSuggestedThemeAlreadyExist() throws Exception {
+        String categoryExistingName = "categoryExistingName";
+
+        UserEntity suggestedBy = userRepository.save(new UserEntity()
+                .setUsername("testUsername")
+                .setEmail("example@example.com")
+                .setPassword("password")
+                .setStatus(UserStatus.ACTIVE));
+
+        long themeSuggestionId = themeSuggestionRepository.save(new ThemeSuggestionEntity()
+                .setName(categoryExistingName.toLowerCase())
+                .setSuggestedBy(suggestedBy)).getId();
+
+        Assertions.assertTrue(themeSuggestionRepository.existsByName(categoryExistingName.toLowerCase()));
+
+        categoryRepository.save(new CategoryEntity().setName(categoryExistingName.toLowerCase()));
+
+        Assertions.assertTrue(categoryRepository.existsByName(categoryExistingName.toLowerCase()));
+
+        mockMvc.perform(post("/admin/approve-theme")
+                        .param("themeId", String.valueOf(themeSuggestionId))
+                        .with(csrf())
+                        .with(authentication(authenticationAdminToken)))
+                .andExpect(redirectedUrl("/admin/manage-themes?error=Approve theme operation failed!"));
+    }
+
     @AfterEach
     void cleanUp() {
         themeSuggestionRepository.deleteAll();

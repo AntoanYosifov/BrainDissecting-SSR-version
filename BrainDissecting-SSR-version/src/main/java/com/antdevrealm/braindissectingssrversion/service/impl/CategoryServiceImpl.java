@@ -25,7 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
             return false;
         }
 
-        CategoryEntity categoryEntity = new CategoryEntity(name);
+        CategoryEntity categoryEntity = new CategoryEntity(name.toLowerCase());
 
         categoryEntity.setName(name);
         categoryRepository.save(categoryEntity);
