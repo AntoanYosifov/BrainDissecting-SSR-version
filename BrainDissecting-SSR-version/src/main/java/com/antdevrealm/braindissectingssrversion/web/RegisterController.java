@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/users")
 public class RegisterController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
     public RegisterController(UserService userService) {
@@ -53,8 +52,6 @@ public class RegisterController {
         try {
             userService.register(registrationDTO);
         } catch (UsernameOrEmailException | PasswordConfirmPassMisMatchException e) {
-            log.error(e.getMessage());
-
             redirectAttributes.addFlashAttribute("usernameOrEmailTakenPasswordMismatch", e.getMessage());
 
             redirectAttributes.addFlashAttribute("registerData", registrationDTO);
