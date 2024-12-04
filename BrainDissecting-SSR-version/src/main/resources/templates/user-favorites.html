@@ -11,7 +11,10 @@
 
 <div class="container">
     <h2 class="text-center text-white m-3">Favourites</h2>
-    <div th:each=" article : ${favourites}" class='d-flex justify-content-around'>
+    <div th:if="${favourites.isEmpty()}" class='d-flex justify-content-around'>
+        <h4 class="text-white bg-dark">You haven't added any articles to your favorites yet. Start -> <a href="/articles/all">exploring</a> and save the ones you love!</h4>
+    </div>
+    <div th:if="${!favourites.isEmpty()}" th:each=" article : ${favourites}" class='d-flex justify-content-around'>
         <div   class="article-section d-flex flex-column">
             <div class="d-flex flex-row div-article">
                 <article class="article" >
