@@ -31,7 +31,7 @@
             <div th:if="${favourites.isEmpty()}">
                 <p class="text-warning">You haven't added any articles to your favorites yet. Start exploring and save the ones you love!</p>
             </div>
-            <ul class="list-group list-group-flush"  th:if="${!favourites.isEmpty()}">
+            <ul class="list-group list-group-flush">
                 <li class="list-group-item bg-transparent text-light" th:each="article : ${favourites}">
                     <a th:href="@{users/favourites}" class="text-white" th:text="${article.title}"></a>
                 </li>
