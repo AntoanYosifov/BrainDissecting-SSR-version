@@ -2,18 +2,11 @@
 <html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome Back to Brain Dissecting</title>
-    <link rel="stylesheet" href="/css/reset-css.css"/>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <script src="/js/jquery-3.5.1.slim.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <title>Welcome back to Brain Dissecting</title>
+    <th:block th:replace="~{/fragments/commons::head}"></th:block>
 </head>
-
 <body>
 <th:block th:replace="~{fragments/commons::nav}"></th:block>
-
 <div class="container-fluid bg-text mt-md-5 border-0">
     <h5 class="text-center text-white mt-5">
         Welcome ,  <th:block th:text="${welcomeMessage}"></th:block>!

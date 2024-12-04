@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/fragments/commons::head}"></head>
+<head>
+    <title>Manage Themes - Brain Dissecting</title>
+    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+</head>
 <body>
-
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Manage Themes'})}"></th:block>
-
 <div class="container mt-5">
     <h2 class="text-center text-light">Manage Themes</h2>
 

@@ -3,7 +3,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 
-<head th:replace="~{/fragments/commons::head}"></head>
+<head>
+    <title>All Articles - Brain Dissecting</title>
+    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+</head>
 
 <body>
 
@@ -21,7 +24,7 @@
 
 <div class="container">
     <h2 class="text-center text-white m-3">All Articles</h2>
-    <h3 class="text-center text-white bg-dark p-2" th:if="${allArticles.isEmpty()}">Currently, there are no articles to explore!</h3>
+    <p class="alert alert-info text-center" th:if="${allArticles.isEmpty()}">Currently, there are no articles to explore! We are working on it... Check back soon!</p>
     <div th:each=" article : ${allArticles}" class='d-flex justify-content-around'>
         <div   class="article-section d-flex flex-column">
             <div class="d-flex flex-row div-article">

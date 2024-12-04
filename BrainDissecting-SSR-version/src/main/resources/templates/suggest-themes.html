@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/fragments/commons::head}"></head>
+<head>
+    <title>Suggest Themes - Brain Dissecting</title>
+    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+</head>
+
 <body>
 
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Suggest Theme'})}"></th:block>

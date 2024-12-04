@@ -3,16 +3,16 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 
-<head th:replace="~{/fragments/commons::head}"></head>
-
+<head>
+    <title>Favourites - Brain Dissecting</title>
+    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+</head>
 <body>
-
 <th:block th:replace="~{/fragments/commons::navbar(activeLink=${'My Favourites'})}"></th:block>
-
 <div class="container">
     <h2 class="text-center text-white m-3">Favourites</h2>
     <div th:if="${favourites.isEmpty()}" class='d-flex justify-content-around'>
-        <h4 class="text-white bg-dark">You haven't added any articles to your favorites yet. Start -> <a href="/articles/all">exploring</a> and save the ones you love!</h4>
+        <p class="alert alert-info text-center">You haven't added any articles to your favorites yet. Start -> <a href="/articles/all">exploring</a> and save the ones you love!</p>
     </div>
     <div th:each=" article : ${favourites}" class='d-flex justify-content-around'>
         <div   class="article-section d-flex flex-column">
@@ -92,7 +92,6 @@
         <footer> </footer>
     </div>
 </div>
-
 <script src="/js/comments.js"></script>
 </body>
 </html>
