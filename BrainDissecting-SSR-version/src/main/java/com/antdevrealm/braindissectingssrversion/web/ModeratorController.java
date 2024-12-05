@@ -40,15 +40,36 @@ public class ModeratorController {
         return "redirect:/moderator/pending-for-approval?success=Article approved";
     }
 
+    @PatchMapping("/approve/all")
+    public String approveAllArticles() {
+        boolean isApproved = moderatorService.approveAllArticles();
+        if (!isApproved) {
+            return "redirect:/moderator/pending-for-approval?error=Could not approve all articles!";
+        }
+
+        return "redirect:/moderator/pending-for-approval?success=All articles approved!";
+    }
+
     @DeleteMapping("/reject/{articleId}")
     public String rejectArticle(@PathVariable Long articleId) {
         boolean isRejected = moderatorService.rejectArticle(articleId);
 
         if (!isRejected) {
-            return "redirect:/moderator/pending-for-approval?error=Could not reject the article";
+            return "redirect:/moderator/pending-for-approval?error=Could not reject the article!";
         }
 
-        return "redirect:/moderator/pending-for-approval?success=Article rejected";
+        return "redirect:/moderator/pending-for-approval?success=Article rejected!";
+    }
+
+    @DeleteMapping("/reject/all")
+    public String rejectArticleAll() {
+        boolean isRejected = moderatorService.rejectAllArticles();
+
+        if (!isRejected) {
+            return "redirect:/moderator/pending-for-approval?error=Could not reject all articles!";
+        }
+
+        return "redirect:/moderator/pending-for-approval?success=All articles rejected!";
     }
 
     @GetMapping("/suggest-themes")

@@ -6,6 +6,7 @@ import com.antdevrealm.braindissectingssrversion.repository.ArticleRepository;
 import com.antdevrealm.braindissectingssrversion.service.ModeratorService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +38,26 @@ public class ModeratorServiceImpl implements ModeratorService {
     }
 
     @Override
+    public boolean approveAllArticles() {
+        if(articleRepository.count() < 1L) {
+            return false;
+        }
+
+        List<ArticleEntity> pendingArticles = articleRepository.findPendingArticles();
+
+        if(pendingArticles.isEmpty()) {
+            return false;
+        }
+
+        pendingArticles.forEach(articleEntity -> {
+            articleEntity.setStatus(Status.APPROVED);
+            articleRepository.save(articleEntity);
+        });
+
+        return true;
+    }
+
+    @Override
     public boolean rejectArticle(Long articleId) {
 
         Optional<ArticleEntity> byId = articleRepository.findById(articleId);
@@ -56,4 +77,20 @@ public class ModeratorServiceImpl implements ModeratorService {
         return true;
     }
 
+    @Override
+    public boolean rejectAllArticles() {
+        if(articleRepository.count() < 1L) {
+            return false;
+        }
+
+        List<ArticleEntity> pendingArticles = articleRepository.findPendingArticles();
+
+        if(pendingArticles.isEmpty()) {
+            return false;
+        }
+
+        articleRepository.deleteAll(pendingArticles);
+
+        return true;
+    }
 }
