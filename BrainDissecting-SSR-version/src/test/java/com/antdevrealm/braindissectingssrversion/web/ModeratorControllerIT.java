@@ -11,6 +11,7 @@ import com.antdevrealm.braindissectingssrversion.repository.CategoryRepository;
 import com.antdevrealm.braindissectingssrversion.repository.ThemeSuggestionRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,6 +171,34 @@ public class ModeratorControllerIT {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve the article"));
+    }
+
+    @Test
+    void approveAllArticles_ShouldRedirectToSuccess_WhenAllArticlesAreApproved() throws Exception {
+        long article1ID = articleRepository.saveAndFlush(new ArticleEntity()
+                .setTitle("testTitle1")
+                .setContent("testContent1")
+                .setStatus(Status.PENDING)).getId();
+
+        long article2ID = articleRepository.saveAndFlush(new ArticleEntity()
+                .setTitle("testTitle2")
+                .setContent("testContent2")
+                .setStatus(Status.PENDING)).getId();
+
+        mockMvc.perform(patch("/moderator/approve/all")
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?success=All articles approved!"));
+
+        Optional<ArticleEntity> approvedArticle1 = articleRepository.findById(article1ID);
+        Optional<ArticleEntity> approvedArticle2 = articleRepository.findById(article2ID);
+
+        Assertions.assertTrue(approvedArticle1.isPresent());
+        Assertions.assertTrue(approvedArticle2.isPresent());
+
+        Assertions.assertEquals(Status.APPROVED , approvedArticle1.get().getStatus());
+        Assertions.assertEquals(Status.APPROVED , approvedArticle2.get().getStatus());
     }
 
     @Test

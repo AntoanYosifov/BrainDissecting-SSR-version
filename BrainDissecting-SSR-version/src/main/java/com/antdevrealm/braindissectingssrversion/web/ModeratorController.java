@@ -62,7 +62,7 @@ public class ModeratorController {
     }
 
     @DeleteMapping("/reject/all")
-    public String rejectArticleAll() {
+    public String rejectAllArticles() {
         boolean isRejected = moderatorService.rejectAllArticles();
 
         if (!isRejected) {
