@@ -289,6 +289,14 @@ public class ModeratorControllerIT {
                 .andExpect(redirectedUrl("/moderator/pending-for-approval?success=All articles rejected!"));
     }
 
+    @Test
+    void rejectAllArticles_ShouldRedirectToError_WhenArticleRepositoryIsEmpty() throws Exception {
+        mockMvc.perform(delete("/moderator/reject/all")
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject all articles!"));
+    }
 
     @Test
     void viewSuggestThemes_ShouldReturnSuggestThemesViewWithModel_WhenUserIsModerator() throws Exception {
