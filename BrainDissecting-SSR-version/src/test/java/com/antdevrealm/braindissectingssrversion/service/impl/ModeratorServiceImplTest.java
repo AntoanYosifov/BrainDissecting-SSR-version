@@ -56,7 +56,6 @@ public class ModeratorServiceImplTest {
     }
 
 
-
     @Test
     void approveArticle_ShouldReturnFalseWhenArticleDoesNotExist() {
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
@@ -80,7 +79,7 @@ public class ModeratorServiceImplTest {
     }
 
     @Test
-    void approveAllArticles_ShouldReturnTrueWhenPendingArticlesExists() {
+    void approveAllArticles_ShouldReturnTrueWhenAllPendingArticlesApproved() {
         ArticleEntity articleEntity1 = new ArticleEntity();
         articleEntity1.setId(ARTICLE_ID);
         articleEntity1.setStatus(PENDING);
@@ -164,6 +163,30 @@ public class ModeratorServiceImplTest {
         boolean result = toTest.rejectArticle(ARTICLE_ID);
 
         Assertions.assertFalse(result);
+    }
+
+    @Test
+    void rejectAllArticles_ShouldReturnTrueWhenAllPendingArticlesRejected() {
+        ArticleEntity articleEntity1 = new ArticleEntity();
+        articleEntity1.setId(ARTICLE_ID);
+        articleEntity1.setStatus(PENDING);
+
+        ArticleEntity articleEntity2 = new ArticleEntity();
+        articleEntity1.setId(2L);
+        articleEntity1.setStatus(PENDING);
+
+        List<ArticleEntity> pendingArticles = new ArrayList<>();
+        pendingArticles.add(articleEntity1);
+        pendingArticles.add(articleEntity2);
+
+        when(mockArticleRepository.count()).thenReturn(2L);
+        when(mockArticleRepository.findPendingArticles()).thenReturn(pendingArticles);
+
+        boolean result = toTest.rejectAllArticles();
+
+        verify(mockArticleRepository).deleteAll(pendingArticles);
+
+        Assertions.assertTrue(result);
     }
 
 
