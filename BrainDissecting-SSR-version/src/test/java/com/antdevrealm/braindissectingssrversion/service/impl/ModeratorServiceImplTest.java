@@ -118,6 +118,16 @@ public class ModeratorServiceImplTest {
     }
 
     @Test
+    void approveAllArticles_ShouldReturnFalseWhenThereIsNoPendingArticles() {
+        when(mockArticleRepository.count()).thenReturn(2L);
+        when(mockArticleRepository.findPendingArticles()).thenReturn(new ArrayList<>());
+
+        boolean result = toTest.approveAllArticles();
+
+        Assertions.assertFalse(result);
+    }
+
+    @Test
     void rejectArticle_ShouldReturnTrueWhenArticleExistsAndStatusIsPending() {
         ArticleEntity articleEntity = new ArticleEntity();
         articleEntity.setId(ARTICLE_ID);
