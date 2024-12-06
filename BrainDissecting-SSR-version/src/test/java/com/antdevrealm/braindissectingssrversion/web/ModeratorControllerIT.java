@@ -185,7 +185,7 @@ public class ModeratorControllerIT {
                         .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article rejected"));
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?success=Article rejected!"));
     }
 
     @Test
@@ -194,7 +194,7 @@ public class ModeratorControllerIT {
                         .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article"));
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article!"));
     }
 
     @Test
@@ -210,7 +210,7 @@ public class ModeratorControllerIT {
                         .with(authentication(moderatorAuthenticationToken))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article"));
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not reject the article!"));
     }
 
     @Test

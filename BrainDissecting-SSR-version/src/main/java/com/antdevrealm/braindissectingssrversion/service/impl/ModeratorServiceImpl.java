@@ -59,7 +59,6 @@ public class ModeratorServiceImpl implements ModeratorService {
 
     @Override
     public boolean rejectArticle(Long articleId) {
-
         Optional<ArticleEntity> byId = articleRepository.findById(articleId);
 
         if (byId.isEmpty()) {

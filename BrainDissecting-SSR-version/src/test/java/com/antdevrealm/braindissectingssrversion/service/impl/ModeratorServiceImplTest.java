@@ -11,12 +11,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.antdevrealm.braindissectingssrversion.model.enums.Status.APPROVED;
 import static com.antdevrealm.braindissectingssrversion.model.enums.Status.PENDING;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ModeratorServiceImplTest {
@@ -54,6 +55,8 @@ public class ModeratorServiceImplTest {
         Assertions.assertEquals(APPROVED, savedArticle.getStatus());
     }
 
+
+
     @Test
     void approveArticle_ShouldReturnFalseWhenArticleDoesNotExist() {
         when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
@@ -74,6 +77,35 @@ public class ModeratorServiceImplTest {
         boolean result = toTest.approveArticle(ARTICLE_ID);
 
         Assertions.assertFalse(result);
+    }
+
+    @Test
+    void approveArticleAll_ShouldReturnTrueWhenPendingArticlesExists() {
+        ArticleEntity articleEntity1 = new ArticleEntity();
+        articleEntity1.setId(ARTICLE_ID);
+        articleEntity1.setStatus(PENDING);
+
+        ArticleEntity articleEntity2 = new ArticleEntity();
+        articleEntity1.setId(2L);
+        articleEntity1.setStatus(PENDING);
+
+        List<ArticleEntity> pendingArticles = new ArrayList<>();
+        pendingArticles.add(articleEntity1);
+        pendingArticles.add(articleEntity2);
+
+        when(mockArticleRepository.count()).thenReturn(2L);
+        when(mockArticleRepository.findPendingArticles()).thenReturn(pendingArticles);
+
+        boolean result = toTest.approveAllArticles();
+
+        verify(mockArticleRepository, times(2)).save(articleCaptor.capture());
+
+        List<ArticleEntity> approvedArticles = articleCaptor.getAllValues();
+
+        Assertions.assertTrue(result);
+        Assertions.assertFalse(approvedArticles.isEmpty());
+        Assertions.assertEquals(APPROVED, approvedArticles.getFirst().getStatus());
+        Assertions.assertEquals(APPROVED, approvedArticles.get(1).getStatus());
     }
 
     @Test
