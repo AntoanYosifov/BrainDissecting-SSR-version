@@ -271,6 +271,26 @@ public class ModeratorControllerIT {
     }
 
     @Test
+    void rejectAllArticles_ShouldRedirectToSuccess_WhenAllArticlesAreRejected() throws Exception {
+        articleRepository.saveAndFlush(  new ArticleEntity()
+                .setTitle("testTitle1")
+                .setContent("testContent1")
+                .setStatus(Status.PENDING));
+
+        articleRepository.saveAndFlush(  new ArticleEntity()
+                .setTitle("testTitle2")
+                .setContent("testContent2")
+                .setStatus(Status.PENDING));
+
+        mockMvc.perform(delete("/moderator/reject/all")
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?success=All articles rejected!"));
+    }
+
+
+    @Test
     void viewSuggestThemes_ShouldReturnSuggestThemesViewWithModel_WhenUserIsModerator() throws Exception {
         ThemeSuggestionEntity suggestion1 = new ThemeSuggestionEntity()
                 .setName("Theme 1")
