@@ -189,5 +189,13 @@ public class ModeratorServiceImplTest {
         Assertions.assertTrue(result);
     }
 
+    @Test
+    void rejectAllArticles_ShouldReturnFalseWhenArticleRepositoryIsEmpty() {
+        when(mockArticleRepository.count()).thenReturn(0L);
+
+        boolean result = toTest.rejectAllArticles();
+
+        Assertions.assertFalse(result);
+    }
 
 }
