@@ -80,7 +80,7 @@ public class ModeratorServiceImplTest {
     }
 
     @Test
-    void approveArticleAll_ShouldReturnTrueWhenPendingArticlesExists() {
+    void approveAllArticles_ShouldReturnTrueWhenPendingArticlesExists() {
         ArticleEntity articleEntity1 = new ArticleEntity();
         articleEntity1.setId(ARTICLE_ID);
         articleEntity1.setStatus(PENDING);
@@ -106,6 +106,15 @@ public class ModeratorServiceImplTest {
         Assertions.assertFalse(approvedArticles.isEmpty());
         Assertions.assertEquals(APPROVED, approvedArticles.getFirst().getStatus());
         Assertions.assertEquals(APPROVED, approvedArticles.get(1).getStatus());
+    }
+
+    @Test
+    void approveAllArticles_ShouldReturnFalseWhenArticleRepositoryIsEmpty() {
+        when(mockArticleRepository.count()).thenReturn(0L);
+
+        boolean result = toTest.approveAllArticles();
+
+        Assertions.assertFalse(result);
     }
 
     @Test
