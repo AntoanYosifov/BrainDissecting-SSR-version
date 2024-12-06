@@ -211,6 +211,25 @@ public class ModeratorControllerIT {
     }
 
     @Test
+    void approveAllArticles_ShouldRedirectToError_WhenThereIsNoPendingArticles() throws Exception {
+         articleRepository.saveAndFlush(new ArticleEntity()
+                .setTitle("testTitle1")
+                .setContent("testContent1")
+                .setStatus(Status.APPROVED));
+
+        articleRepository.saveAndFlush(new ArticleEntity()
+                .setTitle("testTitle2")
+                .setContent("testContent2")
+                .setStatus(Status.APPROVED));
+
+        mockMvc.perform(patch("/moderator/approve/all")
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve all articles!"));
+    }
+
+    @Test
     void rejectArticle_ShouldRejectArticleAndRedirectToSuccess_WhenArticleIsPendingAndUserIsModerator() throws Exception {
         ArticleEntity pendingArticle = new ArticleEntity()
                 .setTitle("testTitle")
