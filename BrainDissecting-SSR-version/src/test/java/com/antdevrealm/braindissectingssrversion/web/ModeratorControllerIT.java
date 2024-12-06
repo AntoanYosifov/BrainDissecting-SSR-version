@@ -202,6 +202,15 @@ public class ModeratorControllerIT {
     }
 
     @Test
+    void approveAllArticles_ShouldRedirectToError_WhenArticleRepositoryIsEmpty() throws Exception {
+        mockMvc.perform(patch("/moderator/approve/all")
+                        .with(authentication(moderatorAuthenticationToken))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/moderator/pending-for-approval?error=Could not approve all articles!"));
+    }
+
+    @Test
     void rejectArticle_ShouldRejectArticleAndRedirectToSuccess_WhenArticleIsPendingAndUserIsModerator() throws Exception {
         ArticleEntity pendingArticle = new ArticleEntity()
                 .setTitle("testTitle")
