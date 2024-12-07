@@ -1,5 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.config.ApiConfig;
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.entity.ArticleEntity;
 import com.antdevrealm.braindissectingssrversion.model.entity.CategoryEntity;
@@ -38,13 +39,15 @@ public class ArticleServiceImplTest {
     private ModelMapper modelMapper;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private ApiConfig apiConfig;
 
     private ArticleServiceImpl articleService;
 
     @BeforeEach
     void setUp() {
         articleService = new ArticleServiceImpl(restClient, articleRepository,
-                categoryService, modelMapper, userRepository);
+                categoryService, apiConfig, modelMapper, userRepository);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.antdevrealm.braindissectingssrversion.service.impl;
 
+import com.antdevrealm.braindissectingssrversion.config.ApiConfig;
 import com.antdevrealm.braindissectingssrversion.model.dto.article.DisplayArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.article.FetchArticleDTO;
 import com.antdevrealm.braindissectingssrversion.model.dto.comment.DisplayCommentDTO;
@@ -32,13 +33,13 @@ import java.util.Random;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    private final static Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
-
     private final ArticleRepository articleRepository;
 
     private final CategoryService categoryService;
 
     private final RestClient restClient;
+
+    private final ApiConfig apiConfig;
 
     private final ModelMapper modelMapper;
 
@@ -47,11 +48,12 @@ public class ArticleServiceImpl implements ArticleService {
     private final Random random = new Random();
 
     public ArticleServiceImpl(RestClient restClient,
-                              ArticleRepository articleRepository, CategoryService categoryService,
+                              ArticleRepository articleRepository, CategoryService categoryService, ApiConfig apiConfig,
                               ModelMapper modelMapper, UserRepository userRepository) {
         this.restClient = restClient;
         this.articleRepository = articleRepository;
         this.categoryService = categoryService;
+        this.apiConfig = apiConfig;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
     }
@@ -126,7 +128,7 @@ public class ArticleServiceImpl implements ArticleService {
         int pageNumber = random.nextInt(10) + 1;
         String body = restClient
                 .get()
-                .uri("https://doaj.org/api/v3/search/articles/" + theme + "?page=" + pageNumber + "&pageSize=10")
+                .uri(apiConfig.getUrl() + theme + "?page=" + pageNumber + "&pageSize=10")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);

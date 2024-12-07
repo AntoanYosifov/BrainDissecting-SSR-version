@@ -31,6 +31,9 @@ server:
   error:
     whitelabel:
       enabled: true
+doaj:
+  api:
+    url: "https://doaj.org/api/v3/search/articles/"
 
 
 
