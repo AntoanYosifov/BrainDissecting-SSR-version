@@ -109,11 +109,11 @@ If you prefer not to rely on Hibernate to generate the schema:
 
 Disable Schema Generation: Update application.yaml:  
 
-yaml  
-spring:  
-  jpa:  
-    hibernate:  
-      ddl-auto: none  
-  sql:  
-    init:  
-      mode: always  
+yaml
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
