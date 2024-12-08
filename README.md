@@ -56,7 +56,9 @@ This project serves as a portfolio application, highlighting modern web developm
 - MySQL
 - Gradle
 
-  #### Steps to Run the Application Locally
+---
+
+### Steps to Run the Application Locally
 
 1. **Clone the Repository**
 
@@ -77,17 +79,20 @@ export db_password=yourPassword
 
 4. **Run the Application**
 
-Using Gradle:
+- Using Gradle:
 bash:
 ./gradlew bootRun
 
-Alternatively, open the project in IntelliJ IDEA and run the BrainDissectingSsrVersionApplication class.
+- Alternatively, open the project in IntelliJ IDEA and run the BrainDissectingSsrVersionApplication class.
 
 5. **Access the application**
 
 Open your browser and navigate to: http://localhost:8080
 
-**Testing the Application**
+---
+
+###Testing the Application
+
 The project includes integration and unit tests.
 
 To run the tests, execute:
