@@ -3,7 +3,6 @@ package com.antdevrealm.braindissectingssrversion.model.dto.user;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-// TODO: Change username login to email login
 public class LoginDTO {
 
     @NotNull(message = "{userEntity.username.length}")

@@ -16,7 +16,6 @@ public class RegistrationDTO {
     @Email(message = "{userEntity.registration.email}")
     private String email;
 
-    // TODO: After testing faze change min size to 8;
     @NotNull(message = "{userEntity.notnull.password}")
     @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
     private String password;
