@@ -88,6 +88,7 @@ public class UserServiceImplTest {
                 .setPassword("testPassword")
                 .setConfirmPassword("testPassword");
 
+        when(mockUserRepository.count()).thenReturn(1L);
         when(mockUserRepository.findByUsernameOrEmail(registrationDTO.getUsername(), registrationDTO.getEmail()))
                 .thenReturn(Optional.of(new UserEntity()));
 
@@ -115,6 +116,7 @@ public class UserServiceImplTest {
                 .setPassword("testPassword")
                 .setConfirmPassword("testPassword");
 
+        when(mockUserRepository.count()).thenReturn(1L);
         when(mockUserRepository.findByUsernameOrEmail(registrationDTO.getUsername(), registrationDTO.getEmail()))
                 .thenReturn(Optional.empty());
         when(mockRoleRepository.findByRole(UserRole.USER))
@@ -144,6 +146,7 @@ public class UserServiceImplTest {
         UserRoleEntity userRole = new UserRoleEntity();
         userRole.setRole(UserRole.USER);
 
+        when(mockUserRepository.count()).thenReturn(1L);
         when(mockRoleRepository.findByRole(UserRole.USER)).thenReturn(Optional.of(userRole));
 
         boolean result = toTest.register(registrationDTO);

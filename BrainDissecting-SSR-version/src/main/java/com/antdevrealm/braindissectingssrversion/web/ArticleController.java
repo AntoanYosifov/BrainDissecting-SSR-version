@@ -39,7 +39,6 @@ public class ArticleController {
         model.addAttribute("favouriteArtIds", favouriteArticlesIds);
         model.addAttribute("currentUserId", brDissectingUserDetails.getId());
 
-
         return "articles-all";
     }
 

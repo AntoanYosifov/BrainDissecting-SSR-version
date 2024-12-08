@@ -53,15 +53,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean register(RegistrationDTO data) {
-        if (usernameOrEmailExists(data.getUsername(), data.getEmail())) {
-            throw new UsernameOrEmailException(data.getUsername(), data.getEmail());
-        }
-
         if (!passwordConfirmPasswordMatch(data)) {
             throw new PasswordConfirmPassMisMatchException();
         }
 
         UserEntity userEntity = mapToUser(data);
+
+        if (userRepository.count() == 0) {
+            Optional<UserRoleEntity> roleAmin = roleRepository.findByRole(UserRole.ADMIN);
+            if(roleAmin.isEmpty()) {
+                return false;
+            }
+
+            userEntity.getRoles().add(roleAmin.get());
+        }
+
+        if (usernameOrEmailExists(data.getUsername(), data.getEmail())) {
+            throw new UsernameOrEmailException(data.getUsername(), data.getEmail());
+        }
 
         Optional<UserRoleEntity> roleUser = roleRepository.findByRole(UserRole.USER);
 
