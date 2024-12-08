@@ -107,9 +107,8 @@ View the test results in the build/reports/tests/test directory.
 **Optional:** Use Schema initialization Script  
 If you prefer not to rely on Hibernate to generate the schema:  
 
-Disable Schema Generation: Update application.yaml:  
-
-
+**Disable Schema Generation:**  
+Update application.yaml:  
 
 spring: 
   jpa: 
