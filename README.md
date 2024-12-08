@@ -91,7 +91,7 @@ Open your browser and navigate to: http://localhost:8080
 
 ---
 
-###Testing the Application
+### Testing the Application
 
 The project includes integration and unit tests.
 
