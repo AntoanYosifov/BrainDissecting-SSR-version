@@ -115,7 +115,7 @@ Update application.yaml:
 spring: 
   jpa: 
     hibernate: 
-      ddl-auto: none 
+      ddl-auto: none  
   sql: 
     init: 
       mode: always 
