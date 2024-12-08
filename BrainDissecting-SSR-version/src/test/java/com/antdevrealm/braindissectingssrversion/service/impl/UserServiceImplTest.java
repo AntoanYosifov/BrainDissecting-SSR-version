@@ -165,6 +165,41 @@ public class UserServiceImplTest {
     }
 
     @Test
+    void register_FirstUserRegisteredShouldBecomeAdmin () {
+        RegistrationDTO firstUserDTO = new RegistrationDTO().setUsername(USERNAME)
+                .setEmail("admin@example.com")
+                .setPassword("adminPassword")
+                .setConfirmPassword("adminPassword")
+                .setFirstName("adminFirstname")
+                .setLastName("adminLastname");
+
+        when(mockPasswordEncoder.encode(firstUserDTO.getPassword()))
+                .thenReturn(firstUserDTO.getPassword() + firstUserDTO.getPassword());
+
+        when(mockUserRepository.findByUsernameOrEmail(firstUserDTO.getUsername(), firstUserDTO.getEmail()))
+                .thenReturn(Optional.empty());
+
+        UserRoleEntity userRole = new UserRoleEntity();
+        userRole.setRole(UserRole.USER);
+
+        UserRoleEntity adminRole = new UserRoleEntity();
+        userRole.setRole(UserRole.ADMIN);
+
+        when(mockUserRepository.count()).thenReturn(0L);
+        when(mockRoleRepository.findByRole(UserRole.ADMIN)).thenReturn(Optional.of(adminRole));
+        when(mockRoleRepository.findByRole(UserRole.USER)).thenReturn(Optional.of(userRole));
+
+
+        toTest.register(firstUserDTO);
+
+        Mockito.verify(mockUserRepository).save(userEntityCaptor.capture());
+
+        UserEntity adminEntity = userEntityCaptor.getValue();
+
+        Assertions.assertTrue(adminEntity.getRoles().contains(adminRole));
+    }
+
+    @Test
     void update_UserDoesNotExist_ShouldThrowException() {
         UpdateDTO updateDTO = new UpdateDTO();
         updateDTO.setNewUsername("newUserName");
