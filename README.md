@@ -104,7 +104,9 @@ bash:
 ./gradlew test  
 View the test results in the build/reports/tests/test directory.  
 
-**Optional:** Use Schema initialization Script  
+**Optional:**  
+  
+Use Schema initialization Script  
 If you prefer not to rely on Hibernate to generate the schema:  
 
 **Disable Schema Generation:**  
