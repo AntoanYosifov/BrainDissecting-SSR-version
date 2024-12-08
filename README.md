@@ -70,51 +70,50 @@ This project serves as a portfolio application, highlighting modern web developm
 - Set up the following environment variables for database credentials:
 
 
-db_username: Your MySQL username
-db_password: Your MySQL password
+db_username: Your MySQL username  
+db_password: Your MySQL password  
 
 
-Example:
+Example:  
 
-bash:
-export db_username=yourUsername
-export db_password=yourPassword
+bash:  
+export db_username=yourUsername  
+export db_password=yourPassword  
 
-4. **Run the Application**
+4. **Run the Application**  
 
-- Using Gradle:
-bash:
-./gradlew bootRun
+- Using Gradle:  
+bash:  
+./gradlew bootRun  
 
-- Alternatively, open the project in IntelliJ IDEA and run the BrainDissectingSsrVersionApplication class.
+- Alternatively, open the project in IntelliJ IDEA and run the BrainDissectingSsrVersionApplication class.  
 
-5. **Access the application**
+5. **Access the application**  
 
-Open your browser and navigate to: http://localhost:8080
+Open your browser and navigate to: http://localhost:8080  
 
 ---
 
-### Testing the Application
+### Testing the Application  
 
-The project includes integration and unit tests.
+The project includes integration and unit tests.  
 
-To run the tests, execute:
+To run the tests, execute:  
 
-bash:
-./gradlew test
-View the test results in the build/reports/tests/test directory.
+bash:  
+./gradlew test  
+View the test results in the build/reports/tests/test directory.  
 
-**Optional:** Use Schema initialization Script
-If you prefer not to rely on Hibernate to generate the schema:
+**Optional:** Use Schema initialization Script  
+If you prefer not to rely on Hibernate to generate the schema:  
 
-Disable Schema Generation: Update application.yaml:
+Disable Schema Generation: Update application.yaml:  
 
-yaml
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: none
-  sql:
-    init:
-      mode: always
-      
+yaml  
+spring:  
+  jpa:  
+    hibernate:  
+      ddl-auto: none  
+  sql:  
+    init:  
+      mode: always  
