@@ -69,10 +69,13 @@ This project serves as a portfolio application, highlighting modern web developm
 3. **Configure Environment Variables**
 - Set up the following environment variables for database credentials:
 
+
 db_username: Your MySQL username
 db_password: Your MySQL password
 
+
 Example:
+
 bash:
 export db_username=yourUsername
 export db_password=yourPassword
