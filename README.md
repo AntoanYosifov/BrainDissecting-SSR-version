@@ -28,6 +28,9 @@ This project serves as a portfolio application, highlighting modern web developm
 ![All articles Screenshot](BrainDissecting-SSR-version/screenshots/all-articles.png)  
 
 - **Save Favorites**: Manage a personalized list of favorite articles.
+
+![My favourites Screenshot](BrainDissecting-SSR-version/screenshots/my-favourites.png)  
+
 - **Engage via Comments**: Comment on articles and interact with other users.
 - **Profile Management**: Update username and email directly from the profile page.
 
