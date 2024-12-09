@@ -4,7 +4,9 @@
 
 **Explore, manage, and moderate a diverse collection of scientific articles.**
 
----
+---  
+
+![Indexpage Screenshot](BrainDissecting-SSR-version/screenshots/users-register.png)
 
 ## **Overview**
 
