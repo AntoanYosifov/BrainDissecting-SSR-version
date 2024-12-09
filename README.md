@@ -10,7 +10,9 @@
 
 *Brain Dissecting* is a full-stack web application built with **Spring Boot**, **Thymeleaf**, and **MySQL**, showcasing a seamless integration of **Gradle** and some **JavaScript** for enhanced user experience. It is designed for tech enthusiasts, science lovers, and curious minds, enabling exploration, engagement, and moderation of scientific content.
 
-This project serves as a portfolio application, highlighting modern web development practices, role-based access control, and content management features.
+This project serves as a portfolio application, highlighting modern web development practices, role-based access control, and content management features.  
+
+![Homepage Screenshot](BrainDissecting-SSR-version/screenshots/homepage.png)
 
 ---
 
