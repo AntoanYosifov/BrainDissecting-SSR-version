@@ -1,6 +1,6 @@
 # **Brain Dissecting**
 
-![Indexpage Screenshot](/screenshots/indexpage.png)
+![Indexpage Screenshot](BrainDissecting-SSR-version/screenshots/indexpage.png)
 
 **Explore, manage, and moderate a diverse collection of scientific articles.**
 
