@@ -20,6 +20,9 @@ This project serves as a portfolio application, highlighting modern web developm
 
 ### **For All Users**
 - **Browse Articles**: Discover and explore curated scientific articles by topic or category.
+  
+![All articles Screenshot](BrainDissecting-SSR-version/screenshots/all-articles.png)  
+
 - **Save Favorites**: Manage a personalized list of favorite articles.
 - **Engage via Comments**: Comment on articles and interact with other users.
 - **Profile Management**: Update username and email directly from the profile page.
