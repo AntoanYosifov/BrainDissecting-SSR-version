@@ -47,6 +47,13 @@ This project serves as a portfolio application, highlighting modern web developm
 
 ### **For Moderators**
 - **Suggest Topics**: Propose new topics for future article collections.
+
+![Suggest theme page Screenshot](BrainDissecting-SSR-version/screenshots/suggest-theme.png)  
+
+![Suggesting theme Screenshot](BrainDissecting-SSR-version/screenshots/suggesting-theme.png)  
+
+![Theme suggested Screenshot](BrainDissecting-SSR-version/screenshots/theme-suggested.png)
+  
 - **Moderate Articles**: Approve or reject pending articles submitted for publication.
 
 ### **For Admins**
