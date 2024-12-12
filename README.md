@@ -17,14 +17,16 @@
 ## **Overview**
 
 *Brain Dissecting* is a full-stack web application built with -> **Tech Stack**:
-- Java 21: The core programming language used for backend development.
+- Java 17: The core programming language used for backend development.
 - Spring Boot 3.3.2: For building the web application, including:
 - Spring Boot Starter Web: Provides core features for developing web applications.
 - Spring Boot Starter Data JPA: For database interactions and ORM with Hibernate.
 - Spring Boot Starter Security: For securing the application.
 - Spring Boot Starter Validation: For input validation.
 - Spring Boot DevTools: For rapid development with hot reload.
----  
+---
+- **External API**: Integration with [DOAJ API](https://doaj.org/) for fetching articles
+---
 - Thymeleaf: Used as the templating engine for rendering HTML, enhanced with:
 - Thymeleaf Extras Spring Security 6: For integrating security with Thymeleaf views.
 - ModelMapper: For mapping DTOs to entities and vice versa.
@@ -166,15 +168,6 @@ This project serves as a portfolio application, highlighting modern web developm
 ---
 
 ---
-
-## **Tech Stack**
-
-- **Backend**: Spring Boot, Spring Security, Hibernate, Spring Data JPA
-- **Frontend**: Thymeleaf, Bootstrap, JavaScript
-- **Database**: MySQL
-- **Build Tool**: Gradle
-- **External API**: Integration with [DOAJ API](https://doaj.org/) for fetching articles
-- **Testing**: JUnit and MockMvc for unit and integration testing
 
 ---
 
