@@ -67,6 +67,13 @@ This project serves as a portfolio application, highlighting modern web developm
 ### **For Admins**
 - **User Management**:
   - Promote/demote users to/from the moderator role.
+
+![Admin manage users Screenshot](BrainDissecting-SSR-version/screenshots/admin-manage-users.png)
+
+![Promoting to moderator Screenshot](BrainDissecting-SSR-version/screenshots/promoting-to-moderator.png)
+
+![User promoted Screenshot](BrainDissecting-SSR-version/screenshots/user-promoted.png)
+
   - Ban/unban users to maintain a safe environment.
 - **Topic Management**:
   - Create new topics for articles.
