@@ -25,7 +25,7 @@
 - Spring Boot Starter Validation: For input validation.
 - Spring Boot DevTools: For rapid development with hot reload.
 ---
-- **External API**: Integration with [DOAJ API](https://doaj.org/api/v3/search/articles/) for fetching articles
+- **External API**: Integration with [DOAJ API](https://doaj.org/api/v3/docs) for fetching articles
 ---
 - Thymeleaf: Used as the templating engine for rendering HTML, enhanced with:
 - Thymeleaf Extras Spring Security 6: For integrating security with Thymeleaf views.
