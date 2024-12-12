@@ -122,7 +122,7 @@ This project serves as a portfolio application, highlighting modern web developm
 - **Content Management**:
   - Fetch articles by specific topics from an external API.
 
-![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-update-articles.png)  
+![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-updating-articles.png)  
 
 ![Admin articles updated Screenshot](BrainDissecting-SSR-version/screenshots/admin-articles-updated.png) 
 
