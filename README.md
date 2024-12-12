@@ -102,6 +102,15 @@ This project serves as a portfolio application, highlighting modern web developm
 
 - **Topic Management**:
   - Create new topics for articles.
+
+![Admin manage themes page Screenshot](BrainDissecting-SSR-version/screenshots/admin-manage-themes.png)
+
+![Admin adding theme Screenshot](BrainDissecting-SSR-version/screenshots/admin-adding-theme.png)
+
+![Admin theme added Screenshot](BrainDissecting-SSR-version/screenshots/admin-theme-added.png)
+
+---
+
   - Review and approve/reject suggestions for new topics submitted by moderators.
 - **Content Management**:
   - Fetch articles by specific topics from an external API.
