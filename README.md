@@ -58,6 +58,12 @@ This project serves as a portfolio application, highlighting modern web developm
   
 - **Moderate Articles**: Approve or reject pending articles submitted for publication.
 
+![Pending for approval page Screenshot](BrainDissecting-SSR-version/screenshots/moderator-pending-for-approval.png)  
+
+![Approving article Screenshot](BrainDissecting-SSR-version/screenshots/approving-article.png)  
+
+![Article approved Screenshot](BrainDissecting-SSR-version/screenshots/article-approved.png)
+
 ### **For Admins**
 - **User Management**:
   - Promote/demote users to/from the moderator role.
