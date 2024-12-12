@@ -76,7 +76,13 @@ This project serves as a portfolio application, highlighting modern web developm
 
   - Ban/unban users to maintain a safe environment.
 
-![Banning user Screenshot](BrainDissecting-SSR-version/screenshots/baning-user.png)
+![Banning user Screenshot](BrainDissecting-SSR-version/screenshots/banning-user.png)
+
+![Banned user Screenshot](BrainDissecting-SSR-version/screenshots/banned-user.png)
+
+![Banned user login Screenshot](BrainDissecting-SSR-version/screenshots/banned-user-login.png)
+
+![Account banned Screenshot](BrainDissecting-SSR-version/screenshots/account-banned.png)
 
 - **Topic Management**:
   - Create new topics for articles.
