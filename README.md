@@ -130,9 +130,15 @@ This project serves as a portfolio application, highlighting modern web developm
 
   - Approve or reject fetched pending articles.
 
-![Admin approve/reject fetched articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-approve-fetched-articles.png) 
+![Admin approve/reject fetched articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-approve-fetched-articles.png)  
+
+---
 
   - Delete articles permanently.
+
+![Admin delete article Screenshot](BrainDissecting-SSR-version/screenshots/admin-delete-article.png)  
+
+---
 
 ---
 
