@@ -112,6 +112,11 @@ This project serves as a portfolio application, highlighting modern web developm
 ---
 
   - Review and approve/reject suggestions for new topics submitted by moderators.
+
+![Admin approving moderator suggestion Screenshot](BrainDissecting-SSR-version/screenshots/admin-approving-moderator-suggestion.png)
+
+![Suggestion approved Screenshot](BrainDissecting-SSR-version/screenshots/suggestion-approved.png)
+
 - **Content Management**:
   - Fetch articles by specific topics from an external API.
   - Approve or reject fetched pending articles.
