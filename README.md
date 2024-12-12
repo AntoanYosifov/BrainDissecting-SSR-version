@@ -33,7 +33,9 @@ This project serves as a portfolio application, highlighting modern web developm
 
 - **Engage via Comments**: Comment on articles and interact with other users.
 
-![Writing comment Screenshot](BrainDissecting-SSR-version/screenshots/writing-comment.png)
+![Writing comment Screenshot](BrainDissecting-SSR-version/screenshots/writing-comment.png)  
+
+![Comment Screenshot](BrainDissecting-SSR-version/screenshots/comment.png)
 
 - **Profile Management**: Update username and email directly from the profile page.
 
