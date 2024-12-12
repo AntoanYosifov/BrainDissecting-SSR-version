@@ -33,11 +33,15 @@ This project serves as a portfolio application, highlighting modern web developm
 
 ![My favourites Screenshot](BrainDissecting-SSR-version/screenshots/my-favourites.png)  
 
+--- 
+
 - **Engage via Comments**: Comment on articles and interact with other users.
 
 ![Writing comment Screenshot](BrainDissecting-SSR-version/screenshots/writing-comment.png)  
 
 ![Comment Screenshot](BrainDissecting-SSR-version/screenshots/comment.png)
+
+--- 
 
 - **Profile Management**: Update username and email directly from the profile page.
 
@@ -46,6 +50,8 @@ This project serves as a portfolio application, highlighting modern web developm
 ![Updating profile Screenshot](BrainDissecting-SSR-version/screenshots/updating-profile.png)  
 
 ![Profile updated Screenshot](BrainDissecting-SSR-version/screenshots/profile-updated.png)
+
+--- 
 
 ### **For Moderators**
 - **Suggest Topics**: Propose new topics for future article collections.
@@ -57,6 +63,8 @@ This project serves as a portfolio application, highlighting modern web developm
 ![Suggesting theme Screenshot](BrainDissecting-SSR-version/screenshots/suggesting-theme.png)  
 
 ![Theme suggested Screenshot](BrainDissecting-SSR-version/screenshots/theme-suggested.png)
+
+--- 
   
 - **Moderate Articles**: Approve or reject pending articles submitted for publication.
 
@@ -65,6 +73,8 @@ This project serves as a portfolio application, highlighting modern web developm
 ![Approving article Screenshot](BrainDissecting-SSR-version/screenshots/approving-article.png)  
 
 ![Article approved Screenshot](BrainDissecting-SSR-version/screenshots/article-approved.png)
+
+--- 
 
 ### **For Admins**
 - **User Management**:
@@ -76,6 +86,8 @@ This project serves as a portfolio application, highlighting modern web developm
 
 ![User promoted Screenshot](BrainDissecting-SSR-version/screenshots/user-promoted.png)
 
+--- 
+
   - Ban/unban users to maintain a safe environment.
 
 ![Banning user Screenshot](BrainDissecting-SSR-version/screenshots/banning-user.png)
@@ -85,6 +97,8 @@ This project serves as a portfolio application, highlighting modern web developm
 ![Banned user login Screenshot](BrainDissecting-SSR-version/screenshots/banned-user-login.png)
 
 ![Account banned Screenshot](BrainDissecting-SSR-version/screenshots/account-banned.png)
+
+--- 
 
 - **Topic Management**:
   - Create new topics for articles.
