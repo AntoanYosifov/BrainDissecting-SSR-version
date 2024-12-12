@@ -39,6 +39,12 @@ This project serves as a portfolio application, highlighting modern web developm
 
 - **Profile Management**: Update username and email directly from the profile page.
 
+![My profile page Screenshot](BrainDissecting-SSR-version/screenshots/my-profile.png)  
+
+![Updating profile Screenshot](BrainDissecting-SSR-version/screenshots/updating-profile.png)  
+
+![Profile updated Screenshot](BrainDissecting-SSR-version/screenshots/profile-updated.png)
+
 ### **For Moderators**
 - **Suggest Topics**: Propose new topics for future article collections.
 - **Moderate Articles**: Approve or reject pending articles submitted for publication.
