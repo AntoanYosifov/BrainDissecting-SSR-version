@@ -78,7 +78,7 @@ This project serves as a portfolio application, highlighting modern web developm
 
 ![Banning user Screenshot](BrainDissecting-SSR-version/screenshots/banning-user.png)
 
-![Banned user Screenshot](BrainDissecting-SSR-version/screenshots/banned-user.png)
+![Banned user Screenshot](BrainDissecting-SSR-version/screenshots/user-banned.png)
 
 ![Banned user login Screenshot](BrainDissecting-SSR-version/screenshots/banned-user-login.png)
 
