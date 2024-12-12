@@ -1,5 +1,9 @@
 # **Brain Dissecting**
 
+---
+
+---
+
 ![Indexpage Screenshot](BrainDissecting-SSR-version/screenshots/indexpage.png)
 
 **Explore, manage, and moderate a diverse collection of scientific articles.**
@@ -8,9 +12,29 @@
 
 ![Users-register Screenshot](BrainDissecting-SSR-version/screenshots/users-register.png)
 
+---
+
 ## **Overview**
 
-*Brain Dissecting* is a full-stack web application built with **Spring Boot**, **Thymeleaf**, and **MySQL**, showcasing a seamless integration of **Gradle** and some **JavaScript** for enhanced user experience. It is designed for tech enthusiasts, science lovers, and curious minds, enabling exploration, engagement, and moderation of scientific content.  
+*Brain Dissecting* is a full-stack web application built with -> **Tech Stack**:
+- Java 21: The core programming language used for backend development.
+- Spring Boot 3.3.2: For building the web application, including:
+- Spring Boot Starter Web: Provides core features for developing web applications.
+- Spring Boot Starter Data JPA: For database interactions and ORM with Hibernate.
+- Spring Boot Starter Security: For securing the application.
+- Spring Boot Starter Validation: For input validation.
+- Spring Boot DevTools: For rapid development with hot reload.
+- Thymeleaf: Used as the templating engine for rendering HTML, enhanced with:
+- Thymeleaf Extras Spring Security 6: For integrating security with Thymeleaf views.
+- ModelMapper: For mapping DTOs to entities and vice versa.
+- JSONPath: For extracting data from JSON responses.
+- JSoup: For parsing and cleaning HTML.
+- MySQL: The database used in production.
+- HSQLDB: An in-memory database used for testing purposes.
+- JUnit 5: For writing and running unit and integration tests.
+- Spring Security Test: For testing security configurations.
+
+It is designed for tech enthusiasts, science lovers, and curious minds, enabling exploration, engagement, and moderation of scientific content.  
 
 ![Login Screenshot](BrainDissecting-SSR-version/screenshots/login.png)
 
