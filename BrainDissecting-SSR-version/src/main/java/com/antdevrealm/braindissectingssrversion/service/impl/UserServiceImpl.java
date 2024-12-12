@@ -155,7 +155,11 @@ public class UserServiceImpl implements UserService {
 
         List<UserEntity> allUsers = userRepository.findAll();
 
-        return allUsers.stream().map(this::mapToDisplayUserDto).toList();
+        UserRoleEntity adminRole = roleRepository.findByRole(UserRole.ADMIN)
+                .orElseThrow(() -> new RoleNotFoundException(UserRole.ADMIN));
+
+        return allUsers.stream()
+                .filter(u -> !u.getRoles().contains(adminRole)).map(this::mapToDisplayUserDto).toList();
     }
 
 

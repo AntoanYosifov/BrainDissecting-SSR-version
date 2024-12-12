@@ -377,6 +377,7 @@ public class UserServiceImplTest {
 
         when(mockUserRepository.count()).thenReturn((long) userEntities.size());
         when(mockUserRepository.findAll()).thenReturn(userEntities);
+        when(mockRoleRepository.findByRole(UserRole.ADMIN)).thenReturn(Optional.of(new UserRoleEntity().setRole(UserRole.ADMIN)));
         when(mockModelMapper.map(userEntity1, DisplayUserInfoDTO.class)).thenReturn(displayUserInfoDTO1);
         when(mockModelMapper.map(userEntity2, DisplayUserInfoDTO.class)).thenReturn(displayUserInfoDTO2);
 
