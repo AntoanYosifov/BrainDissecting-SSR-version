@@ -10,6 +10,8 @@
 
 <div class="container mt-4">
     <h2 class="text-light">Manage Users</h2>
+    <div th:if="${roleAssignSuccess}" class="alert alert-success" th:text="${roleAssignSuccess}"></div>
+    <div th:if="${roleAssignFailure}" class="alert alert-danger" th:text="${roleAssignFailure}"></div>
     <div th:if="${removeRoleSuccess}" class="alert alert-success" th:text="${removeRoleSuccess}"></div>
     <div th:if="${removeRoleFailure}" class="alert alert-danger" th:text="${removeRoleFailure}"></div>
     <div th:if="${BanSuccess}" class="alert alert-success" th:text="${BanSuccess}"></div>

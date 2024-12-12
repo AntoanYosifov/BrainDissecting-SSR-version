@@ -10,7 +10,6 @@
             <h1>Your account has been banned</h1>
         </div>
         <div class="card-body">
-            <p class="card-text" >Reason: <span th:text="${reason}"></span></p>
             <p class="card-text" >Please contact support if you believe this is a mistake.</p>
             <form th:method="post"
                   th:action="@{/users/logout}">
