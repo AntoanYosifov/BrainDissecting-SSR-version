@@ -115,10 +115,19 @@ This project serves as a portfolio application, highlighting modern web developm
 
 ![Admin approving moderator suggestion Screenshot](BrainDissecting-SSR-version/screenshots/admin-approving-moderator-suggestion.png)
 
-![Suggestion approved Screenshot](BrainDissecting-SSR-version/screenshots/suggestion-approved.png)
+![Suggestion approved Screenshot](BrainDissecting-SSR-version/screenshots/suggestion-approved.png)  
+
+---
 
 - **Content Management**:
   - Fetch articles by specific topics from an external API.
+
+![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-update-articles.png)  
+
+![Admin articles updated Screenshot](BrainDissecting-SSR-version/screenshots/admin-articles-updated.png) 
+
+---
+
   - Approve or reject fetched pending articles.
   - Delete articles permanently.
 
