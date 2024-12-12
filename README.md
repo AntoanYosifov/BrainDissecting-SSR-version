@@ -27,6 +27,8 @@ This project serves as a portfolio application, highlighting modern web developm
   
 ![All articles Screenshot](BrainDissecting-SSR-version/screenshots/all-articles.png)  
 
+---
+
 - **Save Favorites**: Manage a personalized list of favorite articles.
 
 ![My favourites Screenshot](BrainDissecting-SSR-version/screenshots/my-favourites.png)  
