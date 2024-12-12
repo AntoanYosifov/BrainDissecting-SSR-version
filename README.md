@@ -24,6 +24,7 @@
 - Spring Boot Starter Security: For securing the application.
 - Spring Boot Starter Validation: For input validation.
 - Spring Boot DevTools: For rapid development with hot reload.
+---  
 - Thymeleaf: Used as the templating engine for rendering HTML, enhanced with:
 - Thymeleaf Extras Spring Security 6: For integrating security with Thymeleaf views.
 - ModelMapper: For mapping DTOs to entities and vice versa.
