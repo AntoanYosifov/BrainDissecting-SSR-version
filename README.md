@@ -156,9 +156,9 @@ It is designed for tech enthusiasts, science lovers, and curious minds, enabling
 - **Content Management**:
   - Fetch articles by specific topics from an external API.
 
-![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-updating-articles.png)  
+![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-updating-art.png)  
 
-![Admin articles updated Screenshot](BrainDissecting-SSR-version/screenshots/admin-articles-updated.png) 
+![Admin articles updated Screenshot](BrainDissecting-SSR-version/screenshots/admin-art-updated.png) 
 
 ---
 
