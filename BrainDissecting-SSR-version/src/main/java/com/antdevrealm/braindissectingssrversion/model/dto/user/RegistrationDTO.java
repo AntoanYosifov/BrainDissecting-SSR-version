@@ -12,16 +12,16 @@ public class RegistrationDTO {
     private String username;
 
     @NotNull(message = "{userEntity.registration.notBlank.email}")
-    @NotBlank(message = "{user.registration.notBlank.email}")
+    @NotBlank(message = "{userEntity.registration.notBlank.email}")
     @Email(message = "{userEntity.registration.email}")
     private String email;
 
     @NotNull(message = "{userEntity.notnull.password}")
-    @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
+    @Size(min = 5, max = 30, message = "{userEntity.registration.password.length}")
     private String password;
 
     @NotNull(message = "{userEntity.registration.notnull.password.confirm}")
-    @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
+    @Size(min = 5, max = 30, message = "{userEntity.registration.password.length}")
     private String confirmPassword;
 
     private String firstName;
