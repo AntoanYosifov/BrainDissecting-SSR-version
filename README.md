@@ -44,6 +44,10 @@
 
 It is designed for tech enthusiasts, science lovers, and curious minds, enabling exploration, engagement, and moderation of scientific content.  
 
+![Login wrong data Screenshot](BrainDissecting-SSR-version/screenshots/login-wrong-data.png)  
+
+![Login validation](BrainDissecting-SSR-version/screenshots/login-validation.png)
+
 ![Login Screenshot](BrainDissecting-SSR-version/screenshots/login.png)
 
 This project serves as a portfolio application, highlighting modern web development practices, role-based access control, and content management features.  
