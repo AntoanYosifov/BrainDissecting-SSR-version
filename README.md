@@ -17,7 +17,7 @@
 ## **Overview**
 
 *Brain Dissecting* is a full-stack web application built with -> **Tech Stack**:
-- Java 17: The core programming language used for backend development.
+- Java 21: The core programming language used for backend development.
 - Spring Boot 3.3.2: For building the web application, including:
 - Spring Boot Starter Web: Provides core features for developing web applications.
 - Spring Boot Starter Data JPA: For database interactions and ORM with Hibernate.
@@ -219,6 +219,8 @@ Open your browser and navigate to: http://localhost:8080
 ### Testing the Application  
 
 The project includes integration and unit tests.  
+
+![Test Screenshot](BrainDissecting-SSR-version/screenshots/test.png)
 
 To run the tests, execute:  
 
