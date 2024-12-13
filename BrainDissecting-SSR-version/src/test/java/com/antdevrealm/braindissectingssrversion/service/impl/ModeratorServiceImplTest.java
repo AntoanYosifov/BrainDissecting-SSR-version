@@ -103,7 +103,7 @@ public class ModeratorServiceImplTest {
 
         Assertions.assertTrue(result);
         Assertions.assertFalse(approvedArticles.isEmpty());
-        Assertions.assertEquals(APPROVED, approvedArticles.getFirst().getStatus());
+        Assertions.assertEquals(APPROVED, approvedArticles.get(0).getStatus());
         Assertions.assertEquals(APPROVED, approvedArticles.get(1).getStatus());
     }
 
