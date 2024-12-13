@@ -29,6 +29,7 @@
 ---
 - Thymeleaf: Used as the templating engine for rendering HTML, enhanced with:
 - Thymeleaf Extras Spring Security 6: For integrating security with Thymeleaf views.
+- Bootstrap: Used for designing responsive and visually appealing templates with modern UI components, ensuring a consistent and user-friendly front-end experience.
 - ModelMapper: For mapping DTOs to entities and vice versa.
 - JSONPath: For extracting data from JSON responses.
 - JSoup: For parsing and cleaning HTML.
