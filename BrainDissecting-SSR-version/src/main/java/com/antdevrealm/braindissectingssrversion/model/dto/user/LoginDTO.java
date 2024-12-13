@@ -10,7 +10,7 @@ public class LoginDTO {
     private String username;
 
     @NotNull(message = "{userEntity.notnull.password}")
-    @Size(min = 3, max = 30, message = "{userEntity.registration.password.length}")
+    @Size(min = 5, max = 30, message = "{userEntity.registration.password.length}")
     private String password;
 
     public LoginDTO() {}
