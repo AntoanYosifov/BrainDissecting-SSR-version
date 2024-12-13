@@ -10,6 +10,10 @@
 
 ---  
 
+![Registration Screenshot](BrainDissecting-SSR-version/screenshots/registration.png)
+
+![Registration validation Screenshot](BrainDissecting-SSR-version/screenshots/registration-validation.png)
+
 ![Users-register Screenshot](BrainDissecting-SSR-version/screenshots/users-register.png)
 
 ---
