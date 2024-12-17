@@ -223,6 +223,8 @@ bash:
 
 Open your browser and navigate to: http://localhost:8080  
 
+# **The first user you register will become an admin so that you can explore the full range of functionalities**  
+
 ---
 
 ### Testing the Application  
