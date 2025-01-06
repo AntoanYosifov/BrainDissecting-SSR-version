@@ -3,7 +3,7 @@ spring:
     name: BrainDissecting-SSR-version
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/brain-dissecting-ssr?createDatabaseIfNotExist=true
+    url: jdbc:mysql:///brain_dissecting_db?cloudSqlInstance=${CLOUD_SQL_INSTANCE}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
     username: ${db_username:}
     password: ${db_password:}
   jpa:
