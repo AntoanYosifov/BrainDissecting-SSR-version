@@ -29,6 +29,8 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final static long DEMO_ADMIN_ID = 1L;
+
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final RoleRepository roleRepository;
@@ -86,6 +88,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(long loggedUserId, UpdateDTO updateDTO) {
+        if(loggedUserId == DEMO_ADMIN_ID) {
+            throw new UnsupportedOperationException("The demo admin account can not be updated!");
+        }
+
         UserEntity userEntity = userRepository.findById(loggedUserId).orElseThrow(() -> new UserNotFoundException(loggedUserId));
 
         if (usernameOrEmailExists(updateDTO.getNewUsername(), updateDTO.getNewEmail())) {

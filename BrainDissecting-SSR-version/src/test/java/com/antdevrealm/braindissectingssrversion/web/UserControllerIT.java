@@ -51,7 +51,7 @@ public class UserControllerIT {
         userRepository.deleteAll();
 
         userDetails = new BrDissectingUserDetails(
-                1L,
+                2L,
                 "testUser@example.com",
                 "testUser",
                 "password",

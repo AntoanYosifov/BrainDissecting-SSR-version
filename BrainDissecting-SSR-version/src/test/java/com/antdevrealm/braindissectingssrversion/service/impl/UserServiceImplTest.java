@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-    private final long USER_ID = 1L;
+    private final long USER_ID = 2L;
 
     private final String USERNAME = "testUser";
 
@@ -298,16 +298,13 @@ public class UserServiceImplTest {
 
     @Test
     void removeFromFavourites_ShouldThrowException_WhenUserNotFound() {
-        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.empty());
-        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.removeFromFavourites(USER_ID, ARTICLE_ID));
+        Assertions.assertThrows(UserNotFoundException.class, () -> toTest.removeFromFavourites(ARTICLE_ID, USER_ID));
     }
 
     @Test
     void removeFromFavourites_ShouldThrowException_WhenArticleNotFound() {
-        when(mockUserRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
-        when(mockArticleRepository.findById(ARTICLE_ID)).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(ArticleNotFoundException.class, () -> toTest.removeFromFavourites(USER_ID, ARTICLE_ID));
+        doReturn(Optional.of(userEntity)).when(mockUserRepository).findById(USER_ID);
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> toTest.removeFromFavourites(ARTICLE_ID, USER_ID));
 
     }
 

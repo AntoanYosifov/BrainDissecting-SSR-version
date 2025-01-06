@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"
+      xmlns:th='http://www.thymeleaf.org'
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>My Profile - Brain Dissecting</title>
     <th:block th:replace="~{/fragments/commons::head}"></th:block>
@@ -19,13 +21,18 @@
             <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
             <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
         </div>
-        <button id="editProfileButton" class="btn btn-warning ml-md-5 mx-auto">Edit Profile</button>
+        <div sec:authorize="hasRole('ADMIN')">
+            <div class="alert alert-info col-sm-2 col-md-3 row mx-auto col-lg-4 m-1 p-0 text-center">
+                <p>Admin credentials cannot be changed for security reasons.</p>
+            </div>
+        </div>
+        <button sec:authorize="!hasRole('ADMIN')"  id="editProfileButton" class="btn btn-warning ml-md-5 mx-auto">Edit Profile</button>
     </div>
 
     <div id="editProfileSection" class="card col-sm-2 col-md-3 row mx-auto col-lg-4 m-1 p-0"
-             th:classappend="${editProfile} ? 'd-block' : 'd-none'"
-    >
-        <div class="card-header">
+             th:classappend="${editProfile} ? 'd-block' : 'd-none'">
+
+        <div class="card-header" sec:authorize="!hasRole('ADMIN')">
             Edit Profile
         </div>
         <div class="card-body">

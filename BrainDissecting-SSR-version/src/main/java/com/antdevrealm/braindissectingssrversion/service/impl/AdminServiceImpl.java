@@ -10,7 +10,6 @@ import com.antdevrealm.braindissectingssrversion.repository.RoleRepository;
 import com.antdevrealm.braindissectingssrversion.repository.UserRepository;
 import com.antdevrealm.braindissectingssrversion.service.AdminService;
 import com.antdevrealm.braindissectingssrversion.service.UserService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+
+    private static final Long DEMO_ADMIN_ID = 1L;
 
     private final UserService userService;
     private final UserRepository userRepository;
@@ -72,6 +73,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public boolean banUser(Long userId) {
+        if(userId.equals(DEMO_ADMIN_ID)) {
+            throw new UnsupportedOperationException("The demo admin account can not be banned!");
+        }
+
         Optional<UserEntity> optUser = userRepository.findById(userId);
 
         if(optUser.isEmpty()) {

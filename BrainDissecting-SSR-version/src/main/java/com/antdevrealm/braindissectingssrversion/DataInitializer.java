@@ -25,7 +25,6 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initializeRoles() {
         List<UserRole> rolesToInitialize = Arrays.asList(UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER);
-
         rolesToInitialize.forEach(role -> {
             if (roleRepository.findByRole(role).isEmpty()) {
                 UserRoleEntity newRole = new UserRoleEntity();
@@ -34,4 +33,6 @@ public class DataInitializer implements CommandLineRunner {
             }
         });
     }
+
+
 }
