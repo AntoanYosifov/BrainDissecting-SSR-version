@@ -1,6 +1,8 @@
-# **Brain Dissecting**
+# **Brain Dissecting** 
 
----
+---  
+
+link to -> [Video Preview](https://youtu.be/e7vQ6qeueW4?si=4O9dF8BON2g5R24B)
 
 ---
 
@@ -156,9 +158,9 @@ It is designed for tech enthusiasts, science lovers, and curious minds, enabling
 - **Content Management**:
   - Fetch articles by specific topics from an external API.
 
-![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-updating-articles.png)  
+![Admin updating articles Screenshot](BrainDissecting-SSR-version/screenshots/admin-updating-art.png)  
 
-![Admin articles updated Screenshot](BrainDissecting-SSR-version/screenshots/admin-articles-updated.png) 
+![Admin articles updated Screenshot](BrainDissecting-SSR-version/screenshots/admin-art-updated.png) 
 
 ---
 
@@ -220,6 +222,8 @@ bash:
 5. **Access the application**  
 
 Open your browser and navigate to: http://localhost:8080  
+
+# **The first user you register will become an admin so that you can explore the full range of functionalities**  
 
 ---
 
