@@ -13,7 +13,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
   sql:
     init:
@@ -26,6 +26,10 @@ server:
   error:
     whitelabel:
       enabled: true
+logging:
+  level:
+    root: info
+    org.hibernate.sql: warn
 doaj:
   api:
     url: "https://doaj.org/api/v3/search/articles/"
