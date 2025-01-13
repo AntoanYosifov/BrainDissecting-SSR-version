@@ -30,7 +30,7 @@
                 <a class="bg-primary btn ml-md-4 mt-md-0 text-white" target="_blank" th:href="${article.link}">Read the Full Study</a>
             </div>
             <div th:if="${!favouriteArtIds.contains(article.id)}">
-                <th:block th:replace="~{/fragments/commons::favourite-button(articleId=${article.id})}"></th:block>
+                <th:block th:replace="~{fragments/commons::favourite-button(articleId=${article.id})}"></th:block>
             </div>
             <div th:if="${favouriteArtIds.contains(article.id)}">
                 <th:block th:replace="~{fragments/commons::remove-favourite-button(articleId=${article.id})}"></th:block>
