@@ -5,12 +5,12 @@
 
 <head>
     <title>All Articles - Brain Dissecting</title>
-    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+    <th:block th:replace="~{fragments/commons::head}"></th:block>
 </head>
 
 <body>
 
-<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'All Articles'})}"></th:block>
+<th:block th:replace="~{fragments/commons::navbar(activeLink=${'All Articles'})}"></th:block>
 
 <div th:if="${param.error}" class="alert alert-danger">
     <p th:switch="${param.error}">

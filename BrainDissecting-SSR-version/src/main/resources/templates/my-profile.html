@@ -4,11 +4,11 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>My Profile - Brain Dissecting</title>
-    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+    <th:block th:replace="~{fragments/commons::head}"></th:block>
 </head>
 
 <body>
-<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'My Profile'})}"></th:block>
+<th:block th:replace="~{fragments/commons::navbar(activeLink=${'My Profile'})}"></th:block>
 <div class="container mt-4  ">
     <h2 class="text-center text-white">My Profile</h2>
 

@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Delete Article - Brain Dissecting</title>
-    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+    <th:block th:replace="~{fragments/commons::head}"></th:block>
 </head>
 <body>
-<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'Delete Article'})}"></th:block>
+<th:block th:replace="~{fragments/commons::navbar(activeLink=${'Delete Article'})}"></th:block>
 
 <div class="container mt-5">
     <h2 th:unless="${articles.isEmpty()}" class="text-center text-white">Delete Articles</h2>

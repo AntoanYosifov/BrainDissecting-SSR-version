@@ -5,10 +5,10 @@
 
 <head>
     <title>Favourites - Brain Dissecting</title>
-    <th:block th:replace="~{/fragments/commons::head}"></th:block>
+    <th:block th:replace="~{fragments/commons::head}"></th:block>
 </head>
 <body>
-<th:block th:replace="~{/fragments/commons::navbar(activeLink=${'My Favourites'})}"></th:block>
+<th:block th:replace="~{fragments/commons::navbar(activeLink=${'My Favourites'})}"></th:block>
 <div class="container">
     <h2 class="text-center text-white m-3">Favourites</h2>
     <div th:if="${favourites.isEmpty()}" class='d-flex justify-content-around'>
@@ -29,7 +29,7 @@
                 <a class="bg-primary btn ml-md-4 mt-md-0 text-white" target="_blank" th:href="${article.link}">Read the Full Study</a>
             </div>
             <div class="d-flex justify-content-between">
-                <th:block th:replace="~{/fragments/commons::remove-favourite-button(articleId=${article.id})}" ></th:block>
+                <th:block th:replace="~{fragments/commons::remove-favourite-button(articleId=${article.id})}" ></th:block>
                 <div class="d-inline" >
                     <div th:each="category : ${article.categories}" class="p-1 pr-4">
                         <a class="bg-primary btn text-white font-italic p-1"
