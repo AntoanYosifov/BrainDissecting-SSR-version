@@ -2,7 +2,7 @@
 
 ---  
 
-***Brain Dissecting Website***:  [BrainDissecting](https://brain-dissecting-600325923365.europe-west1.run.app)
+***Brain Dissecting Website***:  [BrainDissecting](https://braindissecting-ssr-version-production.up.railway.app)
 
 link to -> [Video Preview](https://youtu.be/e7vQ6qeueW4?si=4O9dF8BON2g5R24B)
 
