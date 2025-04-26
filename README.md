@@ -199,19 +199,16 @@ It is designed for tech enthusiasts, science lovers, and curious minds, enabling
 - Create a MySQL database named brain-dissecting-ssr (or modify the application.yaml to use your preferred database name).
 - Ensure your MySQL server is running and accessible.
 
-3. **Configure Environment Variables**
-- Set up the following environment variables for database credentials:
+3. Configure Environment Variables
+Set up the following environment variables for database connection:
 
 
-db_username: Your MySQL username  
-db_password: Your MySQL password  
-
-
-Example:  
-
-bash:  
-export db_username=yourUsername  
-export db_password=yourPassword  
+Variable Name	Description
+MYSQLHOST	Your MySQL server host (usually localhost for local runs)
+MYSQLPORT	MySQL server port (default is 3306)
+MYSQLUSER	Your MySQL username
+MYSQLPASSWORD	Your MySQL password
+MYSQLDATABASE	Your database name (e.g., brain-dissecting-ssr)
 
 4. **Run the Application**  
 
