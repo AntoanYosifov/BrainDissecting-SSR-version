@@ -3,9 +3,9 @@ spring:
     name: BrainDissecting-SSR-version
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql:///brain_dissecting_db?cloudSqlInstance=${CLOUD_SQL_INSTANCE}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
-    username: ${db_username:}
-    password: ${db_password:}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
@@ -13,13 +13,13 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
   sql:
     init:
       mode: never
   mvc:
-    hidden method:
+    hidden-method:
       filter:
         enabled: true
 server:
