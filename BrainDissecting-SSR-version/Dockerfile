@@ -2,9 +2,9 @@
 FROM gradle:8.4.0-jdk21 AS builder
 WORKDIR /app
 
+COPY gradlew .
 COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
-COPY gradlew .
 RUN chmod +x gradlew
 
 COPY src ./src
